@@ -1,0 +1,221 @@
+tables:
+- tableName: t_dyf_domain_property
+  tableDesc: 储存属性信息
+  columns:
+  - columnName: domain_id
+    javaType: STRING
+    columnDesc: 领域ID
+  - columnName: property_name
+    javaType: STRING
+    columnDesc: 属性名称
+  - columnName: property_alias
+    javaType: STRING
+    columnDesc: 属性别名
+  - columnName: property_type
+    javaType: NUMBER_ENUM
+    columnDesc: 属性类型
+    enumRoot:
+      enumName: property_type
+      enumDesc: 属性类型
+      enumItems:
+      - enumItemName: SYSTEM
+        enumItemValue: '1'
+        enumItemDesc: 系统
+      - enumItemName: CUSTOM
+        enumItemValue: '3'
+        enumItemDesc: 自定义
+  - columnName: property_code
+    javaType: STRING
+    columnDesc: 属性编码
+  - columnName: property_data_type
+    javaType: STRING_ENUM
+    columnDesc: 数据类型
+    enumRoot:
+      enumName: property_data_type
+      enumDesc: 数据类型
+      enumItems:
+      - enumItemName: ARRAY
+        enumItemValue: array
+        enumItemDesc: 数组
+      - enumItemName: BOOLEAN
+        enumItemValue: boolean
+        enumItemDesc: 布尔值
+      - enumItemName: NUMBER
+        enumItemValue: number
+        enumItemDesc: 数字
+      - enumItemName: OBJECT
+        enumItemValue: object
+        enumItemDesc: 对象
+      - enumItemName: FILE
+        enumItemValue: file
+        enumItemDesc: 文件
+  - columnName: org_id
+    javaType: STRING
+    columnDesc: 组织ID
+  - columnName: note
+    javaType: STRING
+    columnDesc: 注意事项
+- tableName: t_dyf_domain_model_property
+  tableDesc: 领域模型与属性关联表
+  columns:
+  - columnName: domain_id
+    javaType: STRING
+    columnDesc: 领域ID
+  - columnName: model_id
+    javaType: STRING
+    columnDesc: 模型ID
+  - columnName: property_id
+    javaType: STRING
+    columnDesc: 属性ID
+  - columnName: property_alias
+    javaType: STRING
+    columnDesc: 属性别名
+  - columnName: model_required
+    javaType: NUMBER_ENUM
+    columnDesc: 是否是模型必须
+    enumRoot:
+      enumName: is_model_required
+      enumDesc: 是否是模型必须
+      enumItems:
+      - enumItemName: not_model_required
+        enumItemValue: '0'
+        enumItemDesc: 否
+      - enumItemName: model_required
+        enumItemValue: '1'
+        enumItemDesc: 是
+  - columnName: model_search
+    javaType: NUMBER_ENUM
+    columnDesc: 是否是搜索字段
+    enumRoot:
+      enumName: is_model_search
+      enumDesc: 是否是搜索字段
+      enumItems:
+      - enumItemName: not_model_search
+        enumItemValue: '0'
+        enumItemDesc: 否
+      - enumItemName: model_search
+        enumItemValue: '1'
+        enumItemDesc: 是
+  - columnName: org_id
+    javaType: STRING
+    columnDesc: 组织ID
+  - columnName: note
+    javaType: STRING
+    columnDesc: 注意事项
+- tableName: t_dyf_domain_model
+  tableDesc: 领域模型表
+  columns:
+  - columnName: domain_id
+    javaType: STRING
+    columnDesc: 领域ID
+  - columnName: model_name
+    javaType: STRING
+    columnDesc: 模型名
+  - columnName: model_type
+    javaType: NUMBER_ENUM
+    columnDesc: 类型
+    enumRoot:
+      enumName: model_type
+      enumDesc: 类型
+      enumItems:
+      - enumItemName: SYSTEM
+        enumItemValue: '1'
+        enumItemDesc: 系统
+      - enumItemName: CUSTOM
+        enumItemValue: '3'
+        enumItemDesc: 自定义
+  - columnName: org_id
+    javaType: STRING
+    columnDesc: 组织ID
+  - columnName: note
+    javaType: STRING
+    columnDesc: 注意事项
+  - columnName: search_mapping
+    javaType: OBJECT
+    columnDesc: 搜索引擎mapping
+    objectRoots:
+    - objectName: search_mapping
+      objectDesc: 搜索引擎mapping
+      fieldItems:
+      - fieldName: PlaceHolder
+        fieldType: STRING
+        fieldDesc: PlaceHolder
+- tableName: t_dyf_scene
+  tableDesc: 场景
+  columns:
+  - columnName: domain_id
+    javaType: STRING
+    columnDesc: 领域ID
+  - columnName: model_id
+    javaType: STRING
+    columnDesc: 模型ID
+  - columnName: scene_name
+    javaType: STRING
+    columnDesc: 场景名称
+  - columnName: scene_type
+    javaType: NUMBER_ENUM
+    columnDesc: 场景类型
+    enumRoot:
+      enumName: scene_type
+      enumDesc: 场景类型
+      enumItems:
+      - enumItemName: SYSTEM
+        enumItemValue: '1'
+        enumItemDesc: 系统
+      - enumItemName: CUSTOM
+        enumItemValue: '3'
+        enumItemDesc: 自定义
+  - columnName: expression
+    javaType: STRING
+    columnDesc: 关联条件
+  - columnName: property_schema
+    javaType: OBJECT
+    columnDesc: 属性规范（属性json_schema,包含字段定义和字段校验）
+    objectRoots:
+    - objectName: property_schema
+      objectDesc: 属性规范（属性json_schema,包含字段定义和字段校验）
+      fieldItems:
+      - fieldName: PlaceHolder
+        fieldType: STRING
+        fieldDesc: PlaceHolder
+  - columnName: style_schema
+    javaType: OBJECT
+    columnDesc: 样式规范
+    objectRoots:
+    - objectName: style_schema
+      objectDesc: 样式规范
+      fieldItems:
+      - fieldName: PlaceHolder
+        fieldType: STRING
+        fieldDesc: PlaceHolder
+  - columnName: scene_schema
+    javaType: OBJECT
+    columnDesc: 场景规范
+    objectRoots:
+    - objectName: scene_schema
+      objectDesc: 场景规范
+      fieldItems:
+      - fieldName: PlaceHolder
+        fieldType: STRING
+        fieldDesc: PlaceHolder
+  - columnName: org_id
+    javaType: STRING
+    columnDesc: 组织ID
+  - columnName: note
+    javaType: STRING
+    columnDesc: 注意事项
+- tableName: t_dyf_domain
+  tableDesc: 领域表
+  columns:
+  - columnName: domain_name
+    javaType: STRING
+    columnDesc: 领域名称
+  - columnName: domain_code
+    javaType: STRING
+    columnDesc: 领域编码
+  - columnName: org_id
+    javaType: STRING
+    columnDesc: 组织ID
+  - columnName: note
+    javaType: STRING
+    columnDesc: 注意事项
