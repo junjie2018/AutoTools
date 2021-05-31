@@ -57,12 +57,7 @@ public class ConfigurationModelRepresenter extends Representer {
 
     @Override
     protected Set<Property> getProperties(Class<?> type) {
-        Set<Property> propertySet;
-        if (typeDefinitions.containsKey(type)) {
-            propertySet = typeDefinitions.get(type).getProperties();
-        }
-
-        propertySet = getPropertyUtils().getProperties(type);
+        Set<Property> propertySet = getPropertyUtils().getProperties(type);
 
         List<Property> propsList = new ArrayList<>(propertySet);
         propsList.sort(new BeanPropertyComparator());

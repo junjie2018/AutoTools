@@ -1,6 +1,5 @@
 package fun.junjie.autotools.utils;
 
-import fun.junjie.autotools.domain.UserConfig;
 import org.apache.commons.lang3.StringUtils;
 
 public class JStringUtils {
@@ -26,12 +25,12 @@ public class JStringUtils {
     }
 
 
-    public static String removeTableNamePrefix(String tableName) {
-        if (tableName.startsWith(UserConfig.TABLE_PREFIX)) {
-            return tableName.substring(UserConfig.TABLE_PREFIX.length());
-        } else {
-            return tableName;
-        }
-    }
+//    public static String removeTableNamePrefix(String tableName) {
+//        if (tableName.startsWith(UserConfig.TABLE_PREFIX)) {
+//            return tableName.substring(UserConfig.TABLE_PREFIX.length());
+//        } else {
+//            return tableName;
+//        }
+//    }
 
 }

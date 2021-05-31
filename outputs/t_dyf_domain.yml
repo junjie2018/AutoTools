@@ -1,0 +1,43 @@
+columns:
+- javaType: STRING
+  colDesc: 主键ID
+  colName: id
+- javaType: STRING
+  colDesc: 领域名称
+  colName: domain_name
+- javaType: STRING
+  colDesc: 领域编码
+  colName: domain_code
+- javaType: STRING
+  colDesc: 组织ID
+  colName: org_id
+- javaType: NUMBER_ENUM
+  colDesc: 是否删除
+  colName: is_delete
+  enums:
+    enumName: is_delete
+    enumDesc: 是否删除
+    enumItems:
+    - itemDesc: 否
+      itemName: TMP_0
+      itemValue: '0'
+    - itemDesc: 是
+      itemName: TMP_1
+      itemValue: '1'
+- javaType: STRING
+  colDesc: 修改人
+  colName: creator
+- javaType: STRING
+  colDesc: 修改人
+  colName: modifier
+- javaType: DATE
+  colDesc: 创建时间
+  colName: gmt_create_time
+- javaType: DATE
+  colDesc: 修改时间
+  colName: gmt_modify_time
+- javaType: STRING
+  colDesc: 注意事项
+  colName: note
+tblDesc: 领域表
+tblName: t_dyf_domain

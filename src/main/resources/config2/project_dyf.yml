@@ -1,4 +1,5 @@
 projectName: Dyf
+tblPrefix: t_dyf
 tplRoot: D:\Download\spring-demo-master\spring-demo-master\cn\AutoTools\src\main\resources\templates\dyf
 tplConfig:
   - tplFile: constant\enums\enum.ftl

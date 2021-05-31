@@ -19,12 +19,13 @@ public class ProjectConfig {
 
 
     public static final String PROJECT_CONFIG_DIR =
-            "D:\\Download\\spring-demo-master\\spring-demo-master\\cn\\AutoTools\\src\\main\\resources\\config";
+            "D:\\Download\\spring-demo-master\\spring-demo-master\\cn\\AutoTools\\src\\main\\resources\\config2";
 
     private static ProjectConfig INSTANCE;
 
     private String configFile;
     private String projectName;
+    private String tablePrefix;
 
     private Map<String, TplConfig> tplName2TplConfig;
 
@@ -39,7 +40,11 @@ public class ProjectConfig {
         return INSTANCE.tplName2TplConfig.get(tplFile);
     }
 
-    private static void init(String configFile) {
+    public static String getTablePrefix() {
+        return INSTANCE.tablePrefix;
+    }
+
+    public static void init(String configFile) {
 
         if (INSTANCE != null) {
             throw new RuntimeException("Project Config Has Benn Init.");
@@ -62,6 +67,7 @@ public class ProjectConfig {
                     yaml.loadAs(new FileReader(configFilePath.toString()), ProjectConfInternal.class);
 
             INSTANCE.projectName = projectConfInternal.getProjectName();
+            INSTANCE.tablePrefix = projectConfInternal.getTblPrefix();
             INSTANCE.tplName2TplConfig = new HashMap<>();
 
             for (TplConfInternal tplConfInternal : projectConfInternal.getTplConfig()) {
@@ -76,10 +82,12 @@ public class ProjectConfig {
         }
     }
 
+
     @Data
     @SuppressWarnings("WeakerAccess")
     public static class ProjectConfInternal {
         private String projectName;
+        private String tblPrefix;
         private String tplRoot;
         private List<TplConfInternal> tplConfig;
     }

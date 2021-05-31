@@ -1,0 +1,87 @@
+columns:
+- javaType: STRING
+  colDesc: 主键ID
+  colName: id
+- javaType: STRING
+  colDesc: 领域ID
+  colName: domain_id
+- javaType: STRING
+  colDesc: 属性名称
+  colName: property_name
+- javaType: STRING
+  colDesc: 属性别名
+  colName: property_alias
+- javaType: NUMBER_ENUM
+  colDesc: 属性类型
+  colName: property_type
+  enums:
+    enumName: property_type
+    enumDesc: 属性类型
+    enumItems:
+    - itemDesc: 系统
+      itemName: TMP_1
+      itemValue: '1'
+    - itemDesc: 自定义
+      itemName: TMP_3
+      itemValue: '3'
+- javaType: STRING
+  colDesc: 属性编码
+  colName: property_code
+- javaType: STRING_ENUM
+  colDesc: 数据类型
+  colName: property_data_type
+  enums:
+    enumName: property_data_type
+    enumDesc: 数据类型
+    enumItems:
+    - itemDesc: 数组
+      itemName: ARRAY
+      itemValue: array
+    - itemDesc: 布尔值
+      itemName: BOOLEAN
+      itemValue: boolean
+    - itemDesc: 数字
+      itemName: NUMBER
+      itemValue: number
+    - itemDesc: 对象
+      itemName: OBJECT
+      itemValue: object
+    - itemDesc: 文件
+      itemName: FILE
+      itemValue: file
+- javaType: STRING
+  colDesc: 组织ID
+  colName: org_id
+- javaType: NUMBER_ENUM
+  colDesc: 是否删除
+  colName: is_delete
+  enums:
+    enumName: is_delete
+    enumDesc: 是否删除
+    enumItems:
+    - itemDesc: 否
+      itemName: TMP_0
+      itemValue: '0'
+    - itemDesc: 是
+      itemName: TMP_1
+      itemValue: '1'
+- javaType: STRING
+  colDesc: 创建人
+  colName: creator
+- javaType: STRING
+  colDesc: 修改人
+  colName: modifier
+- javaType: DATE
+  colDesc: 创建时间
+  colName: gmt_create_time
+- javaType: DATE
+  colDesc: 修改时间
+  colName: gmt_modify_time
+- javaType: STRING
+  colDesc: 注意事项
+  colName: note
+- javaType: NUMBER
+  colDesc: 是否为领域必填：0=否，1=是
+  colName: is_domain_required
+tblDesc: 储存属性信息
+tblName: t_dyf_domain_property

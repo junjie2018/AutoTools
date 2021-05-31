@@ -1,15 +1,12 @@
 package fun.junjie.autotools.service;
 
-import com.alibaba.fastjson.JSON;
-import freemarker.template.*;
+import fun.junjie.autotools.config.project.ProjectConfig;
 import fun.junjie.autotools.config.snake.ConfigurationModelRepresenter;
-import fun.junjie.autotools.domain.UserConfig;
-import fun.junjie.autotools.domain.java.*;
+import fun.junjie.autotools.constant.ToolsConfig;
 import fun.junjie.autotools.domain.postgre.Column;
 import fun.junjie.autotools.domain.postgre.Table;
 import fun.junjie.autotools.domain.yaml.*;
 import fun.junjie.autotools.domain.yaml.JavaType;
-import fun.junjie.autotools.utils.JStringUtils;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -22,7 +19,6 @@ import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.util.*;
 import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 @SuppressWarnings("Duplicates")
 @Service
@@ -30,10 +26,175 @@ import java.util.regex.Pattern;
 public class PGService {
 
 
+    private final JdbcTemplate jdbcTemplate;
 
+    /**
+     * 从数据库中获取表、列信息
+     */
+    private List<Table> getTableOriginInfos() {
+        if (this.jdbcTemplate.getDataSource() == null) {
+            throw new RuntimeException("数据库链接错误");
+        }
+
+        try {
+            Map<String, Table> tableName2TableMap = new HashMap<>(20);
+
+            DatabaseMetaData dbMetaData = this.jdbcTemplate.getDataSource().getConnection().getMetaData();
+
+
+            // 处理表信息
+            ResultSet tables = dbMetaData.getTables(
+                    null, null,
+                    ProjectConfig.getTablePrefix() + "_%", new String[]{"TABLE"});
+            while (tables.next()) {
+
+                String tableName = tables.getString("table_name");
+                String tableDesc = tables.getString("remarks");
+
+                tableName2TableMap.put(tableName, new Table(tableName, tableDesc));
+            }
+
+            // 处理列信息
+            ResultSet columns = dbMetaData.getColumns(
+                    null, null,
+                    ProjectConfig.getTablePrefix() + "%", null);
+            while (columns.next()) {
+
+                String tableName = columns.getString("table_name");
+                String columnName = columns.getString("column_name");
+                String typeName = columns.getString("type_name");
+                String remarks = columns.getString("remarks");
+
+                Table table = tableName2TableMap.get(tableName);
+                if (table == null) {
+                    throw new RuntimeException("Data Wrong When Get Column Info");
+                }
+
+                table.addColumn(new Column(columnName, remarks, typeName));
+            }
+
+            return new ArrayList<>(tableName2TableMap.values());
+        } catch (Exception e) {
+            throw new RuntimeException("数据库获取数据错误");
+        }
+    }
+
+    public void generateYaml() throws IOException {
+
+        ProjectConfig.init("project_dyf.yml");
+
+        List<Table> tables = getTableOriginInfos();
+
+        generateYamlCore(tables);
+    }
+
+    private void generateYamlCore(List<Table> tables) throws IOException {
+
+        List<TableRoot> tableRoots = new ArrayList<>();
+
+        for (Table table : tables) {
+
+            TableRoot tableRoot = new TableRoot(table.getTableName(), table.getTableDesc());
+
+            for (Column column : table.getColumnList()) {
+
+                tableRoot.addColumn(column.getColumnName(), column.getColumnDesc(), null);
+
+                // 如果注释符合预定义规则，则该字段应该为枚举类型
+                if (StringUtils.isNotBlank(column.getColumnDesc())
+                        && ToolsConfig.ENUM_COMMENT_PATTERN.matcher(column.getColumnDesc()).matches()) {
+
+                    Matcher matcher = ToolsConfig.ENUM_COMMENT_PATTERN.matcher(column.getColumnDesc());
+
+                    if (matcher.matches()) {
+
+                        tableRoot.addEnumRoot(column.getColumnName(), column.getColumnName(), matcher.group(1));
+                        tableRoot.updateColumnDesc(column.getColumnName(), matcher.group(1));
+
+                        boolean numberEnumFlag = true;
+
+                        // 判断枚举是否是数字类型
+                        for (String enumItem : matcher.group(2).split("，")) {
+                            String[] enumItemInfos = enumItem.split("：");
+                            if (!ToolsConfig.NUMBER_PATTERN.matcher(enumItemInfos[0]).matches()) {
+                                numberEnumFlag = false;
+                            }
+                        }
+
+                        // 更新下枚举项名
+                        for (String enumItem : matcher.group(2).split("，")) {
+
+                            String[] enumItemInfos = enumItem.split("：");
+
+                            if (numberEnumFlag) {
+                                tableRoot.addEnumItem(column.getColumnName(),
+                                        "TMP_" + enumItemInfos[0],
+                                        enumItemInfos[0], enumItemInfos[1]);
+
+                            } else {
+                                tableRoot.addEnumItem(column.getColumnName(),
+                                        StringUtils.upperCase(enumItemInfos[0]),
+                                        enumItemInfos[0], enumItemInfos[1]);
+                            }
+                        }
+
+                        tableRoot.updateColumnJavaType(column.getColumnName(),
+                                numberEnumFlag ? JavaType.NUMBER_ENUM : JavaType.STRING_ENUM);
+
+                    } else {
+                        throw new RuntimeException("Unknown Wrong.");
+                    }
+
+                } else {
+                    switch (column.getColumnType()) {
+                        case DATE:
+                        case TIMESTAMPTZ:
+                            tableRoot.updateColumnJavaType(column.getColumnName(), JavaType.DATE);
+                            break;
+                        case INT2:
+                        case INT4:
+                            tableRoot.updateColumnJavaType(column.getColumnName(), JavaType.NUMBER);
+                            break;
+                        case VARCHAR:
+                            tableRoot.updateColumnJavaType(column.getColumnName(), JavaType.STRING);
+                            break;
+                        case JSONB:
+                            tableRoot.updateColumnJavaType(column.getColumnName(), JavaType.OBJECT);
+
+                            tableRoot.addObject(column.getColumnName(),
+                                    StringUtils.capitalize(column.getColumnName()), column.getColumnDesc());
+                            break;
+                        default:
+                            throw new RuntimeException("未准备的类型");
+                    }
+                }
+            }
+
+            tableRoots.add(tableRoot);
+        }
+
+        for (TableRoot tableRoot : tableRoots) {
+            DumperOptions options = new DumperOptions();
+            ConfigurationModelRepresenter representer = new ConfigurationModelRepresenter();
+            Yaml yaml = new Yaml(representer, options);
+            FileWriter writer = new FileWriter("outputs/" + tableRoot.getTblName() + ".yml");
+            writer.write(yaml.dumpAsMap(tableRoot));
+            writer.close();
+        }
+
+
+//        DumperOptions options = new DumperOptions();
 //
-//    private final JdbcTemplate jdbcTemplate;
+//        ConfigurationModelRepresenter representer = new ConfigurationModelRepresenter();
 //
+//        Yaml yaml = new Yaml(representer, options);
+//        FileWriter writer = new FileWriter("output.yml");
+//
+//        writer.close();
+    }
+
+
+    //
 //    private HashMap<String, String> tableName2Chinese = new HashMap<>();
 //
 //    {
@@ -45,161 +206,12 @@ public class PGService {
 //    }
 //
 //
-//    private static Pattern PATTERN_OUTER = Pattern.compile("^([\\u4e00-\\u9fa5]{1,})（(([A-Za-z0-9]+：[\\u4e00-\\u9fa5]{1,}，?)+)）$");
-//    private static Pattern PATTERN_NUMBER = Pattern.compile("^[0-9]*$");
+
+    //
+
+
 //
-//    private List<Table> getTables() {
-//        if (this.jdbcTemplate.getDataSource() == null) {
-//            throw new RuntimeException("数据库链接错误");
-//        }
-//
-//        try {
-//            Map<String, Table> tableName2TableMap = new HashMap<>(20);
-//
-//            DatabaseMetaData dbMetaData = this.jdbcTemplate.getDataSource().getConnection().getMetaData();
-//
-//            ResultSet tables = dbMetaData.getTables(null, null, "t_dyf_%", new String[]{"TABLE"});
-//            while (tables.next()) {
-//
-//                String tableName = tables.getString("table_name");
-//                String tableDesc = tables.getString("remarks");
-//
-//                if (UserConfig.TABLES_TO_IGNORE.contains(tableName)) {
-//                    continue;
-//                }
-//
-//                tableName2TableMap.put(tableName, new Table(tableName, tableDesc));
-//            }
-//
-//
-//            ResultSet columns = dbMetaData.getColumns(
-//                    null, null, "t_dyf_%", null);
-//
-//            while (columns.next()) {
-//
-//                String tableName = columns.getString("table_name");
-//
-//                String columnName = columns.getString("column_name");
-//                String typeName = columns.getString("type_name");
-//                String remarks = columns.getString("remarks");
-//
-//                if (UserConfig.TABLES_TO_IGNORE.contains(tableName)) {
-//                    continue;
-//                }
-//                if (UserConfig.COLUMN_TO_IGNORE.contains(columnName)) {
-//                    continue;
-//                }
-//
-//                Table table = tableName2TableMap.get(tableName);
-//
-//                table.addColumn(new Column(columnName, remarks, typeName));
-//            }
-//
-//
-//            return new ArrayList<>(tableName2TableMap.values());
-//        } catch (Exception e) {
-//            throw new RuntimeException("数据库获取数据错误");
-//        }
-//    }
-//
-//    private void generateYAML(List<Table> tables) throws IOException {
-//
-//        Root root = new Root();
-//
-//        for (Table table : tables) {
-//
-//            TableRoot tableRoot = new TableRoot(table.getTableName(), table.getTableDesc());
-//
-//            for (Column column : table.getColumnList()) {
-//                ColumnRoot columnRoot = new ColumnRoot(column.getColumnName(), column.getColumnDesc());
-//
-//                // 如果注释符合预定义规则，则该字段应该为枚举类型
-//                if (StringUtils.isNotBlank(column.getColumnDesc())
-//                        && PATTERN_OUTER.matcher(column.getColumnDesc()).matches()) {
-//
-//                    Matcher matcher = PATTERN_OUTER.matcher(column.getColumnDesc());
-//
-//                    //noinspection ResultOfMethodCallIgnored
-//                    matcher.matches();
-//
-//                    EnumRoot enumRoot = new EnumRoot(column.getColumnName(), matcher.group(1));
-//                    // 同步更新下列的描述
-//                    columnRoot.setColumnDesc(matcher.group(1));
-//
-//
-//                    boolean numberEnumFlag = true;
-//
-//                    for (String enumItem : matcher.group(2).split("，")) {
-//                        String[] enumItemInfos = enumItem.split("：");
-//                        if (!PATTERN_NUMBER.matcher(enumItemInfos[0]).matches()) {
-//                            numberEnumFlag = false;
-//                        }
-//                    }
-//
-//                    // 更新下枚举项名
-//                    for (String enumItem : matcher.group(2).split("，")) {
-//
-//                        String[] enumItemInfos = enumItem.split("：");
-//
-//                        if (numberEnumFlag) {
-//                            enumRoot.addEnumItem(new EnumRoot.EnumItem(
-//                                    "TMP_" + enumItemInfos[0],
-//                                    enumItemInfos[0], enumItemInfos[1]));
-//                        } else {
-//                            enumRoot.addEnumItem(new EnumRoot.EnumItem(
-//                                    StringUtils.upperCase(enumItemInfos[0]),
-//                                    enumItemInfos[0], enumItemInfos[1]));
-//                        }
-//                    }
-//
-//                    columnRoot.setJavaType(numberEnumFlag ?
-//                            JavaType.NUMBER_ENUM : JavaType.STRING_ENUM);
-//
-//                    columnRoot.addEnumRoot(enumRoot);
-//
-//                } else {
-//                    switch (column.getColumnType()) {
-//                        case DATE:
-//                        case TIMESTAMPTZ:
-//                            columnRoot.setJavaType(JavaType.DATE);
-//                            break;
-//                        case INT2:
-//                        case INT4:
-//                            columnRoot.setJavaType(JavaType.NUMBER);
-//                            break;
-//                        case VARCHAR:
-//                            columnRoot.setJavaType(JavaType.STRING);
-//                            break;
-//                        case JSONB:
-//                            columnRoot.setJavaType(JavaType.OBJECT);
-//
-//                            ObjectRoot objectRoot = new ObjectRoot(column.getColumnName(), column.getColumnDesc());
-//
-//                            objectRoot.addFieldItem("PlaceHolder", JavaType.STRING, "PlaceHolder");
-//
-//                            columnRoot.addObjectRoot(objectRoot);
-//                            break;
-//                        default:
-//                            throw new RuntimeException("未准备的类型");
-//                    }
-//                }
-//
-//                tableRoot.addColumn(columnRoot);
-//            }
-//
-//            root.put(tableRoot);
-//        }
-//
-//
-//        DumperOptions options = new DumperOptions();
-//
-//        ConfigurationModelRepresenter representer = new ConfigurationModelRepresenter();
-//
-//        Yaml yaml = new Yaml(representer, options);
-//        FileWriter writer = new FileWriter("output.yml");
-//        writer.write(yaml.dumpAsMap(root));
-//        writer.close();
-//    }
+
 //
 //    private Root parseYAML(String fileName) {
 //        try {
@@ -240,16 +252,7 @@ public class PGService {
 //
 //    }
 //
-//    public void generateDBYaml() throws IOException {
-//
-//        // 从数据库获取表信息
-//        List<Table> tables = getTables();
-//
-//        // 将表信息转换成Yaml文件
-//        generateYAML(tables);
-//
-//
-//    }
+
 //
 //    public void generateJavaClass() {
 //        // 将Yaml文件转换成渲染用的数据

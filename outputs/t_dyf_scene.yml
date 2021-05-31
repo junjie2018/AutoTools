@@ -1,0 +1,93 @@
+columns:
+- javaType: STRING
+  colDesc: 主键ID
+  colName: id
+- javaType: STRING
+  colDesc: 领域ID
+  colName: domain_id
+- javaType: STRING
+  colDesc: 模型ID
+  colName: model_id
+- javaType: STRING
+  colDesc: 场景名称
+  colName: scene_name
+- javaType: NUMBER_ENUM
+  colDesc: 场景类型
+  colName: scene_type
+  enums:
+    enumName: scene_type
+    enumDesc: 场景类型
+    enumItems:
+    - itemDesc: 系统
+      itemName: TMP_1
+      itemValue: '1'
+    - itemDesc: 自定义
+      itemName: TMP_3
+      itemValue: '3'
+- javaType: STRING
+  colDesc: 关联条件
+  colName: expression
+- javaType: OBJECT
+  colDesc: 属性规范（属性json_schema,包含字段定义和字段校验）
+  colName: property_schema
+  objects:
+  - fields: []
+    objDesc: 属性规范（属性json_schema,包含字段定义和字段校验）
+    objName: Property_schema
+- javaType: OBJECT
+  colDesc: 样式规范
+  colName: style_schema
+  objects:
+  - fields: []
+    objDesc: 样式规范
+    objName: Style_schema
+- javaType: OBJECT
+  colDesc: 场景规范
+  colName: scene_schema
+  objects:
+  - fields: []
+    objDesc: 场景规范
+    objName: Scene_schema
+- javaType: STRING
+  colDesc: 组织ID
+  colName: org_id
+- javaType: NUMBER_ENUM
+  colDesc: 是否删除
+  colName: is_delete
+  enums:
+    enumName: is_delete
+    enumDesc: 是否删除
+    enumItems:
+    - itemDesc: 否
+      itemName: TMP_0
+      itemValue: '0'
+    - itemDesc: 是
+      itemName: TMP_1
+      itemValue: '1'
+- javaType: STRING
+  colDesc: 创建人
+  colName: creator
+- javaType: STRING
+  colDesc: 修改人
+  colName: modifier
+- javaType: DATE
+  colDesc: 创建时间
+  colName: gmt_create_time
+- javaType: DATE
+  colDesc: 修改时间
+  colName: gmt_modify_time
+- javaType: STRING
+  colDesc: 注意事项
+  colName: note
+- javaType: STRING
+  colDesc: 语言（zh-cn：中文，en-us：英文）
+  colName: language
+- javaType: OBJECT
+  colDesc: 关联逻辑配置信息
+  colName: assoc_info
+  objects:
+  - fields: []
+    objDesc: 关联逻辑配置信息
+    objName: Assoc_info
+tblDesc: 场景
+tblName: t_dyf_scene
