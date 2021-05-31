@@ -1,4 +1,4 @@
-package fun.junjie.autotools.config;
+package fun.junjie.autotools.config.p6spy;
 
 import com.p6spy.engine.spy.appender.MessageFormattingStrategy;
 import io.micrometer.core.instrument.util.StringUtils;
