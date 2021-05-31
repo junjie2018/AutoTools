@@ -322,6 +322,85 @@ public class PGService {
 
     }
 
+
+    private static Map<String, String> tableName2EntityName = new HashMap<>();
+
+    static {
+        tableName2EntityName.put("t_dyf_domain_model", "领域模型");
+        tableName2EntityName.put("t_dyf_domain", "领域");
+        tableName2EntityName.put("t_dyf_domain_property", "属性");
+        tableName2EntityName.put("t_dyf_scene", "场景");
+        tableName2EntityName.put("t_dyf_domain_model_property", "领域属性与模型关联");
+    }
+
+    public void generateEnum2(Root root) {
+
+        List<TableInfo> tableInfos = new ArrayList<>();
+
+        for (TableRoot table : root.getTables()) {
+
+            TableInfo tableInfo = new TableInfo();
+            tableInfo.setTableDesc(table.getTableDesc());
+            tableInfo.setTableNameWithPrefix(table.getTableName());
+            tableInfo.setTableNameWithoutPrefix(JStringUtils.removeTableNamePrefix(table.getTableName()));
+            tableInfo.setTableJavaNameCapitalized(StringUtils.capitalize(
+                    JStringUtils.underlineToCamel(JStringUtils.removeTableNamePrefix(table.getTableName()))));
+            tableInfo.setTableJavaNameUncapitalized(StringUtils.uncapitalize(
+                    JStringUtils.underlineToCamel(JStringUtils.removeTableNamePrefix(table.getTableName()))));
+            tableInfo.setEntityName(tableName2EntityName.get(table.getTableName()));
+            tableInfo.setEntityPackageName(UserConfig.ENTITY_PACKAGE);
+
+
+            for (ColumnRoot column : table.getColumns()) {
+                if (JavaType.NUMBER_ENUM.equals(column.getJavaType())
+                        || JavaType.STRING_ENUM.equals(column.getJavaType())) {
+
+
+                    EnumRoot enumRoot = column.getEnumRoot();
+
+                    EnumClass enumClass = new EnumClass();
+                    enumClass.setPackageName("com.sdstc.dyf.meta.common.constant.enums");
+                    enumClass.addPackage("lombok.AllArgsConstructor");
+                    enumClass.addPackage("lombok.Getter");
+                    enumClass.addPackage("lombok.AccessLevel");
+
+                    enumClass.setEnumName(StringUtils.capitalize(JStringUtils.underlineToCamel(enumRoot.getEnumName())));
+                    enumClass.setEnumDesc(enumRoot.getEnumDesc());
+
+                    if (JavaType.NUMBER_ENUM.equals(column.getJavaType())) {
+                        enumClass.setValueType("Integer");
+                    } else {
+                        enumClass.setValueType("String");
+                    }
+
+                    for (EnumRoot.EnumItem enumItem : enumRoot.getEnumItems()) {
+                        EnumClass.EnumItem enumItemToRender = new EnumClass.EnumItem();
+                        enumItemToRender.setEnumItemValue(enumItem.getEnumItemValue());
+                        enumItemToRender.setEnumItemDesc(enumItem.getEnumItemDesc());
+                        enumItemToRender.setEnumItemName(StringUtils.upperCase(enumItem.getEnumItemName()));
+
+                        enumClass.addEnumItem(enumItemToRender);
+                    }
+
+                    enumToGenerate.add(enumClass);
+                }
+            }
+        }
+
+        for (EnumClass enumClass : enumToGenerate) {
+            render("enum.ftl",
+                    "D:\\Project\\dyf\\dyf-meta\\dyf-meta-common\\src\\main\\java\\com\\sdstc\\dyf\\meta\\common\\constant\\enums",
+                    enumClass.getEnumName() + ".java",
+                    Collections.singletonMap("enumClass", enumClass));
+            render("enum_type_handler.flt",
+                    "D:\\Project\\dyf\\dyf-meta\\dyf-meta-core\\src\\main\\java\\com\\sdstc\\dyf\\meta\\core\\type_handler\\enums",
+                    enumClass.getEnumName() + "TypeHandler.java",
+                    Collections.singletonMap("enumClass", enumClass));
+        }
+
+
+    }
+
     public void generateEntity(Root root) {
         List<EntityClass> entityClasses = new ArrayList<>();
 
