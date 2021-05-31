@@ -1,93 +1,93 @@
+tbl_name: t_dyf_scene
+tbl_desc: 场景
 columns:
-- javaType: STRING
-  colDesc: 主键ID
-  colName: id
-- javaType: STRING
-  colDesc: 领域ID
-  colName: domain_id
-- javaType: STRING
-  colDesc: 模型ID
-  colName: model_id
-- javaType: STRING
-  colDesc: 场景名称
-  colName: scene_name
-- javaType: NUMBER_ENUM
-  colDesc: 场景类型
-  colName: scene_type
+- col_name: id
+  col_desc: 主键ID
+  java_type: String
+- col_name: domain_id
+  col_desc: 领域ID
+  java_type: String
+- col_name: model_id
+  col_desc: 模型ID
+  java_type: String
+- col_name: scene_name
+  col_desc: 场景名称
+  java_type: String
+- col_name: scene_type
+  col_desc: 场景类型
+  java_type: NumberEnum
   enums:
-    enumName: scene_type
-    enumDesc: 场景类型
-    enumItems:
-    - itemDesc: 系统
-      itemName: TMP_1
-      itemValue: '1'
-    - itemDesc: 自定义
-      itemName: TMP_3
-      itemValue: '3'
-- javaType: STRING
-  colDesc: 关联条件
-  colName: expression
-- javaType: OBJECT
-  colDesc: 属性规范（属性json_schema,包含字段定义和字段校验）
-  colName: property_schema
+    enum_name: scene_type
+    enum_desc: 场景类型
+    enum_items:
+    - item_name: TMP_1
+      item_value: '1'
+      item_desc: 系统
+    - item_name: TMP_3
+      item_value: '3'
+      item_desc: 自定义
+- col_name: expression
+  col_desc: 关联条件
+  java_type: String
+- col_name: property_schema
+  col_desc: 属性规范（属性json_schema,包含字段定义和字段校验）
+  java_type: Object
   objects:
-  - fields: []
-    objDesc: 属性规范（属性json_schema,包含字段定义和字段校验）
-    objName: Property_schema
-- javaType: OBJECT
-  colDesc: 样式规范
-  colName: style_schema
+  - obj_name: Property_schema
+    obj_desc: 属性规范（属性json_schema,包含字段定义和字段校验）
+    fields: []
+- col_name: style_schema
+  col_desc: 样式规范
+  java_type: Object
   objects:
-  - fields: []
-    objDesc: 样式规范
-    objName: Style_schema
-- javaType: OBJECT
-  colDesc: 场景规范
-  colName: scene_schema
+  - obj_name: Style_schema
+    obj_desc: 样式规范
+    fields: []
+- col_name: scene_schema
+  col_desc: 场景规范
+  java_type: Object
   objects:
-  - fields: []
-    objDesc: 场景规范
-    objName: Scene_schema
-- javaType: STRING
-  colDesc: 组织ID
-  colName: org_id
-- javaType: NUMBER_ENUM
-  colDesc: 是否删除
-  colName: is_delete
+  - obj_name: Scene_schema
+    obj_desc: 场景规范
+    fields: []
+- col_name: org_id
+  col_desc: 组织ID
+  java_type: String
+- col_name: is_delete
+  col_desc: 是否删除
+  java_type: NumberEnum
   enums:
-    enumName: is_delete
-    enumDesc: 是否删除
-    enumItems:
-    - itemDesc: 否
-      itemName: TMP_0
-      itemValue: '0'
-    - itemDesc: 是
-      itemName: TMP_1
-      itemValue: '1'
-- javaType: STRING
-  colDesc: 创建人
-  colName: creator
-- javaType: STRING
-  colDesc: 修改人
-  colName: modifier
-- javaType: DATE
-  colDesc: 创建时间
-  colName: gmt_create_time
-- javaType: DATE
-  colDesc: 修改时间
-  colName: gmt_modify_time
-- javaType: STRING
-  colDesc: 注意事项
-  colName: note
-- javaType: STRING
-  colDesc: 语言（zh-cn：中文，en-us：英文）
-  colName: language
-- javaType: OBJECT
-  colDesc: 关联逻辑配置信息
-  colName: assoc_info
+    enum_name: is_delete
+    enum_desc: 是否删除
+    enum_items:
+    - item_name: TMP_0
+      item_value: '0'
+      item_desc: 否
+    - item_name: TMP_1
+      item_value: '1'
+      item_desc: 是
+- col_name: creator
+  col_desc: 创建人
+  java_type: String
+- col_name: modifier
+  col_desc: 修改人
+  java_type: String
+- col_name: gmt_create_time
+  col_desc: 创建时间
+  java_type: Date
+- col_name: gmt_modify_time
+  col_desc: 修改时间
+  java_type: Date
+- col_name: note
+  col_desc: 注意事项
+  java_type: String
+- col_name: language
+  col_desc: 语言（zh-cn：中文，en-us：英文）
+  java_type: String
+- col_name: assoc_info
+  col_desc: 关联逻辑配置信息
+  java_type: Object
   objects:
-  - fields: []
-    objDesc: 关联逻辑配置信息
-    objName: Assoc_info
-tblDesc: 场景
-tblName: t_dyf_scene
+  - obj_name: Assoc_info
+    obj_desc: 关联逻辑配置信息
+    fields: []

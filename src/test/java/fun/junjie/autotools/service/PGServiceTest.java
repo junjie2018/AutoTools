@@ -16,9 +16,4 @@ class PGServiceTest {
         pgService.generateYaml();
 
     }
-
-//    @Test
-//    void generateJavaClass() {
-//        pgService.generateJavaClass();
-//    }
 }

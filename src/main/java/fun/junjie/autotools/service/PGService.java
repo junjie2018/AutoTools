@@ -7,6 +7,7 @@ import fun.junjie.autotools.domain.postgre.Column;
 import fun.junjie.autotools.domain.postgre.Table;
 import fun.junjie.autotools.domain.yaml.*;
 import fun.junjie.autotools.domain.yaml.JavaType;
+import fun.junjie.autotools.utils.YamlUtils;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -15,6 +16,8 @@ import org.yaml.snakeyaml.DumperOptions;
 import org.yaml.snakeyaml.Yaml;
 
 import java.io.*;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.util.*;
@@ -31,7 +34,7 @@ public class PGService {
     /**
      * 从数据库中获取表、列信息
      */
-    private List<Table> getTableOriginInfos() {
+    private List<Table> getOriginTableInfos() {
         if (this.jdbcTemplate.getDataSource() == null) {
             throw new RuntimeException("数据库链接错误");
         }
@@ -79,17 +82,7 @@ public class PGService {
         }
     }
 
-    public void generateYaml() throws IOException {
-
-        ProjectConfig.init("project_dyf.yml");
-
-        List<Table> tables = getTableOriginInfos();
-
-        generateYamlCore(tables);
-    }
-
-    private void generateYamlCore(List<Table> tables) throws IOException {
-
+    private List<TableRoot> getTableRootInfos(List<Table> tables) {
         List<TableRoot> tableRoots = new ArrayList<>();
 
         for (Table table : tables) {
@@ -173,24 +166,34 @@ public class PGService {
             tableRoots.add(tableRoot);
         }
 
-        for (TableRoot tableRoot : tableRoots) {
-            DumperOptions options = new DumperOptions();
-            ConfigurationModelRepresenter representer = new ConfigurationModelRepresenter();
-            Yaml yaml = new Yaml(representer, options);
-            FileWriter writer = new FileWriter("outputs/" + tableRoot.getTblName() + ".yml");
-            writer.write(yaml.dumpAsMap(tableRoot));
-            writer.close();
+        return tableRoots;
+    }
+
+    public void generateYaml() throws IOException {
+
+        ProjectConfig.init("project_dyf.yml");
+
+        List<Table> tables = getOriginTableInfos();
+
+        List<TableRoot> tableRootInfos = getTableRootInfos(tables);
+
+        generateYamlCore(tableRootInfos);
+    }
+
+    private void generateYamlCore(List<TableRoot> tableRootInfos) throws IOException {
+
+        for (TableRoot tableRoot : tableRootInfos) {
+
+            Path path = Paths.get(ToolsConfig.YAML_OUTPUT_DIR, tableRoot.getTblName() + ".yml");
+
+            YamlUtils.dumpObject(tableRoot, path);
         }
 
+        List<TableRoot> tableRoots = YamlUtils.loadObject();
 
-//        DumperOptions options = new DumperOptions();
-//
-//        ConfigurationModelRepresenter representer = new ConfigurationModelRepresenter();
-//
-//        Yaml yaml = new Yaml(representer, options);
-//        FileWriter writer = new FileWriter("output.yml");
-//
-//        writer.close();
+
+
+
     }
 
 

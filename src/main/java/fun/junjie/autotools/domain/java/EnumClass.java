@@ -1,6 +1,5 @@
 package fun.junjie.autotools.domain.java;
 
-import fun.junjie.autotools.domain.yaml.EnumRoot;
 import lombok.Data;
 
 import java.util.ArrayList;

@@ -1,43 +1,43 @@
+tbl_name: t_dyf_domain
+tbl_desc: 领域表
 columns:
-- javaType: STRING
-  colDesc: 主键ID
-  colName: id
-- javaType: STRING
-  colDesc: 领域名称
-  colName: domain_name
-- javaType: STRING
-  colDesc: 领域编码
-  colName: domain_code
-- javaType: STRING
-  colDesc: 组织ID
-  colName: org_id
-- javaType: NUMBER_ENUM
-  colDesc: 是否删除
-  colName: is_delete
+- col_name: id
+  col_desc: 主键ID
+  java_type: String
+- col_name: domain_name
+  col_desc: 领域名称
+  java_type: String
+- col_name: domain_code
+  col_desc: 领域编码
+  java_type: String
+- col_name: org_id
+  col_desc: 组织ID
+  java_type: String
+- col_name: is_delete
+  col_desc: 是否删除
+  java_type: NumberEnum
   enums:
-    enumName: is_delete
-    enumDesc: 是否删除
-    enumItems:
-    - itemDesc: 否
-      itemName: TMP_0
-      itemValue: '0'
-    - itemDesc: 是
-      itemName: TMP_1
-      itemValue: '1'
-- javaType: STRING
-  colDesc: 修改人
-  colName: creator
-- javaType: STRING
-  colDesc: 修改人
-  colName: modifier
-- javaType: DATE
-  colDesc: 创建时间
-  colName: gmt_create_time
-- javaType: DATE
-  colDesc: 修改时间
-  colName: gmt_modify_time
-- javaType: STRING
-  colDesc: 注意事项
-  colName: note
-tblDesc: 领域表
-tblName: t_dyf_domain
+    enum_name: is_delete
+    enum_desc: 是否删除
+    enum_items:
+    - item_name: TMP_0
+      item_value: '0'
+      item_desc: 否
+    - item_name: TMP_1
+      item_value: '1'
+      item_desc: 是
+- col_name: creator
+  col_desc: 修改人
+  java_type: String
+- col_name: modifier
+  col_desc: 修改人
+  java_type: String
+- col_name: gmt_create_time
+  col_desc: 创建时间
+  java_type: Date
+- col_name: gmt_modify_time
+  col_desc: 修改时间
+  java_type: Date
+- col_name: note
+  col_desc: 注意事项
+  java_type: String

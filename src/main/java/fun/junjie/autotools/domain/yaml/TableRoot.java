@@ -1,5 +1,7 @@
 package fun.junjie.autotools.domain.yaml;
 
+import com.alibaba.fastjson.annotation.JSONField;
+import fun.junjie.autotools.domain.yaml.codec.JavaTypeCodec;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -7,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Data
+@NoArgsConstructor
 public class TableRoot {
     private String tblName;
     private String tblDesc;
@@ -15,7 +18,7 @@ public class TableRoot {
     public TableRoot(String tblName, String tblDesc) {
         this.tblName = tblName;
         this.tblDesc = tblDesc;
-        columns = new ArrayList<>();
+        this.columns = new ArrayList<>();
     }
 
     public void updateColumnDesc(String colName, String colDesc) {
@@ -104,6 +107,7 @@ public class TableRoot {
     public static class ColumnRoot {
         private String colName;
         private String colDesc;
+        @JSONField(deserializeUsing = JavaTypeCodec.class, serializeUsing = JavaTypeCodec.class)
         private JavaType javaType;
         private EnumRoot enums;
         private List<ObjectRoot> objects;
@@ -137,6 +141,7 @@ public class TableRoot {
     @SuppressWarnings("WeakerAccess")
     public static class ObjectField {
         private String fieldName;
+        @JSONField(deserializeUsing = JavaTypeCodec.class, serializeUsing = JavaTypeCodec.class)
         private JavaType fieldType;
         private String fieldDesc;
     }

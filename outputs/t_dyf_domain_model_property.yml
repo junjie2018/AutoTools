@@ -1,75 +1,75 @@
+tbl_name: t_dyf_domain_model_property
+tbl_desc: 领域模型与属性关联表
 columns:
-- javaType: STRING
-  colDesc: 主键ID
-  colName: id
-- javaType: STRING
-  colDesc: 领域ID
-  colName: domain_id
-- javaType: STRING
-  colDesc: 模型ID
-  colName: model_id
-- javaType: STRING
-  colDesc: 属性ID
-  colName: property_id
-- javaType: STRING
-  colDesc: 属性别名
-  colName: property_alias
-- javaType: NUMBER_ENUM
-  colDesc: 是否是模型必须
-  colName: is_model_required
+- col_name: id
+  col_desc: 主键ID
+  java_type: String
+- col_name: domain_id
+  col_desc: 领域ID
+  java_type: String
+- col_name: model_id
+  col_desc: 模型ID
+  java_type: String
+- col_name: property_id
+  col_desc: 属性ID
+  java_type: String
+- col_name: property_alias
+  col_desc: 属性别名
+  java_type: String
+- col_name: is_model_required
+  col_desc: 是否是模型必须
+  java_type: NumberEnum
   enums:
-    enumName: is_model_required
-    enumDesc: 是否是模型必须
-    enumItems:
-    - itemDesc: 否
-      itemName: TMP_0
-      itemValue: '0'
-    - itemDesc: 是
-      itemName: TMP_1
-      itemValue: '1'
-- javaType: NUMBER_ENUM
-  colDesc: 是否是搜索字段
-  colName: is_model_search
+    enum_name: is_model_required
+    enum_desc: 是否是模型必须
+    enum_items:
+    - item_name: TMP_0
+      item_value: '0'
+      item_desc: 否
+    - item_name: TMP_1
+      item_value: '1'
+      item_desc: 是
+- col_name: is_model_search
+  col_desc: 是否是搜索字段
+  java_type: NumberEnum
   enums:
-    enumName: is_model_search
-    enumDesc: 是否是搜索字段
-    enumItems:
-    - itemDesc: 否
-      itemName: TMP_0
-      itemValue: '0'
-    - itemDesc: 是
-      itemName: TMP_1
-      itemValue: '1'
-- javaType: STRING
-  colDesc: 组织ID
-  colName: org_id
-- javaType: NUMBER_ENUM
-  colDesc: 是否删除
-  colName: is_delete
+    enum_name: is_model_search
+    enum_desc: 是否是搜索字段
+    enum_items:
+    - item_name: TMP_0
+      item_value: '0'
+      item_desc: 否
+    - item_name: TMP_1
+      item_value: '1'
+      item_desc: 是
+- col_name: org_id
+  col_desc: 组织ID
+  java_type: String
+- col_name: is_delete
+  col_desc: 是否删除
+  java_type: NumberEnum
   enums:
-    enumName: is_delete
-    enumDesc: 是否删除
-    enumItems:
-    - itemDesc: 否
-      itemName: TMP_0
-      itemValue: '0'
-    - itemDesc: 是
-      itemName: TMP_1
-      itemValue: '1'
-- javaType: STRING
-  colDesc: 创建人
-  colName: creator
-- javaType: STRING
-  colDesc: 修改人
-  colName: modifier
-- javaType: DATE
-  colDesc: 创建时间
-  colName: gmt_create_time
-- javaType: DATE
-  colDesc: 修改时间
-  colName: gmt_modify_time
-- javaType: STRING
-  colDesc: 注意事项
-  colName: note
-tblDesc: 领域模型与属性关联表
-tblName: t_dyf_domain_model_property
+    enum_name: is_delete
+    enum_desc: 是否删除
+    enum_items:
+    - item_name: TMP_0
+      item_value: '0'
+      item_desc: 否
+    - item_name: TMP_1
+      item_value: '1'
+      item_desc: 是
+- col_name: creator
+  col_desc: 创建人
+  java_type: String
+- col_name: modifier
+  col_desc: 修改人
+  java_type: String
+- col_name: gmt_create_time
+  col_desc: 创建时间
+  java_type: Date
+- col_name: gmt_modify_time
+  col_desc: 修改时间
+  java_type: Date
+- col_name: note
+  col_desc: 注意事项
+  java_type: String

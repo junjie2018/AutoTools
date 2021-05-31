@@ -1,37 +1,37 @@
-columns:
-- java_type: STRING
-  col_desc: 数据ID
-  col_name: id
-- java_type: STRING
-  col_desc: 领域ID
-  col_name: domain_id
-- java_type: STRING
-  col_desc: 模型ID
-  col_name: model_id
-- java_type: STRING
-  col_desc: 组织ID
-  col_name: org_id
-- java_type: NUMBER
-  col_desc: 是否删除
-  col_name: is_delete
-- java_type: STRING
-  col_desc: 创建人
-  col_name: creator
-- java_type: STRING
-  col_desc: 修改人
-  col_name: modifier
-- java_type: DATE
-  col_desc: 创建时间
-  col_name: gmt_create_time
-- java_type: DATE
-  col_desc: 修改时间
-  col_name: gmt_modify_time
-- java_type: OBJECT
-  col_desc: 数据
-  col_name: extra_data
-  objects:
-  - fields: []
-    objDesc: 数据
-    objName: Extra_data
-tbl_desc: 模型数据表
 tbl_name: t_dyf_data
+tbl_desc: 模型数据表
+columns:
+- col_name: id
+  col_desc: 数据ID
+  java_type: String
+- col_name: domain_id
+  col_desc: 领域ID
+  java_type: String
+- col_name: model_id
+  col_desc: 模型ID
+  java_type: String
+- col_name: org_id
+  col_desc: 组织ID
+  java_type: String
+- col_name: is_delete
+  col_desc: 是否删除
+  java_type: Number
+- col_name: creator
+  col_desc: 创建人
+  java_type: String
+- col_name: modifier
+  col_desc: 修改人
+  java_type: String
+- col_name: gmt_create_time
+  col_desc: 创建时间
+  java_type: Date
+- col_name: gmt_modify_time
+  col_desc: 修改时间
+  java_type: Date
+- col_name: extra_data
+  col_desc: 数据
+  java_type: Object
+  objects:
+  - obj_name: Extra_data
+    obj_desc: 数据
+    fields: []
