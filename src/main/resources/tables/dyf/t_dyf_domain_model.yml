@@ -62,5 +62,15 @@ columns:
     obj_desc: 搜索引擎mapping
     fields: []
 - col_name: language
-  col_desc: 语言（zh-cn：中文，en-us：英文）
-  java_type: String
+  col_desc: 语言
+  java_type: StringEnum
+  enums:
+    enum_name: language
+    enum_desc: 语言
+    enum_items:
+    - item_name: ZH-CN
+      item_value: zh-cn
+      item_desc: 中文
+    - item_name: EN-US
+      item_value: en-us
+      item_desc: 英文

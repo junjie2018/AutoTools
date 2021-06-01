@@ -172,9 +172,6 @@ public class PGService {
     }
 
     private void mergeTableRootInfos(List<TableRoot> tableRootsFromDb, List<TableRoot> tableRootsFromYaml) {
-        /*
-
-         */
 
         Map<String, TableRoot> tblName2TableRootL = new HashMap<>();
         Map<String, TableRoot> tblName2TableRootR = new HashMap<>();
@@ -206,17 +203,34 @@ public class PGService {
             }
 
             mergeColumnRoot(colName2ColumnRootL, colName2ColumnRootR);
-        }
 
+
+            for (String colName : colName2ColumnRootR.keySet()) {
+                TableRoot.ColumnRoot columnRootL = colName2ColumnRootL.get(colName);
+                TableRoot.ColumnRoot columnRootR = colName2ColumnRootR.get(colName);
+
+                if (columnRootL.getJavaType() == JavaType.NUMBER_ENUM) {
+                    if (columnRootR.getJavaType() == JavaType.NUMBER_ENUM) {
+                        mergeEnumRoot(columnRootL.getEnums(), columnRootR.getEnums());
+                    }
+                }
+
+                if (columnRootL.getJavaType() == JavaType.STRING_ENUM) {
+                    if (columnRootR.getJavaType() == JavaType.STRING_ENUM) {
+                        mergeEnumRoot(columnRootL.getEnums(), columnRootR.getEnums());
+                    }
+                }
+            }
+        }
     }
 
     private void mergeTableRoot(Map<String, TableRoot> tblName2TableRootL,
                                 Map<String, TableRoot> tblName2TableRootR) {
         /*
-                融合算法：TableRoot：
-                    a.新增的tableRoot，从左边同步到右边
-                    b.删除的tableRoot，从左边同步到右边
-                    c.修改tblDesc，从左边同步到右边
+            融合算法：TableRoot：
+                a.新增的tableRoot，从左边同步到右边
+                b.删除的tableRoot，从左边同步到右边
+                c.修改tblDesc，从左边同步到右边
          */
 
         // 处理新增的
@@ -248,11 +262,11 @@ public class PGService {
     private void mergeColumnRoot(Map<String, TableRoot.ColumnRoot> colName2ColumnRootL,
                                  Map<String, TableRoot.ColumnRoot> colName2ColumnRootR) {
         /*
-                融合算法：ColumnRoot：
-                    a.新增的columnRoot，从左边同步到右边
-                    b.删除的columnRoot，从左边同步到右边
-                    c.修改colDesc，从左边同步到右边
-                    d.修改javaType，从坐标同步到右边（只针对非枚举、Object类型）
+            融合算法：ColumnRoot：
+                a.新增的columnRoot，从左边同步到右边
+                b.删除的columnRoot，从左边同步到右边
+                c.修改colDesc，从左边同步到右边
+                d.修改javaType，从坐标同步到右边（只针对非枚举、Object类型）
          */
 
         // 处理新增的
@@ -300,8 +314,64 @@ public class PGService {
 
     }
 
-    private void mergeEnumRoot() {
+    private void mergeEnumRoot(TableRoot.EnumRoot enumRootL,
+                               TableRoot.EnumRoot enumRootR) {
+        /*
+            融合算法：EnumRoot
+                a.修改enumDesc，从左边同步到右边
+                b.新增的enumItem，从左边同步到右边
+                c.删除的enumItem，从左边同步到右边
+                d.修改itemName，从右边同步到左边
+                e.修改itemDesc，从左边同步到右边
+         */
 
+        // enumDesc
+        if (!enumRootR.getEnumDesc().equals(enumRootL.getEnumDesc())) {
+            enumRootR.setEnumDesc(enumRootL.getEnumDesc());
+        }
+
+
+        Map<String, TableRoot.EnumItem> itemName2EnumItemL = new HashMap<>();
+        Map<String, TableRoot.EnumItem> itemValue2EnumItemL = new HashMap<>();
+        Map<String, TableRoot.EnumItem> itemName2EnumItemR = new HashMap<>();
+        Map<String, TableRoot.EnumItem> itemValue2EnumItemR = new HashMap<>();
+
+        for (TableRoot.EnumItem enumItem : enumRootL.getEnumItems()) {
+            itemName2EnumItemL.put(enumItem.getItemName(), enumItem);
+            itemValue2EnumItemL.put(enumItem.getItemValue(), enumItem);
+        }
+
+        for (TableRoot.EnumItem enumItem : enumRootR.getEnumItems()) {
+            itemName2EnumItemR.put(enumItem.getItemName(), enumItem);
+            itemValue2EnumItemR.put(enumItem.getItemValue(), enumItem);
+        }
+
+        // 新增enumItem
+        for (String itemValue : itemValue2EnumItemL.keySet()) {
+            if (!itemValue2EnumItemR.containsKey(itemValue)) {
+                itemValue2EnumItemR.put(itemValue, itemName2EnumItemL.get(itemValue));
+            }
+        }
+
+        // itemName
+        for (String itemValue : itemValue2EnumItemR.keySet()) {
+            TableRoot.EnumItem enumItemL = itemValue2EnumItemL.get(itemValue);
+            TableRoot.EnumItem enumItemR = itemValue2EnumItemR.get(itemValue);
+
+            if (!enumItemL.getItemName().equals(enumItemR.getItemName())) {
+                enumItemL.setItemName(enumItemR.getItemName());
+            }
+        }
+
+        // itemDesc
+        for (String itemValue : itemValue2EnumItemR.keySet()) {
+            TableRoot.EnumItem enumItemL = itemValue2EnumItemL.get(itemValue);
+            TableRoot.EnumItem enumItemR = itemValue2EnumItemR.get(itemValue);
+
+            if (!enumItemL.getItemDesc().equals(enumItemR.getItemDesc())) {
+                enumItemR.setItemDesc(enumItemL.getItemDesc());
+            }
+        }
     }
 
     private void mergeInternalClassRoot() {
@@ -314,9 +384,12 @@ public class PGService {
 
         List<Table> tables = getOriginTableInfos();
 
-        List<TableRoot> tableRootInfos = getTableRootInfos(tables);
+        List<TableRoot> tableRootInfosInDb = getTableRootInfos(tables);
+        List<TableRoot> tableRootInfosFromYaml = YamlUtils.loadObject();
 
-        for (TableRoot tableRoot : tableRootInfos) {
+        mergeTableRootInfos(tableRootInfosInDb, tableRootInfosFromYaml);
+
+        for (TableRoot tableRoot : tableRootInfosInDb) {
 
             YamlUtils.dumpObject(tableRoot,
                     Paths.get(ToolsConfig.TEMP_DIR, ProjectConfig.getProjectName()),

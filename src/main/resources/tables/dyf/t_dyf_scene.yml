@@ -82,8 +82,18 @@ columns:
   col_desc: 注意事项
   java_type: String
 - col_name: language
-  col_desc: 语言（zh-cn：中文，en-us：英文）
-  java_type: String
+  col_desc: 语言
+  java_type: StringEnum
+  enums:
+    enum_name: language
+    enum_desc: 语言
+    enum_items:
+    - item_name: chinese
+      item_value: zh-cn
+      item_desc: 中文
+    - item_name: english
+      item_value: en-us
+      item_desc: 英文
 - col_name: assoc_info
   col_desc: 关联逻辑配置信息
   java_type: Object
