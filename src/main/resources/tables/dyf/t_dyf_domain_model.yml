@@ -1,15 +1,28 @@
-tbl_name: t_dyf_domain
-tbl_desc: 领域表
+tbl_name: t_dyf_domain_model
+tbl_desc: 领域模型表
 columns:
 - col_name: id
   col_desc: 主键ID
   java_type: String
-- col_name: domain_name
-  col_desc: 领域名称
+- col_name: domain_id
+  col_desc: 领域ID
   java_type: String
-- col_name: domain_code
-  col_desc: 领域编码
+- col_name: model_name
+  col_desc: 模型名
   java_type: String
+- col_name: model_type
+  col_desc: 类型
+  java_type: NumberEnum
+  enums:
+    enum_name: model_type
+    enum_desc: 类型
+    enum_items:
+    - item_name: system
+      item_value: '1'
+      item_desc: 系统
+    - item_name: custom
+      item_value: '3'
+      item_desc: 自定义
 - col_name: org_id
   col_desc: 组织ID
   java_type: String
@@ -27,7 +40,7 @@ columns:
       item_value: '1'
       item_desc: 是
 - col_name: creator
-  col_desc: 修改人
+  col_desc: 创建人
   java_type: String
 - col_name: modifier
   col_desc: 修改人
@@ -40,4 +53,14 @@ columns:
   java_type: Date
 - col_name: note
   col_desc: 注意事项
+  java_type: String
+- col_name: search_mapping
+  col_desc: 搜索引擎mapping
+  java_type: Object
+  objects:
+  - obj_name: Search_mapping
+    obj_desc: 搜索引擎mapping
+    fields: []
+- col_name: language
+  col_desc: 语言（zh-cn：中文，en-us：英文）
   java_type: String

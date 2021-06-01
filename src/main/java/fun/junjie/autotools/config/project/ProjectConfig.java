@@ -19,7 +19,7 @@ public class ProjectConfig {
 
 
     public static final String PROJECT_CONFIG_DIR =
-            "D:\\Download\\spring-demo-master\\spring-demo-master\\cn\\AutoTools\\src\\main\\resources\\config2";
+            "D:\\Download\\spring-demo-master\\spring-demo-master\\cn\\AutoTools\\src\\main\\resources\\config";
 
     private static ProjectConfig INSTANCE;
 
@@ -42,6 +42,10 @@ public class ProjectConfig {
 
     public static String getTablePrefix() {
         return INSTANCE.tablePrefix;
+    }
+
+    public static String getProjectName() {
+        return INSTANCE.projectName;
     }
 
     public static void init(String configFile) {

@@ -23,7 +23,7 @@ import java.sql.ResultSet;
 import java.util.*;
 import java.util.regex.Matcher;
 
-@SuppressWarnings("Duplicates")
+@SuppressWarnings({"Duplicates", "AlibabaMethodTooLong"})
 @Service
 @RequiredArgsConstructor
 public class PGService {
@@ -138,7 +138,9 @@ public class PGService {
                         throw new RuntimeException("Unknown Wrong.");
                     }
 
-                } else {
+                }
+                // 如果注释不符合预定义规则，则该字段不为枚举类型
+                else {
                     switch (column.getColumnType()) {
                         case DATE:
                         case TIMESTAMPTZ:
@@ -169,7 +171,144 @@ public class PGService {
         return tableRoots;
     }
 
-    public void generateYaml() throws IOException {
+    private void mergeTableRootInfos(List<TableRoot> tableRootsFromDb, List<TableRoot> tableRootsFromYaml) {
+        /*
+
+         */
+
+        Map<String, TableRoot> tblName2TableRootL = new HashMap<>();
+        Map<String, TableRoot> tblName2TableRootR = new HashMap<>();
+
+        for (TableRoot tableRoot : tableRootsFromDb) {
+            tblName2TableRootL.put(tableRoot.getTblName(), tableRoot);
+        }
+
+        for (TableRoot tableRoot : tableRootsFromYaml) {
+            tblName2TableRootR.put(tableRoot.getTblName(), tableRoot);
+        }
+
+        mergeTableRoot(tblName2TableRootR, tblName2TableRootL);
+
+        for (Map.Entry<String, TableRoot> entry : tblName2TableRootL.entrySet()) {
+
+            TableRoot tableRootR = tblName2TableRootR.get(entry.getKey());
+            TableRoot tableRootL = entry.getValue();
+
+            Map<String, TableRoot.ColumnRoot> colName2ColumnRootL = new HashMap<>();
+            Map<String, TableRoot.ColumnRoot> colName2ColumnRootR = new HashMap<>();
+
+            for (TableRoot.ColumnRoot column : tableRootR.getColumns()) {
+                colName2ColumnRootR.put(column.getColName(), column);
+            }
+
+            for (TableRoot.ColumnRoot column : tableRootL.getColumns()) {
+                colName2ColumnRootL.put(column.getColName(), column);
+            }
+
+            mergeColumnRoot(colName2ColumnRootL, colName2ColumnRootR);
+        }
+
+    }
+
+    private void mergeTableRoot(Map<String, TableRoot> tblName2TableRootL,
+                                Map<String, TableRoot> tblName2TableRootR) {
+        /*
+                融合算法：TableRoot：
+                    a.新增的tableRoot，从左边同步到右边
+                    b.删除的tableRoot，从左边同步到右边
+                    c.修改tblDesc，从左边同步到右边
+         */
+
+        // 处理新增的
+        for (String tblName : tblName2TableRootL.keySet()) {
+            if (!tblName2TableRootR.containsKey(tblName)) {
+                tblName2TableRootR.put(tblName, tblName2TableRootR.get(tblName));
+            }
+        }
+
+        // 处理删除的
+        for (String tblName : tblName2TableRootR.keySet()) {
+            if (!tblName2TableRootL.containsKey(tblName)) {
+                tblName2TableRootR.remove(tblName);
+            }
+        }
+
+        // 处理tblDesc改变的
+        for (String tblName : tblName2TableRootR.keySet()) {
+            TableRoot tableRootR = tblName2TableRootR.get(tblName);
+            TableRoot tableRootL = tblName2TableRootL.get(tblName);
+
+            if (!tableRootL.getTblName().equals(tableRootR.getTblName())) {
+                tableRootR.setTblName(tableRootL.getTblName());
+            }
+        }
+    }
+
+
+    private void mergeColumnRoot(Map<String, TableRoot.ColumnRoot> colName2ColumnRootL,
+                                 Map<String, TableRoot.ColumnRoot> colName2ColumnRootR) {
+        /*
+                融合算法：ColumnRoot：
+                    a.新增的columnRoot，从左边同步到右边
+                    b.删除的columnRoot，从左边同步到右边
+                    c.修改colDesc，从左边同步到右边
+                    d.修改javaType，从坐标同步到右边（只针对非枚举、Object类型）
+         */
+
+        // 处理新增的
+        for (String colName : colName2ColumnRootL.keySet()) {
+            if (!colName2ColumnRootR.containsKey(colName)) {
+                colName2ColumnRootR.put(colName, colName2ColumnRootR.get(colName));
+            }
+        }
+
+        // 处理删除的
+        for (String colName : colName2ColumnRootR.keySet()) {
+            if (!colName2ColumnRootL.containsKey(colName)) {
+                colName2ColumnRootR.remove(colName);
+            }
+        }
+
+        // 处理colDesc改变的
+        for (String colName : colName2ColumnRootR.keySet()) {
+            TableRoot.ColumnRoot columnRootR = colName2ColumnRootR.get(colName);
+            TableRoot.ColumnRoot columnRootL = colName2ColumnRootR.get(colName);
+
+            if (!columnRootR.getColName().equals(columnRootL.getColName())) {
+                columnRootR.setColName(columnRootL.getColName());
+            }
+        }
+
+        // 处理javaType改动
+        for (String colName : colName2ColumnRootR.keySet()) {
+            TableRoot.ColumnRoot columnRootR = colName2ColumnRootR.get(colName);
+            TableRoot.ColumnRoot columnRootL = colName2ColumnRootR.get(colName);
+
+            // 只有左右两边都是简单的类型时，才能够进行merge
+            if (!columnRootR.getJavaType().equals(columnRootL.getJavaType())) {
+                if (columnRootR.getJavaType().equals(JavaType.DATE)
+                        || columnRootR.getJavaType().equals(JavaType.NUMBER)
+                        || columnRootR.getJavaType().equals(JavaType.STRING)) {
+                    if (columnRootL.getJavaType().equals(JavaType.DATE)
+                            || columnRootL.getJavaType().equals(JavaType.NUMBER)
+                            || columnRootL.getJavaType().equals(JavaType.STRING)) {
+                        columnRootR.setJavaType(columnRootL.getJavaType());
+                    }
+                }
+            }
+        }
+
+    }
+
+    private void mergeEnumRoot() {
+
+    }
+
+    private void mergeInternalClassRoot() {
+
+    }
+
+    public void generateYaml() {
 
         ProjectConfig.init("project_dyf.yml");
 
@@ -177,23 +316,13 @@ public class PGService {
 
         List<TableRoot> tableRootInfos = getTableRootInfos(tables);
 
-        generateYamlCore(tableRootInfos);
-    }
-
-    private void generateYamlCore(List<TableRoot> tableRootInfos) throws IOException {
-
         for (TableRoot tableRoot : tableRootInfos) {
 
-            Path path = Paths.get(ToolsConfig.YAML_OUTPUT_DIR, tableRoot.getTblName() + ".yml");
+            YamlUtils.dumpObject(tableRoot,
+                    Paths.get(ToolsConfig.TEMP_DIR, ProjectConfig.getProjectName()),
+                    tableRoot.getTblName() + ".yml");
 
-            YamlUtils.dumpObject(tableRoot, path);
         }
-
-        List<TableRoot> tableRoots = YamlUtils.loadObject();
-
-
-
-
     }
 
 
