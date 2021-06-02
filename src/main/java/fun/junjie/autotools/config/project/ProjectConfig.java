@@ -10,9 +10,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Data
 public class ProjectConfig {
@@ -26,6 +24,7 @@ public class ProjectConfig {
     private String configFile;
     private String projectName;
     private String tablePrefix;
+    private Set<String> tableToGenerates;
 
     private Map<String, TplConfig> tplName2TplConfig;
 
@@ -46,6 +45,14 @@ public class ProjectConfig {
 
     public static String getProjectName() {
         return INSTANCE.projectName;
+    }
+
+    public static boolean needGenerate(String tableName) {
+        if (INSTANCE.tableToGenerates.size() == 0) {
+            return true;
+        }
+
+        return INSTANCE.tableToGenerates.contains(tableName);
     }
 
     public static void init(String configFile) {
@@ -74,6 +81,12 @@ public class ProjectConfig {
             INSTANCE.tablePrefix = projectConfInternal.getTblPrefix();
             INSTANCE.tplName2TplConfig = new HashMap<>();
 
+            if (projectConfInternal.getTblGenerate() == null) {
+                INSTANCE.tableToGenerates = new HashSet<>();
+            } else {
+                INSTANCE.tableToGenerates = new HashSet<>(projectConfInternal.getTblGenerate());
+            }
+
             for (TplConfInternal tplConfInternal : projectConfInternal.getTplConfig()) {
                 INSTANCE.tplName2TplConfig.put(tplConfInternal.getTplFile(), new TplConfig(
                         tplConfInternal.getTplFile(),
@@ -93,6 +106,7 @@ public class ProjectConfig {
         private String projectName;
         private String tblPrefix;
         private String tplRoot;
+        private List<String> tblGenerate;
         private List<TplConfInternal> tplConfig;
     }
 

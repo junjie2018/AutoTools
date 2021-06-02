@@ -54,6 +54,10 @@ public class PGService {
                 String tableName = tables.getString("table_name");
                 String tableDesc = tables.getString("remarks");
 
+                if (!ProjectConfig.needGenerate(tableName)) {
+                    continue;
+                }
+
                 tableName2TableMap.put(tableName, new Table(tableName, tableDesc));
             }
 
@@ -67,6 +71,10 @@ public class PGService {
                 String columnName = columns.getString("column_name");
                 String typeName = columns.getString("type_name");
                 String remarks = columns.getString("remarks");
+
+                if (!ProjectConfig.needGenerate(tableName)) {
+                    continue;
+                }
 
                 Table table = tableName2TableMap.get(tableName);
                 if (table == null) {
