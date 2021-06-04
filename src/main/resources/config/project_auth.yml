@@ -1,0 +1,43 @@
+projectName: auth
+tblPrefix: t_
+tblGenerates:
+  - tblName: t_auth_organize
+    entityName: 组织
+tplRoot: D:\Download\spring-demo-master\spring-demo-master\cn\AutoTools\src\main\resources\templates\auth
+tplConfig:
+  - tplFile: entity.ftl
+    outputDir: D:\Project\auth-center\authcenter-common\src\main\java\com\sdstc\authcenter\pojo
+  - tplFile: enum.ftl
+    outputDir: D:\Project\auth-center\authcenter-common\src\main\java\com\sdstc\authcenter\enums
+  - tplFile: enum_type_handler.ftl
+    outputDir: D:\Project\auth-center\authcenter-common\src\main\java\com\sdstc\authcenter\type_handlers\enums
+  - tplFile: create_entity_request.ftl
+    outputDir: D:\Project\auth-center\authcenter-server\src\main\java\com\sdstc\authcenter\controller\request
+    ignoreField:
+      - gmt_create_time
+      - gmt_modify_time
+      - modifier
+      - creator
+      - is_delete
+      - id
+  - tplFile: entity_ids_request.ftl
+    outputDir: D:\Project\auth-center\authcenter-server\src\main\java\com\sdstc\authcenter\controller\request
+  - tplFile: page_entity_request.ftl
+    outputDir: D:\Project\auth-center\authcenter-server\src\main\java\com\sdstc\authcenter\controller\request
+  - tplFile: update_entity_request.ftl
+    outputDir: D:\Project\auth-center\authcenter-server\src\main\java\com\sdstc\authcenter\controller\request
+    ignoreField:
+      - gmt_create_time
+      - gmt_modify_time
+      - modifier
+      - creator
+      - is_delete
+  - tplFile: entity_data.ftl
+    outputDir: D:\Project\auth-center\authcenter-server\src\main\java\com\sdstc\authcenter\controller\response
+  - tplFile: entity_service.ftl
+    outputDir: D:\Project\auth-center\authcenter-server\src\main\java\com\sdstc\authcenter\service
+  - tplFile: entity_service_impl.ftl
+    outputDir: D:\Project\auth-center\authcenter-server\src\main\java\com\sdstc\authcenter\service\impl
+  - tplFile: entity_mapper.ftl
+    outputDir: D:\Project\auth-center\authcenter-server\src\main\java\com\sdstc\authcenter\mapper
+    strategy: first

@@ -30,10 +30,12 @@ public class TableInfo {
 
     @Data
     public static class Field {
+        private String fieldName;
         private String fieldNameCapitalized;
         private String fieldNameUncapitalized;
         private String fieldDesc;
         private String fieldType;
+        private Boolean isPrimaryKey;
         private Set<String> annotations;
     }
 
@@ -46,7 +48,8 @@ public class TableInfo {
 
     @Data
     public static class EnumClass {
-        private String enumName;
+        private String enumJavaNameCapitalized;
+        private String enumJavaNameUncapitalized;
         private String enumDesc;
         private List<EnumItem> enumItems;
     }
@@ -54,6 +57,7 @@ public class TableInfo {
     @Data
     public static class EnumItem {
         private String enumItemName;
+        private String enumItemNameUpper;
         private String enumItemValue;
         private String enumItemDesc;
     }

@@ -24,8 +24,7 @@ public class ProjectConfig {
     private String configFile;
     private String projectName;
     private String tablePrefix;
-    private Set<String> tableToGenerates;
-
+    private Map<String, TblGenerate> tableToGenerates;
     private Map<String, TplConfig> tplName2TplConfig;
 
     private ProjectConfig() {
@@ -33,7 +32,7 @@ public class ProjectConfig {
 
 
     public static TplConfig getTplConfig(String tplFile) {
-        if (INSTANCE.tplName2TplConfig.containsKey(tplFile)) {
+        if (!INSTANCE.tplName2TplConfig.containsKey(tplFile)) {
             throw new RuntimeException("Get Tpl Config Wrong.");
         }
         return INSTANCE.tplName2TplConfig.get(tplFile);
@@ -47,12 +46,25 @@ public class ProjectConfig {
         return INSTANCE.projectName;
     }
 
+    public static String getEntityName(String tableName) {
+        TblGenerate tblGenerate = INSTANCE.tableToGenerates.get(tableName);
+        if (tblGenerate == null) {
+            return "";
+        } else {
+            return tblGenerate.getEntityName();
+        }
+    }
+
     public static boolean needGenerate(String tableName) {
         if (INSTANCE.tableToGenerates.size() == 0) {
             return true;
         }
 
-        return INSTANCE.tableToGenerates.contains(tableName);
+        return INSTANCE.tableToGenerates.containsKey(tableName);
+    }
+
+    public static boolean isPrimaryKey(String tableName, String fieldName) {
+        return "id".equals(fieldName);
     }
 
     public static void init(String configFile) {
@@ -80,20 +92,24 @@ public class ProjectConfig {
             INSTANCE.projectName = projectConfInternal.getProjectName();
             INSTANCE.tablePrefix = projectConfInternal.getTblPrefix();
             INSTANCE.tplName2TplConfig = new HashMap<>();
+            INSTANCE.tableToGenerates = new HashMap<>();
 
-            if (projectConfInternal.getTblGenerate() == null) {
-                INSTANCE.tableToGenerates = new HashSet<>();
-            } else {
-                INSTANCE.tableToGenerates = new HashSet<>(projectConfInternal.getTblGenerate());
+            if (projectConfInternal.getTblGenerates() != null) {
+                for (TblGenerate tblGenerate : projectConfInternal.getTblGenerates()) {
+                    INSTANCE.tableToGenerates.put(tblGenerate.getTblName(), tblGenerate);
+                }
             }
 
-            for (TplConfInternal tplConfInternal : projectConfInternal.getTplConfig()) {
-                INSTANCE.tplName2TplConfig.put(tplConfInternal.getTplFile(), new TplConfig(
-                        tplConfInternal.getTplFile(),
-                        projectConfInternal.getTplRoot(),
-                        tplConfInternal.getOutputDir()));
+            if (projectConfInternal.getTplConfig() != null) {
+                for (TplConfInternal tplConfInternal : projectConfInternal.getTplConfig()) {
+                    INSTANCE.tplName2TplConfig.put(tplConfInternal.getTplFile(), new TplConfig(
+                            tplConfInternal.getTplFile(),
+                            projectConfInternal.getTplRoot(),
+                            tplConfInternal.getOutputDir(),
+                            tplConfInternal.ignoreField == null ? new ArrayList<>() : tplConfInternal.ignoreField,
+                            tplConfInternal.strategy == null ? "null" : tplConfInternal.strategy));
+                }
             }
-
         } catch (FileNotFoundException e) {
             throw new RuntimeException("Config File Init Wrong.");
         }
@@ -106,7 +122,7 @@ public class ProjectConfig {
         private String projectName;
         private String tblPrefix;
         private String tplRoot;
-        private List<String> tblGenerate;
+        private List<TblGenerate> tblGenerates;
         private List<TplConfInternal> tplConfig;
     }
 
@@ -115,6 +131,14 @@ public class ProjectConfig {
     public static class TplConfInternal {
         private String tplFile;
         private String outputDir;
+        private List<String> ignoreField;
+        private String strategy;
+    }
+
+    @Data
+    public static class TblGenerate {
+        private String tblName;
+        private String entityName;
     }
 
     public static void main(String[] args) {

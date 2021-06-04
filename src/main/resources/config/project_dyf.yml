@@ -1,5 +1,5 @@
 projectName: dyf
-tblPrefix: t_dyf
+tblPrefix: t_dyf_
 tplRoot: D:\Download\spring-demo-master\spring-demo-master\cn\AutoTools\src\main\resources\templates\dyf
 tplConfig:
   - tplFile: constant\enums\enum.ftl
@@ -26,3 +26,4 @@ tplConfig:
     outputDir: D:\Project\dyf2\dyf-meta\dyf-meta-core\src\main\java\com\sdstc\dyf\meta\core\service\impl
   - tplFile: type_handler\enum_type_handler.ftl
     outputDir: D:\Project\dyf2\dyf-meta\dyf-meta-core\src\main\java\com\sdstc\dyf\meta\core\type_handler\enums
+    strategy: first

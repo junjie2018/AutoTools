@@ -23,7 +23,7 @@ public class ConfigurationModelRepresenter extends Representer {
                 "columnDesc",
                 "enumRoot",
                 "objectRoot",
-                "enumName",
+                "enumJavaNameCapitalized",
                 "enumDesc",
                 "enumItems",
                 "enumItemName",

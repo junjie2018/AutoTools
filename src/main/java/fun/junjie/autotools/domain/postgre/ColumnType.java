@@ -23,6 +23,11 @@ public enum ColumnType {
     INT4("int4"),
 
     /**
+     * int8
+     */
+    INT8("int8"),
+
+    /**
      * timestamptz
      */
     TIMESTAMPTZ("timestamptz"),

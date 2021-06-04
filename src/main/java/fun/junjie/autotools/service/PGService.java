@@ -1,29 +1,31 @@
 package fun.junjie.autotools.service;
 
 import fun.junjie.autotools.config.project.ProjectConfig;
-import fun.junjie.autotools.config.snake.ConfigurationModelRepresenter;
 import fun.junjie.autotools.constant.ToolsConfig;
+import fun.junjie.autotools.domain.config.TplConfig;
+import fun.junjie.autotools.domain.java.TableInfo;
 import fun.junjie.autotools.domain.postgre.Column;
 import fun.junjie.autotools.domain.postgre.Table;
 import fun.junjie.autotools.domain.yaml.*;
 import fun.junjie.autotools.domain.yaml.JavaType;
+import fun.junjie.autotools.utils.JStringUtils;
+import fun.junjie.autotools.utils.TemplateUtils;
 import fun.junjie.autotools.utils.YamlUtils;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
-import org.yaml.snakeyaml.DumperOptions;
-import org.yaml.snakeyaml.Yaml;
 
-import java.io.*;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.util.*;
 import java.util.regex.Matcher;
+import java.util.stream.Collectors;
 
 @SuppressWarnings({"Duplicates", "AlibabaMethodTooLong"})
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class PGService {
@@ -48,7 +50,7 @@ public class PGService {
             // 处理表信息
             ResultSet tables = dbMetaData.getTables(
                     null, null,
-                    ProjectConfig.getTablePrefix() + "_%", new String[]{"TABLE"});
+                    ProjectConfig.getTablePrefix() + "%", new String[]{"TABLE"});
             while (tables.next()) {
 
                 String tableName = tables.getString("table_name");
@@ -65,6 +67,7 @@ public class PGService {
             ResultSet columns = dbMetaData.getColumns(
                     null, null,
                     ProjectConfig.getTablePrefix() + "%", null);
+
             while (columns.next()) {
 
                 String tableName = columns.getString("table_name");
@@ -86,6 +89,7 @@ public class PGService {
 
             return new ArrayList<>(tableName2TableMap.values());
         } catch (Exception e) {
+            log.error(e.getMessage());
             throw new RuntimeException("数据库获取数据错误");
         }
     }
@@ -386,16 +390,123 @@ public class PGService {
 
     }
 
-    public void generateYaml() {
+    private List<TableInfo> getTableInfos(List<TableRoot> tableRoots) {
 
-        ProjectConfig.init("project_dyf.yml");
+        List<TableInfo> result = new ArrayList<>();
+
+        for (TableRoot tableRoot : tableRoots) {
+            TableInfo tableInfo = new TableInfo();
+
+            tableInfo.setTableDesc(tableRoot.getTblDesc());
+            tableInfo.setTableNameWithPrefix(tableRoot.getTblName());
+            tableInfo.setTableNameWithoutPrefix(JStringUtils.removeTableNamePrefix(tableRoot.getTblName()));
+            tableInfo.setTableJavaNameCapitalized(JStringUtils.underlineToCamelCapitalized(JStringUtils.removeTableNamePrefix(tableRoot.getTblName())));
+            tableInfo.setTableJavaNameUncapitalized(JStringUtils.underlineToCamelUncapitalized(JStringUtils.removeTableNamePrefix(tableRoot.getTblName())));
+            tableInfo.setEntityName(ProjectConfig.getEntityName(tableRoot.getTblName()));
+
+            List<TableInfo.EnumClass> enumClasses = new ArrayList<>();
+            List<TableInfo.InnerClass> innerClasses = new ArrayList<>();
+
+            List<TableInfo.Field> fields = new ArrayList<>();
+
+            for (TableRoot.ColumnRoot column : tableRoot.getColumns()) {
+                TableInfo.Field field = new TableInfo.Field();
+
+                field.setFieldName(column.getColName());
+                field.setFieldNameCapitalized(JStringUtils.underlineToCamelCapitalized(column.getColName()));
+                field.setFieldNameUncapitalized(JStringUtils.underlineToCamelUncapitalized(column.getColName()));
+                field.setFieldDesc(column.getColDesc());
+                field.setIsPrimaryKey(ProjectConfig.isPrimaryKey(tableInfo.getTableNameWithPrefix(), column.getColName()));
+
+                switch (column.getJavaType()) {
+                    case DATE:
+                        field.setFieldType("LocalDateTime");
+                        break;
+                    case NUMBER:
+                        field.setFieldType("Long");
+                        break;
+                    case STRING:
+                        field.setFieldType("String");
+                        break;
+                    case STRING_ENUM:
+                    case NUMBER_ENUM:
+                    case OBJECT:
+                        break;
+                    default:
+                        throw new RuntimeException("Unknown JavaType");
+                }
+
+                if (column.getJavaType() == JavaType.STRING_ENUM || column.getJavaType() == JavaType.NUMBER_ENUM) {
+                    field.setFieldType(JStringUtils.underlineToCamelCapitalized(column.getEnums().getEnumName()));
+
+                    List<TableInfo.EnumItem> enumItems = new ArrayList<>();
+                    for (TableRoot.EnumItem enumItem : column.getEnums().getEnumItems()) {
+                        TableInfo.EnumItem enumItemToAdd = new TableInfo.EnumItem();
+
+                        enumItemToAdd.setEnumItemName(JStringUtils.underlineToCamelCapitalized(enumItem.getItemName()));
+                        enumItemToAdd.setEnumItemNameUpper(StringUtils.upperCase(enumItem.getItemName()));
+                        enumItemToAdd.setEnumItemValue(enumItem.getItemValue());
+                        enumItemToAdd.setEnumItemDesc(enumItem.getItemDesc());
+
+                        enumItems.add(enumItemToAdd);
+                    }
+
+                    TableInfo.EnumClass enumClass = new TableInfo.EnumClass();
+                    enumClass.setEnumJavaNameCapitalized(JStringUtils.underlineToCamelCapitalized(column.getEnums().getEnumName()));
+                    enumClass.setEnumJavaNameUncapitalized(JStringUtils.underlineToCamelUncapitalized(column.getEnums().getEnumName()));
+                    enumClass.setEnumDesc(column.getEnums().getEnumDesc());
+                    enumClass.setEnumItems(enumItems);
+
+                    enumClasses.add(enumClass);
+
+                }
+
+                if (column.getJavaType() == JavaType.OBJECT) {
+                    field.setFieldType(JStringUtils.underlineToCamelCapitalized(column.getObjects().get(0).getObjName()));
+
+
+                    for (TableRoot.ObjectRoot objectRoot : column.getObjects()) {
+
+                        TableInfo.InnerClass innerClass = new TableInfo.InnerClass();
+                        innerClass.setInnerClassDesc(objectRoot.getObjDesc());
+                        innerClass.setInnerClassDesc(objectRoot.getObjDesc());
+
+                        List<TableInfo.Field> objectFields = new ArrayList<>();
+
+                        for (TableRoot.ObjectField objectRootField : objectRoot.getFields()) {
+                            TableInfo.Field fieldToAdd = new TableInfo.Field();
+                            fieldToAdd.setFieldType("String");
+                            fieldToAdd.setFieldDesc(objectRootField.getFieldDesc());
+                            fieldToAdd.setFieldNameCapitalized(JStringUtils.underlineToCamelCapitalized(objectRootField.getFieldName()));
+                            fieldToAdd.setFieldNameUncapitalized(JStringUtils.underlineToCamelUncapitalized(objectRootField.getFieldName()));
+                        }
+
+                        innerClass.setInnerClassFields(objectFields);
+                    }
+                }
+
+                fields.add(field);
+            }
+
+            tableInfo.setEntityFields(fields);
+            tableInfo.setInnerClasses(innerClasses);
+            tableInfo.setEnums(enumClasses);
+
+            result.add(tableInfo);
+        }
+
+
+        return result;
+    }
+
+    public void generateYaml() {
 
         List<Table> tables = getOriginTableInfos();
 
         List<TableRoot> tableRootInfosInDb = getTableRootInfos(tables);
-        List<TableRoot> tableRootInfosFromYaml = YamlUtils.loadObject();
-
-        mergeTableRootInfos(tableRootInfosInDb, tableRootInfosFromYaml);
+//        List<TableRoot> tableRootInfosFromYaml = YamlUtils.loadObject();
+//
+//        mergeTableRootInfos(tableRootInfosInDb, tableRootInfosFromYaml);
 
         for (TableRoot tableRoot : tableRootInfosInDb) {
 
@@ -403,6 +514,91 @@ public class PGService {
                     Paths.get(ToolsConfig.TEMP_DIR, ProjectConfig.getProjectName()),
                     tableRoot.getTblName() + ".yml");
 
+        }
+    }
+
+    public void generateJavaCode() {
+
+        List<TableRoot> tableRoots = YamlUtils.loadObject();
+
+        for (TableInfo tableInfo : getTableInfos(tableRoots)) {
+            // 渲染entity
+            TemplateUtils.renderTpl("entity.ftl",
+                    tableInfo.getTableJavaNameCapitalized() + ".java",
+                    tableInfo);
+
+            // 渲染request
+            TemplateUtils.renderTpl("entity_ids_request.ftl",
+                    String.format("%sIdsRequest.java", tableInfo.getTableJavaNameCapitalized()),
+                    tableInfo);
+
+            TemplateUtils.renderTpl("page_entity_request.ftl",
+                    String.format("Page%sRequest.java", tableInfo.getTableJavaNameCapitalized()),
+                    tableInfo);
+
+            // 渲染response
+            TemplateUtils.renderTpl("entity_data.ftl",
+                    String.format("%sData.java", tableInfo.getTableJavaNameCapitalized()),
+                    tableInfo);
+
+            // 渲染mapper
+            TemplateUtils.renderTpl("entity_mapper.ftl",
+                    String.format("%sMapper.java", tableInfo.getTableJavaNameCapitalized()),
+                    tableInfo);
+
+
+            // 渲染service
+            TemplateUtils.renderTpl("entity_service.ftl",
+                    String.format("%sService.java", tableInfo.getTableJavaNameCapitalized()),
+                    tableInfo);
+
+            TemplateUtils.renderTpl("entity_service_impl.ftl",
+                    String.format("%sServiceImpl.java", tableInfo.getTableJavaNameCapitalized()),
+                    tableInfo);
+
+            // 渲染枚举
+            for (TableInfo.EnumClass enumClass : tableInfo.getEnums()) {
+                TemplateUtils.renderTpl("enum.ftl",
+                        enumClass.getEnumJavaNameCapitalized() + ".java",
+                        enumClass);
+
+                TemplateUtils.renderTpl("enum_type_handler.ftl",
+                        enumClass.getEnumJavaNameCapitalized() + "TypeHandler.java",
+                        enumClass);
+            }
+        }
+
+        for (TableInfo tableInfo : getTableInfos(tableRoots)) {
+
+            TplConfig tplConfig = ProjectConfig.getTplConfig("create_entity_request.ftl");
+
+            List<TableInfo.Field> newFields = tableInfo.getEntityFields().stream().filter(item ->
+                    !tplConfig.getIgnoreField().contains(item.getFieldName())
+            ).collect(Collectors.toList());
+
+            tableInfo.setEntityFields(newFields);
+
+            // 渲染request
+            TemplateUtils.renderTpl("create_entity_request.ftl",
+                    String.format("Create%sRequest.java", tableInfo.getTableJavaNameCapitalized()),
+                    tableInfo);
+
+        }
+
+        for (TableInfo tableInfo : getTableInfos(tableRoots)) {
+
+            TplConfig tplConfig = ProjectConfig.getTplConfig("update_entity_request.ftl");
+
+            List<TableInfo.Field> newFields = tableInfo.getEntityFields().stream().filter(item ->
+                    !tplConfig.getIgnoreField().contains(item.getFieldName())
+            ).collect(Collectors.toList());
+
+            tableInfo.setEntityFields(newFields);
+
+            // 渲染request
+            TemplateUtils.renderTpl("update_entity_request.ftl",
+                    String.format("Update%sRequest.java", tableInfo.getTableJavaNameCapitalized()),
+                    tableInfo);
         }
     }
 
@@ -504,7 +700,7 @@ public class PGService {
 //                    enumClass.addPackage("lombok.Getter");
 //                    enumClass.addPackage("lombok.AccessLevel");
 //
-//                    enumClass.setEnumName(StringUtils.capitalize(JStringUtils.underlineToCamel(enumRoot.getEnumName())));
+//                    enumClass.setEnumJavaNameCapitalized(StringUtils.capitalize(JStringUtils.underlineToCamelCapitalized(enumRoot.getEnumJavaNameCapitalized())));
 //                    enumClass.setEnumDesc(enumRoot.getEnumDesc());
 //
 //                    if (JavaType.NUMBER_ENUM.equals(column.getJavaType())) {
@@ -530,11 +726,11 @@ public class PGService {
 //        for (EnumClass enumClass : enumToGenerate) {
 //            render("enum.ftl",
 //                    "D:\\Project\\dyf\\dyf-meta\\dyf-meta-common\\src\\main\\java\\com\\sdstc\\dyf\\meta\\common\\constant\\enums",
-//                    enumClass.getEnumName() + ".java",
+//                    enumClass.getEnumJavaNameCapitalized() + ".java",
 //                    Collections.singletonMap("enumClass", enumClass));
 //            render("enum_type_handler.flt",
 //                    "D:\\Project\\dyf\\dyf-meta\\dyf-meta-core\\src\\main\\java\\com\\sdstc\\dyf\\meta\\core\\type_handler\\enums",
-//                    enumClass.getEnumName() + "TypeHandler.java",
+//                    enumClass.getEnumJavaNameCapitalized() + "TypeHandler.java",
 //                    Collections.singletonMap("enumClass", enumClass));
 //        }
 //
@@ -563,9 +759,9 @@ public class PGService {
 //            tableInfo.setTableNameWithPrefix(table.getTableName());
 //            tableInfo.setTableNameWithoutPrefix(JStringUtils.removeTableNamePrefix(table.getTableName()));
 //            tableInfo.setTableJavaNameCapitalized(StringUtils.capitalize(
-//                    JStringUtils.underlineToCamel(JStringUtils.removeTableNamePrefix(table.getTableName()))));
+//                    JStringUtils.underlineToCamelCapitalized(JStringUtils.removeTableNamePrefix(table.getTableName()))));
 //            tableInfo.setTableJavaNameUncapitalized(StringUtils.uncapitalize(
-//                    JStringUtils.underlineToCamel(JStringUtils.removeTableNamePrefix(table.getTableName()))));
+//                    JStringUtils.underlineToCamelCapitalized(JStringUtils.removeTableNamePrefix(table.getTableName()))));
 //            tableInfo.setEntityName(tableName2EntityName.get(table.getTableName()));
 //            tableInfo.setEntityPackageName(UserConfig.ENTITY_PACKAGE);
 //
@@ -583,7 +779,7 @@ public class PGService {
 //                    enumClass.addPackage("lombok.Getter");
 //                    enumClass.addPackage("lombok.AccessLevel");
 //
-//                    enumClass.setEnumName(StringUtils.capitalize(JStringUtils.underlineToCamel(enumRoot.getEnumName())));
+//                    enumClass.setEnumJavaNameCapitalized(StringUtils.capitalize(JStringUtils.underlineToCamelCapitalized(enumRoot.getEnumJavaNameCapitalized())));
 //                    enumClass.setEnumDesc(enumRoot.getEnumDesc());
 //
 //                    if (JavaType.NUMBER_ENUM.equals(column.getJavaType())) {
@@ -609,11 +805,11 @@ public class PGService {
 //        for (EnumClass enumClass : enumToGenerate) {
 //            render("enum.ftl",
 //                    "D:\\Project\\dyf\\dyf-meta\\dyf-meta-common\\src\\main\\java\\com\\sdstc\\dyf\\meta\\common\\constant\\enums",
-//                    enumClass.getEnumName() + ".java",
+//                    enumClass.getEnumJavaNameCapitalized() + ".java",
 //                    Collections.singletonMap("enumClass", enumClass));
 //            render("enum_type_handler.flt",
 //                    "D:\\Project\\dyf\\dyf-meta\\dyf-meta-core\\src\\main\\java\\com\\sdstc\\dyf\\meta\\core\\type_handler\\enums",
-//                    enumClass.getEnumName() + "TypeHandler.java",
+//                    enumClass.getEnumJavaNameCapitalized() + "TypeHandler.java",
 //                    Collections.singletonMap("enumClass", enumClass));
 //        }
 //
@@ -633,7 +829,7 @@ public class PGService {
 //                        table.getTableName().substring(UserConfig.TABLE_PREFIX.length()));
 //            }
 //
-//            entityClass.setEntityName(StringUtils.capitalize(JStringUtils.underlineToCamel(table.getTableName())) + "Po");
+//            entityClass.setEntityName(StringUtils.capitalize(JStringUtils.underlineToCamelCapitalized(table.getTableName())) + "Po");
 //            entityClass.setPackageName("com.sdstc.dyf.meta.core.po");
 //            entityClass.addPackage("lombok.Data");
 //            entityClass.addPackage("lombok.Builder");
@@ -645,37 +841,9 @@ public class PGService {
 //
 //            List<ObjectRoot> objectRoots = new ArrayList<>();
 //
-//            for (ColumnRoot column : table.getColumns()) {
-//                String fieldType;
-//                switch (column.getJavaType()) {
-//                    case DATE:
-//                        fieldType = "LocalDateTime";
-//                        break;
-//                    case NUMBER:
-//                        fieldType = "Long";
-//                        break;
-//                    case STRING:
-//                        fieldType = "String";
-//                        break;
-//                    case STRING_ENUM:
-//                    case NUMBER_ENUM:
-//                        fieldType = StringUtils.capitalize(JStringUtils.underlineToCamel(column.getEnumRoot().getEnumName()));
-//                        if (!entityClass.getPackagesToImport().contains("com.sdstc.dyf.meta.common.constant.enums." + fieldType)) {
-//                            entityClass.getPackagesToImport().add("com.sdstc.dyf.meta.common.constant.enums." + fieldType);
-//                        }
-//                        break;
-//                    case OBJECT:
-//                        fieldType = StringUtils.capitalize(JStringUtils.underlineToCamel(column.getObjectRoots().get(0).getObjectName()));
+
 //
-//                        objectRoots.addAll(column.getObjectRoots());
-//
-//                        break;
-//                    default:
-//                        fieldType = "UNKNOWN";
-//                        break;
-//                }
-//
-//                EntityClass.Field field = new EntityClass.Field(JStringUtils.underlineToCamel(column.getColumnName()),
+//                EntityClass.Field field = new EntityClass.Field(JStringUtils.underlineToCamelCapitalized(column.getColumnName()),
 //                        fieldType,
 //                        column.getColumnDesc());
 //
@@ -696,7 +864,7 @@ public class PGService {
 //            for (ObjectRoot objectRoot : objectRoots) {
 //                EntityClass.InternalClass internalClass = new EntityClass.InternalClass();
 //                internalClass.setInternalClassDesc(objectRoot.getObjectDesc());
-//                internalClass.setInternalClassName(StringUtils.capitalize(JStringUtils.underlineToCamel(objectRoot.getObjectName())));
+//                internalClass.setInternalClassName(StringUtils.capitalize(JStringUtils.underlineToCamelCapitalized(objectRoot.getObjectName())));
 //
 //                for (ObjectRoot.FieldItem fieldItem : objectRoot.getFieldItems()) {
 //                    String fieldType;
@@ -756,8 +924,8 @@ public class PGService {
 //
 //            MapperClass mapperClass = new MapperClass();
 //            mapperClass.setPackageName("com.sdstc.dyf.meta.core.dao");
-//            mapperClass.setMapperName(StringUtils.capitalize(JStringUtils.underlineToCamel(table.getTableName())) + "Dao");
-//            mapperClass.setEntityName(StringUtils.capitalize(JStringUtils.underlineToCamel(table.getTableName())) + "Po");
+//            mapperClass.setMapperName(StringUtils.capitalize(JStringUtils.underlineToCamelCapitalized(table.getTableName())) + "Dao");
+//            mapperClass.setEntityName(StringUtils.capitalize(JStringUtils.underlineToCamelCapitalized(table.getTableName())) + "Po");
 //
 //            mapperClass.getPackagesToImport().add("com.sdstc.scdp.mybatis.plus.GeneralDao");
 //            mapperClass.getPackagesToImport().add("com.sdstc.dyf.meta.core.po." + mapperClass.getEntityName());
@@ -793,9 +961,9 @@ public class PGService {
 //
 //            ServiceClass serviceClass = new ServiceClass();
 //
-//            serviceClass.setEntityName(StringUtils.capitalize(JStringUtils.underlineToCamel(table.getTableName())));
+//            serviceClass.setEntityName(StringUtils.capitalize(JStringUtils.underlineToCamelCapitalized(table.getTableName())));
 //            serviceClass.setEntityChineseName(tableName2Chinese.get(oldTableName));
-//            serviceClass.setServiceName(StringUtils.capitalize(JStringUtils.underlineToCamel(table.getTableName())) + "Service");
+//            serviceClass.setServiceName(StringUtils.capitalize(JStringUtils.underlineToCamelCapitalized(table.getTableName())) + "Service");
 //
 //            serviceClasses.add(serviceClass);
 //        }
@@ -816,7 +984,7 @@ public class PGService {
 //                        table.getTableName().substring(UserConfig.TABLE_PREFIX.length()));
 //            }
 //
-//            entityClass.setEntityName(StringUtils.capitalize(JStringUtils.underlineToCamel(table.getTableName())));
+//            entityClass.setEntityName(StringUtils.capitalize(JStringUtils.underlineToCamelCapitalized(table.getTableName())));
 //            entityClass.setPackageName("com.sdstc.dyf.meta.core.po");
 //            entityClass.addPackage("lombok.Data");
 //            entityClass.addPackage("lombok.Builder");
@@ -825,7 +993,7 @@ public class PGService {
 //            entityClass.addPackage("lombok.AllArgsConstructor");
 //            entityClass.addPackage("com.baomidou.mybatisplus.annotation.TableName");
 //            entityClass.addPackage("com.sdstc.scdp.mybatis.plus.po.BasePo");
-//            entityClass.setEntityNameLower(JStringUtils.underlineToCamel(table.getTableName()));
+//            entityClass.setEntityNameLower(JStringUtils.underlineToCamelCapitalized(table.getTableName()));
 //
 //            List<ObjectRoot> objectRoots = new ArrayList<>();
 //
@@ -843,13 +1011,13 @@ public class PGService {
 //                        break;
 //                    case STRING_ENUM:
 //                    case NUMBER_ENUM:
-//                        fieldType = StringUtils.capitalize(JStringUtils.underlineToCamel(column.getEnumRoot().getEnumName()));
+//                        fieldType = StringUtils.capitalize(JStringUtils.underlineToCamelCapitalized(column.getEnumRoot().getEnumJavaNameCapitalized()));
 //                        if (!entityClass.getPackagesToImport().contains("com.sdstc.dyf.meta.common.constant.enums." + fieldType)) {
 //                            entityClass.getPackagesToImport().add("com.sdstc.dyf.meta.common.constant.enums." + fieldType);
 //                        }
 //                        break;
 //                    case OBJECT:
-//                        fieldType = StringUtils.capitalize(JStringUtils.underlineToCamel(column.getObjectRoots().get(0).getObjectName()));
+//                        fieldType = StringUtils.capitalize(JStringUtils.underlineToCamelCapitalized(column.getObjectRoots().get(0).getObjectName()));
 //
 //                        objectRoots.addAll(column.getObjectRoots());
 //
@@ -859,7 +1027,7 @@ public class PGService {
 //                        break;
 //                }
 //
-//                EntityClass.Field field = new EntityClass.Field(JStringUtils.underlineToCamel(column.getColumnName()),
+//                EntityClass.Field field = new EntityClass.Field(JStringUtils.underlineToCamelCapitalized(column.getColumnName()),
 //                        fieldType,
 //                        column.getColumnDesc());
 //
@@ -880,7 +1048,7 @@ public class PGService {
 //            for (ObjectRoot objectRoot : objectRoots) {
 //                EntityClass.InternalClass internalClass = new EntityClass.InternalClass();
 //                internalClass.setInternalClassDesc(objectRoot.getObjectDesc());
-//                internalClass.setInternalClassName(StringUtils.capitalize(JStringUtils.underlineToCamel(objectRoot.getObjectName())));
+//                internalClass.setInternalClassName(StringUtils.capitalize(JStringUtils.underlineToCamelCapitalized(objectRoot.getObjectName())));
 //
 //                for (ObjectRoot.FieldItem fieldItem : objectRoot.getFieldItems()) {
 //                    String fieldType;
@@ -967,8 +1135,8 @@ public class PGService {
 //                        table.getTableName().substring(UserConfig.TABLE_PREFIX.length()));
 //            }
 //
-//            entityClass.setEntityName(StringUtils.capitalize(JStringUtils.underlineToCamel(table.getTableName())));
-//            entityClass.setEntityNameLower(JStringUtils.underlineToCamel(table.getTableName()));
+//            entityClass.setEntityName(StringUtils.capitalize(JStringUtils.underlineToCamelCapitalized(table.getTableName())));
+//            entityClass.setEntityNameLower(JStringUtils.underlineToCamelCapitalized(table.getTableName()));
 //            entityClass.setPackageName("com.sdstc.dyf.meta.core.po");
 //            entityClass.addPackage("lombok.Data");
 //            entityClass.setEntityChineseName(tableName2Chinese.get(oldTableName));
@@ -989,13 +1157,13 @@ public class PGService {
 //                        break;
 //                    case STRING_ENUM:
 //                    case NUMBER_ENUM:
-//                        fieldType = StringUtils.capitalize(JStringUtils.underlineToCamel(column.getEnumRoot().getEnumName()));
+//                        fieldType = StringUtils.capitalize(JStringUtils.underlineToCamelCapitalized(column.getEnumRoot().getEnumJavaNameCapitalized()));
 //                        if (!entityClass.getPackagesToImport().contains("com.sdstc.dyf.meta.common.constant.enums." + fieldType)) {
 //                            entityClass.getPackagesToImport().add("com.sdstc.dyf.meta.common.constant.enums." + fieldType);
 //                        }
 //                        break;
 //                    case OBJECT:
-//                        fieldType = StringUtils.capitalize(JStringUtils.underlineToCamel(column.getObjectRoots().get(0).getObjectName()));
+//                        fieldType = StringUtils.capitalize(JStringUtils.underlineToCamelCapitalized(column.getObjectRoots().get(0).getObjectName()));
 //
 //                        objectRoots.addAll(column.getObjectRoots());
 //
@@ -1005,7 +1173,7 @@ public class PGService {
 //                        break;
 //                }
 //
-//                EntityClass.Field field = new EntityClass.Field(JStringUtils.underlineToCamel(column.getColumnName()),
+//                EntityClass.Field field = new EntityClass.Field(JStringUtils.underlineToCamelCapitalized(column.getColumnName()),
 //                        fieldType,
 //                        column.getColumnDesc());
 //
@@ -1026,7 +1194,7 @@ public class PGService {
 //            for (ObjectRoot objectRoot : objectRoots) {
 //                EntityClass.InternalClass internalClass = new EntityClass.InternalClass();
 //                internalClass.setInternalClassDesc(objectRoot.getObjectDesc());
-//                internalClass.setInternalClassName(StringUtils.capitalize(JStringUtils.underlineToCamel(objectRoot.getObjectName())));
+//                internalClass.setInternalClassName(StringUtils.capitalize(JStringUtils.underlineToCamelCapitalized(objectRoot.getObjectName())));
 //
 //                for (ObjectRoot.FieldItem fieldItem : objectRoot.getFieldItems()) {
 //                    String fieldType;

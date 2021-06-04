@@ -1,6 +1,6 @@
 package fun.junjie.autotools.service;
 
-import fun.junjie.autotools.utils.ProcessUtils;
+import fun.junjie.autotools.config.project.ProjectConfig;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -14,9 +14,20 @@ class PGServiceTest {
     @Test
     void generateDBYaml() {
 
+        ProjectConfig.init("project_auth.yml");
+
         pgService.generateYaml();
 
-        ProcessUtils.compareTwoDirs();
+//        ProcessUtils.compareTwoDirs();
+
+    }
+
+    @Test
+    void generateJavaCode() {
+
+        ProjectConfig.init("project_auth.yml");
+
+        pgService.generateJavaCode();
 
     }
 
