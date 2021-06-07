@@ -8,10 +8,21 @@ import java.time.LocalDateTime;
 public class ${tableInfo.tableJavaNameCapitalized}Data {
 
 <#list tableInfo.entityFields as field>
+    <#if field.isEnumType>
+    /**
+     * ${field.fieldDesc}
+     *
+     * @see com.sdstc.authcenter.enums.${field.fieldType}#value
+     */
+    // @JSONField(serializeUsing = EnumCodec.class, deserializeUsing = EnumCodec.class)
+    // private ${field.fieldType} ${field.fieldNameUncapitalized};
+     private ${field.enumValueType} ${field.fieldNameUncapitalized};
+    <#else>
     /**
      * ${field.fieldDesc}
      */
     private ${field.fieldType} ${field.fieldNameUncapitalized};
-
+    </#if>
+    
 </#list>
 }

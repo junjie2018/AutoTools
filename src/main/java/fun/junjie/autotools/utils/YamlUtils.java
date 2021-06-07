@@ -6,11 +6,14 @@ import com.alibaba.fastjson.PropertyNamingStrategy;
 import com.alibaba.fastjson.parser.Feature;
 import com.alibaba.fastjson.serializer.SerializeConfig;
 import com.alibaba.fastjson.serializer.SerializerFeature;
-import fun.junjie.autotools.config.project.ProjectConfig;
-import fun.junjie.autotools.constant.ToolsConfig;
+import fun.junjie.autotools.config.ProjectConfig;
+import fun.junjie.autotools.config.tools.ToolsConfig;
 import fun.junjie.autotools.domain.yaml.TableRoot;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
 import org.yaml.snakeyaml.Yaml;
 
+import javax.annotation.PostConstruct;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -18,9 +21,24 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.stream.Collectors;
 
-
+@Component
+@RequiredArgsConstructor
 public class YamlUtils {
+
+    private final ToolsConfig toolsConfig;
+    private final ProjectConfig projectConfig;
+    private static ToolsConfig toolsConfigStatic;
+    private static ProjectConfig projectConfigStatic;
+
+    @PostConstruct
+    public void init() {
+        toolsConfigStatic = toolsConfig;
+        projectConfigStatic = projectConfig;
+    }
+
+
     /**
      * 将对象序列化成Yaml文件，序列化时保持字段顺序与声明一致
      */
@@ -53,27 +71,26 @@ public class YamlUtils {
      */
     public static List<TableRoot> loadObject() {
 
-        File outputDir = new File(Paths.get(ToolsConfig.TABLES_INFO_DIR, ProjectConfig.getProjectName()).toString());
-        if (!outputDir.isDirectory()) {
-            throw new RuntimeException("Load Wrong...");
-        }
-
-        File[] yamlFiles = outputDir.listFiles();
-        if (yamlFiles == null) {
+        Path tableInfoDir = Paths.get(projectConfigStatic.getTableInfoDir(), toolsConfigStatic.getProjectName());
+        if (!Files.exists(tableInfoDir) || !Files.isDirectory(tableInfoDir)) {
             throw new RuntimeException("Load Wrong...");
         }
 
         try {
+            List<Path> yamlFiles = Files.list(tableInfoDir).collect(Collectors.toList());
+
             List<TableRoot> result = new ArrayList<>();
 
-            for (File file : yamlFiles) {
-                String jsonMiddle = JSON.toJSONString(new Yaml().load(new FileReader(file)));
+            for (Path yamlFile : yamlFiles) {
+                String jsonMiddle = JSON.toJSONString(new Yaml().load(new FileReader(yamlFile.toFile())));
                 TableRoot tableRoot = JSONObject.parseObject(jsonMiddle, TableRoot.class);
                 result.add(tableRoot);
             }
 
             return result;
-        } catch (FileNotFoundException e) {
+
+        } catch (IOException e) {
+            e.printStackTrace();
             throw new RuntimeException("Load Wrong...");
         }
     }

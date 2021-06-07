@@ -1,7 +1,5 @@
 package fun.junjie.autotools.constant;
 
-import fun.junjie.autotools.config.project.ProjectConfig;
-
 import java.util.regex.Pattern;
 
 public class ToolsConfig {

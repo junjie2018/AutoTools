@@ -1,35 +1,9 @@
-management:
-  endpoints:
-    web:
-      exposure:
-        include: '*'
-
-#spring:
-#  datasource:
-##    driver-class-tableName: org.postgresql.Driver                                                             # 原始的
-#    driver-class-name: com.p6spy.engine.spy.P6SpyDriver                                                   # 使用p6spy后的
-#    password: HelloWorld
-##    url: jdbc:postgresql://192.168.13.68:5432/postgres?currentSchema=public&stringtype=unspecified       # 原始的
-#    url: jdbc:p6spy:postgresql://192.168.13.68:5432/postgres?currentSchema=public&stringtype=unspecified  # 使用p6spy后的
-#    username: postgres
-
-#spring:
-#  datasource:
-#    driver-class-name: com.p6spy.engine.spy.P6SpyDriver
-#    username: postgres
-#    password: dev.DB
-#    url: jdbc:p6spy:postgresql://192.168.19.12:5432/dyf2?currentSchema=dyf&stringtype=unspecified
-
-#spring:
-#  datasource:
-#    driver-class-name: com.p6spy.engine.spy.P6SpyDriver
-#    username: postgres
-#    password: a123456
-#    url: jdbc:p6spy:postgresql://192.168.13.55:5432/4D?stringtype=unspecified
-
 spring:
-  datasource:
-    driver-class-name: com.p6spy.engine.spy.P6SpyDriver
-    username: postgres
-    password: dev.DB
-    url: jdbc:p6spy:postgresql://192.168.19.12:5432/dev?currentSchema=auth&stringtype=unspecified
+  profiles:
+    active: auth
+
+project-config:
+  template-dir: 'D:\Download\spring-demo-master\spring-demo-master\cn\AutoTools\src\main\resources\templates'
+  temp-dir: 'C:\Users\wujj\AppData\Local\Temp\AutoTools'
+  default-primary-key-name: 'id'
+  table-info-dir: 'D:\Download\spring-demo-master\spring-demo-master\cn\AutoTools\src\main\resources\tables'

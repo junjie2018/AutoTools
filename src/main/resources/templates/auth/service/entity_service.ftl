@@ -6,7 +6,7 @@ import com.sdstc.authcenter.controller.request.${tableInfo.tableJavaNameCapitali
 import com.sdstc.authcenter.controller.request.Create${tableInfo.tableJavaNameCapitalized}Request;
 import com.sdstc.authcenter.controller.request.Page${tableInfo.tableJavaNameCapitalized}Request;
 import com.sdstc.authcenter.controller.request.Update${tableInfo.tableJavaNameCapitalized}Request;
-import com.sdstc.authcenter.response.auth.${tableInfo.tableJavaNameCapitalized}Data;
+import com.sdstc.authcenter.controller.response.${tableInfo.tableJavaNameCapitalized}Data;
 
 
 import java.util.List;

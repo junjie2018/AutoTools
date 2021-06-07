@@ -1,9 +1,27 @@
 package fun.junjie.autotools.utils;
 
-import fun.junjie.autotools.config.project.ProjectConfig;
+import fun.junjie.autotools.config.ProjectConfig;
+import fun.junjie.autotools.config.tools.ToolsConfig;
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
+
+@Component
+@RequiredArgsConstructor
 public class JStringUtils {
+
+    private final ToolsConfig toolsConfig;
+    private final ProjectConfig projectConfig;
+    private static ToolsConfig toolsConfigStatic;
+    private static ProjectConfig projectConfigStatic;
+
+    @PostConstruct
+    public void init() {
+        toolsConfigStatic = toolsConfig;
+        projectConfigStatic = projectConfig;
+    }
 
     /**
      * 下划线转驼峰（首字母大写）
@@ -45,13 +63,14 @@ public class JStringUtils {
         return StringUtils.join(segments);
     }
 
-
+    /**
+     * 移除表明的前缀
+     */
     public static String removeTableNamePrefix(String tableName) {
-        if (tableName.startsWith(ProjectConfig.getTablePrefix())) {
-            return tableName.substring(ProjectConfig.getTablePrefix().length());
+        if (tableName.startsWith(toolsConfigStatic.getTablesConfig().getTablePrefix())) {
+            return tableName.substring(toolsConfigStatic.getTablesConfig().getTablePrefix().length());
         } else {
             return tableName;
         }
     }
-
 }

@@ -6,7 +6,6 @@ import com.alibaba.fastjson.serializer.JSONSerializer;
 import com.alibaba.fastjson.serializer.ObjectSerializer;
 import fun.junjie.autotools.constant.ToolsConfig;
 import fun.junjie.autotools.domain.yaml.JavaType;
-import org.apache.commons.lang3.EnumUtils;
 
 import java.io.IOException;
 import java.lang.reflect.Type;

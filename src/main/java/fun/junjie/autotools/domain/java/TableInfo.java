@@ -36,6 +36,8 @@ public class TableInfo {
         private String fieldDesc;
         private String fieldType;
         private Boolean isPrimaryKey;
+        private Boolean isEnumType;
+        private String enumValueType;
         private Set<String> annotations;
     }
 

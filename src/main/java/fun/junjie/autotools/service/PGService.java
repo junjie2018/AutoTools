@@ -1,8 +1,6 @@
 package fun.junjie.autotools.service;
 
-import fun.junjie.autotools.config.project.ProjectConfig;
 import fun.junjie.autotools.constant.ToolsConfig;
-import fun.junjie.autotools.domain.config.TplConfig;
 import fun.junjie.autotools.domain.java.TableInfo;
 import fun.junjie.autotools.domain.postgre.Column;
 import fun.junjie.autotools.domain.postgre.Table;
@@ -17,12 +15,10 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
-import java.nio.file.Paths;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.util.*;
 import java.util.regex.Matcher;
-import java.util.stream.Collectors;
 
 @SuppressWarnings({"Duplicates", "AlibabaMethodTooLong"})
 @Slf4j
@@ -31,68 +27,7 @@ import java.util.stream.Collectors;
 public class PGService {
 
 
-    private final JdbcTemplate jdbcTemplate;
-
-    /**
-     * 从数据库中获取表、列信息
-     */
-    private List<Table> getOriginTableInfos() {
-        if (this.jdbcTemplate.getDataSource() == null) {
-            throw new RuntimeException("数据库链接错误");
-        }
-
-        try {
-            Map<String, Table> tableName2TableMap = new HashMap<>(20);
-
-            DatabaseMetaData dbMetaData = this.jdbcTemplate.getDataSource().getConnection().getMetaData();
-
-
-            // 处理表信息
-            ResultSet tables = dbMetaData.getTables(
-                    null, null,
-                    ProjectConfig.getTablePrefix() + "%", new String[]{"TABLE"});
-            while (tables.next()) {
-
-                String tableName = tables.getString("table_name");
-                String tableDesc = tables.getString("remarks");
-
-                if (!ProjectConfig.needGenerate(tableName)) {
-                    continue;
-                }
-
-                tableName2TableMap.put(tableName, new Table(tableName, tableDesc));
-            }
-
-            // 处理列信息
-            ResultSet columns = dbMetaData.getColumns(
-                    null, null,
-                    ProjectConfig.getTablePrefix() + "%", null);
-
-            while (columns.next()) {
-
-                String tableName = columns.getString("table_name");
-                String columnName = columns.getString("column_name");
-                String typeName = columns.getString("type_name");
-                String remarks = columns.getString("remarks");
-
-                if (!ProjectConfig.needGenerate(tableName)) {
-                    continue;
-                }
-
-                Table table = tableName2TableMap.get(tableName);
-                if (table == null) {
-                    throw new RuntimeException("Data Wrong When Get Column Info");
-                }
-
-                table.addColumn(new Column(columnName, remarks, typeName));
-            }
-
-            return new ArrayList<>(tableName2TableMap.values());
-        } catch (Exception e) {
-            log.error(e.getMessage());
-            throw new RuntimeException("数据库获取数据错误");
-        }
-    }
+    private final TableService tableService;
 
     private List<TableRoot> getTableRootInfos(List<Table> tables) {
         List<TableRoot> tableRoots = new ArrayList<>();
@@ -390,6 +325,8 @@ public class PGService {
 
     }
 
+    private final fun.junjie.autotools.config.tools.ToolsConfig toolsConfig;
+
     private List<TableInfo> getTableInfos(List<TableRoot> tableRoots) {
 
         List<TableInfo> result = new ArrayList<>();
@@ -402,7 +339,7 @@ public class PGService {
             tableInfo.setTableNameWithoutPrefix(JStringUtils.removeTableNamePrefix(tableRoot.getTblName()));
             tableInfo.setTableJavaNameCapitalized(JStringUtils.underlineToCamelCapitalized(JStringUtils.removeTableNamePrefix(tableRoot.getTblName())));
             tableInfo.setTableJavaNameUncapitalized(JStringUtils.underlineToCamelUncapitalized(JStringUtils.removeTableNamePrefix(tableRoot.getTblName())));
-            tableInfo.setEntityName(ProjectConfig.getEntityName(tableRoot.getTblName()));
+            tableInfo.setEntityName(toolsConfig.getEntityName(tableRoot.getTblName()));
 
             List<TableInfo.EnumClass> enumClasses = new ArrayList<>();
             List<TableInfo.InnerClass> innerClasses = new ArrayList<>();
@@ -416,7 +353,13 @@ public class PGService {
                 field.setFieldNameCapitalized(JStringUtils.underlineToCamelCapitalized(column.getColName()));
                 field.setFieldNameUncapitalized(JStringUtils.underlineToCamelUncapitalized(column.getColName()));
                 field.setFieldDesc(column.getColDesc());
-                field.setIsPrimaryKey(ProjectConfig.isPrimaryKey(tableInfo.getTableNameWithPrefix(), column.getColName()));
+                field.setIsPrimaryKey(toolsConfig.isPrimaryKey(tableInfo.getTableNameWithPrefix(), column.getColName()));
+                if (column.getJavaType() == JavaType.STRING_ENUM || column.getJavaType() == JavaType.NUMBER_ENUM) {
+                    field.setIsEnumType(true);
+                    field.setEnumValueType(column.getJavaType() == JavaType.STRING_ENUM ? "String" : "Integer");
+                } else {
+                    field.setIsEnumType(false);
+                }
 
                 switch (column.getJavaType()) {
                     case DATE:
@@ -499,23 +442,21 @@ public class PGService {
         return result;
     }
 
-    public void generateYaml() {
-
-        List<Table> tables = getOriginTableInfos();
-
-        List<TableRoot> tableRootInfosInDb = getTableRootInfos(tables);
-//        List<TableRoot> tableRootInfosFromYaml = YamlUtils.loadObject();
+//    public void generateYaml() {
 //
-//        mergeTableRootInfos(tableRootInfosInDb, tableRootInfosFromYaml);
-
-        for (TableRoot tableRoot : tableRootInfosInDb) {
-
-            YamlUtils.dumpObject(tableRoot,
-                    Paths.get(ToolsConfig.TEMP_DIR, ProjectConfig.getProjectName()),
-                    tableRoot.getTblName() + ".yml");
-
-        }
-    }
+//        List<Table> tables = getOriginTableInfos();
+//
+//        List<TableRoot> tableRootInfosInDb = getTableRootInfos(tables);
+//
+//
+//        for (TableRoot tableRoot : tableRootInfosInDb) {
+//
+//            YamlUtils.dumpObject(tableRoot,
+//                    Paths.get(ToolsConfig.TEMP_DIR, ProjectConfig.getProjectName()),
+//                    tableRoot.getTblName() + ".yml");
+//
+//        }
+//    }
 
     public void generateJavaCode() {
 
@@ -534,6 +475,14 @@ public class PGService {
 
             TemplateUtils.renderTpl("page_entity_request.ftl",
                     String.format("Page%sRequest.java", tableInfo.getTableJavaNameCapitalized()),
+                    tableInfo);
+
+            TemplateUtils.renderTpl("create_entity_request.ftl",
+                    String.format("Create%sRequest.java", tableInfo.getTableJavaNameCapitalized()),
+                    tableInfo);
+
+            TemplateUtils.renderTpl("update_entity_request.ftl",
+                    String.format("Update%sRequest.java", tableInfo.getTableJavaNameCapitalized()),
                     tableInfo);
 
             // 渲染response
@@ -566,39 +515,6 @@ public class PGService {
                         enumClass.getEnumJavaNameCapitalized() + "TypeHandler.java",
                         enumClass);
             }
-        }
-
-        for (TableInfo tableInfo : getTableInfos(tableRoots)) {
-
-            TplConfig tplConfig = ProjectConfig.getTplConfig("create_entity_request.ftl");
-
-            List<TableInfo.Field> newFields = tableInfo.getEntityFields().stream().filter(item ->
-                    !tplConfig.getIgnoreField().contains(item.getFieldName())
-            ).collect(Collectors.toList());
-
-            tableInfo.setEntityFields(newFields);
-
-            // 渲染request
-            TemplateUtils.renderTpl("create_entity_request.ftl",
-                    String.format("Create%sRequest.java", tableInfo.getTableJavaNameCapitalized()),
-                    tableInfo);
-
-        }
-
-        for (TableInfo tableInfo : getTableInfos(tableRoots)) {
-
-            TplConfig tplConfig = ProjectConfig.getTplConfig("update_entity_request.ftl");
-
-            List<TableInfo.Field> newFields = tableInfo.getEntityFields().stream().filter(item ->
-                    !tplConfig.getIgnoreField().contains(item.getFieldName())
-            ).collect(Collectors.toList());
-
-            tableInfo.setEntityFields(newFields);
-
-            // 渲染request
-            TemplateUtils.renderTpl("update_entity_request.ftl",
-                    String.format("Update%sRequest.java", tableInfo.getTableJavaNameCapitalized()),
-                    tableInfo);
         }
     }
 

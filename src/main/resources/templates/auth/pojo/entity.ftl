@@ -15,13 +15,21 @@ import java.io.Serializable;
 public class ${tableInfo.tableJavaNameCapitalized} implements Serializable {
 
 <#list tableInfo.entityFields as field>
+    <#if field.isEnumType>
+    /**
+     * ${field.fieldDesc}
+     *
+     * @see com.sdstc.authcenter.enums.${field.fieldType}#value
+     */
+    // @TableField(typeHandler = ${field.fieldType}TypeHandler.class)
+    // private ${field.fieldType} ${field.fieldNameUncapitalized};
+     private ${field.enumValueType} ${field.fieldNameUncapitalized};
+    <#else>
     /**
      * ${field.fieldDesc}
      */
-    <#if field.isPrimaryKey>
-    @TableId
-    </#if>
     private ${field.fieldType} ${field.fieldNameUncapitalized};
+    </#if>
 
 </#list>
 }
