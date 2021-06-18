@@ -27,4 +27,14 @@ public class ProjectConfig {
      * 储存表信息Yaml文件的文件夹
      */
     private String tableInfoDir;
+
+    /**
+     * 枚举的模式
+     */
+    private String enumCommentPattern;
+
+    /**
+     * 数字的模式
+     */
+    private String numberPattern;
 }

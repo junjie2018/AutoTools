@@ -4,52 +4,55 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+import java.util.Arrays;
+import java.util.List;
+
 @SuppressWarnings("SpellCheckingInspection")
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public enum ColumnType {
     /**
      * varchar
      */
-    VARCHAR("varchar"),
+    VARCHAR(Arrays.asList("varchar")),
 
     /**
      * int2
      */
-    INT2("int2"),
+    INT2(Arrays.asList("int2")),
 
     /**
      * int4
      */
-    INT4("int4"),
+    INT4(Arrays.asList("int4")),
 
     /**
      * int8
      */
-    INT8("int8"),
+    INT8(Arrays.asList("int8")),
 
     /**
      * timestamptz
      */
-    TIMESTAMPTZ("timestamptz"),
+    TIMESTAMPTZ(Arrays.asList("timestamptz")),
 
     /**
      * jsonb
      */
-    JSONB("jsonb"),
+    JSONB(Arrays.asList("jsonb")),
 
     /**
      * date
      */
-    DATE("date"),
+    DATE(Arrays.asList("date", "timestamp")),
     ;
 
     @Getter
-    private String typeNameFromJdbcTemplate;
+    private List<String> typeNameFromJdbcTemplate;
 
     public static ColumnType toColumnType(String typeName) {
 
         for (ColumnType columnType : ColumnType.values()) {
-            if (typeName.equals(columnType.getTypeNameFromJdbcTemplate())) {
+            if (columnType.getTypeNameFromJdbcTemplate().contains(typeName)) {
                 return columnType;
             }
         }

@@ -20,15 +20,31 @@ tools-config:
       - table-name: t_auth_organize
         entity-name: 组织
         primary-key-name: id
+      - table-name: t_user_ext
+        entity-name: 用户扩展信息
+        primary-key-name: id
+      - table-name: t_user
+        entity-name: 用户
+        primary-key-name: id
+      - table-name: t_auth_app_role
+        entity-name: 角色
+        primary-key-name: id
+      - table-name: t_auth_fun
+        entity-name: 功能
+        primary-key-name: id
   templates-config:
     - template-filename: 'entity.ftl'
       output-path: 'D:\Project\auth-center\authcenter-common\src\main\java\com\sdstc\authcenter\pojo'
+      generate-strategy: 'only_first'
     - template-filename: 'enum.ftl'
       output-path: 'D:\Project\auth-center\authcenter-common\src\main\java\com\sdstc\authcenter\enums'
+      generate-strategy: 'only_first'
     - template-filename: 'enum_type_handler.ftl'
-      output-path: 'D:\Project\auth-center\authcenter-common\src\main\java\com\sdstc\authcenter\type_handlers\enums'
+      output-path: 'D:\Project\auth-center\authcenter-common\src\main\java\com\sdstc\authcenter\type\enums'
+      generate-strategy: 'only_first'
     - template-filename: 'create_entity_request.ftl'
       output-path: 'D:\Project\auth-center\authcenter-server\src\main\java\com\sdstc\authcenter\controller\request'
+      generate-strategy: 'only_first'
       ignore-fields:
         - gmt_create_time
         - gmt_modify_time
@@ -37,11 +53,14 @@ tools-config:
         - is_delete
         - id
     - template-filename: 'entity_ids_request.ftl'
+      generate-strategy: 'only_first'
       output-path: 'D:\Project\auth-center\authcenter-server\src\main\java\com\sdstc\authcenter\controller\request'
     - template-filename: 'page_entity_request.ftl'
+      generate-strategy: 'only_first'
       output-path: 'D:\Project\auth-center\authcenter-server\src\main\java\com\sdstc\authcenter\controller\request'
     - template-filename: 'update_entity_request.ftl'
       output-path: 'D:\Project\auth-center\authcenter-server\src\main\java\com\sdstc\authcenter\controller\request'
+      generate-strategy: 'only_first'
       ignore-fields:
         - gmt_create_time
         - gmt_modify_time
@@ -50,11 +69,16 @@ tools-config:
         - is_delete
     - template-filename: 'entity_data.ftl'
       output-path: 'D:\Project\auth-center\authcenter-server\src\main\java\com\sdstc\authcenter\controller\response'
+      generate-strategy: 'only_first'
     - template-filename: 'entity_service.ftl'
       output-path: 'D:\Project\auth-center\authcenter-server\src\main\java\com\sdstc\authcenter\service'
-#      generate-strategy: 'only_first'
+      generate-strategy: 'only_first'
     - template-filename: 'entity_service_impl.ftl'
       output-path: 'D:\Project\auth-center\authcenter-server\src\main\java\com\sdstc\authcenter\service\impl'
-#      generate-strategy: 'only_first'
+      generate-strategy: 'only_first'
     - template-filename: 'entity_mapper.ftl'
       output-path: 'D:\Project\auth-center\authcenter-server\src\main\java\com\sdstc\authcenter\mapper'
+      generate-strategy: 'only_first'
+    - template-filename: 'entity_controller.ftl'
+      output-path: 'D:\Project\auth-center\authcenter-server\src\main\java\com\sdstc\authcenter\controller'
+      generate-strategy: 'only_first'

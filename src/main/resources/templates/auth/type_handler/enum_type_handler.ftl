@@ -1,7 +1,7 @@
 package com.sdstc.authcenter.type_handlers.enums;
 
 import com.sdstc.authcenter.enums.${enumClass.enumJavaNameCapitalized};
-import com.sdstc.authcenter.type_handlers.AbstractEnumTypeHandler;
+import com.sdstc.authcenter.type.AbstractEnumTypeHandler;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.type.JdbcType;
 import org.apache.ibatis.type.MappedJdbcTypes;

@@ -4,6 +4,8 @@ spring:
 
 project-config:
   template-dir: 'D:\Download\spring-demo-master\spring-demo-master\cn\AutoTools\src\main\resources\templates'
-  temp-dir: 'C:\Users\wujj\AppData\Local\Temp\AutoTools'
+  temp-dir: 'C:\Users\wujj\Desktop\Temp'
   default-primary-key-name: 'id'
   table-info-dir: 'D:\Download\spring-demo-master\spring-demo-master\cn\AutoTools\src\main\resources\tables'
+  enum-comment-pattern: '^([\\u4e00-\\u9fa5]{1,})（(([A-Za-z0-9-]+：[\\u4e00-\\u9fa5]{1,}，?)+)）$'
+  number-pattern: '^[0-9]*$'

@@ -14,18 +14,15 @@ class PGServiceTest {
 
     @Autowired
     private PGService pgService;
-//
-//    @Test
-//    void generateDBYaml() {
-//
-//        ProjectConfig.init("project_auth.yml");
-//
-//        pgService.generateYaml();
-//
-////        ProcessUtils.compareTwoDirs();
-//
-//    }
-//
+
+    @Test
+    void generateDBYaml() {
+
+
+        pgService.generateYaml();
+
+    }
+
     @Test
     void generateJavaCode() {
 
