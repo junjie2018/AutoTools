@@ -7,8 +7,8 @@ import lombok.Getter;
 import java.util.Arrays;
 import java.util.List;
 
-@SuppressWarnings("SpellCheckingInspection")
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
+@SuppressWarnings({"SpellCheckingInspection", "ArraysAsListWithZeroOrOneArgument"})
 public enum ColumnType {
     /**
      * varchar
@@ -16,24 +16,9 @@ public enum ColumnType {
     VARCHAR(Arrays.asList("varchar")),
 
     /**
-     * int2
+     * int
      */
-    INT2(Arrays.asList("int2")),
-
-    /**
-     * int4
-     */
-    INT4(Arrays.asList("int4")),
-
-    /**
-     * int8
-     */
-    INT8(Arrays.asList("int8")),
-
-    /**
-     * timestamptz
-     */
-    TIMESTAMPTZ(Arrays.asList("timestamptz")),
+    INT(Arrays.asList("int2", "int4", "int8")),
 
     /**
      * jsonb
@@ -43,7 +28,7 @@ public enum ColumnType {
     /**
      * date
      */
-    DATE(Arrays.asList("date", "timestamp")),
+    DATE(Arrays.asList("date", "timestamp", "timestamptz")),
     ;
 
     @Getter

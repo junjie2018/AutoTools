@@ -16,11 +16,11 @@ public class ConfigurationModelRepresenter extends Representer {
     {
         fieldIndexes = new String[]{
                 "tableName",
-                "tableDesc",
+                "tableComment",
                 "columns",
                 "columnName",
                 "javaType",
-                "columnDesc",
+                "columnComment",
                 "enumRoot",
                 "objectRoot",
                 "enumJavaNameCapitalized",

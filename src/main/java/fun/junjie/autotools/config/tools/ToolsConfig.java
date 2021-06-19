@@ -3,7 +3,6 @@ package fun.junjie.autotools.config.tools;
 import fun.junjie.autotools.config.ProjectConfig;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
@@ -21,24 +20,24 @@ public class ToolsConfig {
     private final ProjectConfig projectConfig;
 
     public boolean isPrimaryKey(String tableName, String fieldName) {
-        String primaryKeyName = projectConfig.getDefaultPrimaryKeyName();
+        String primaryKeyColumn = tablesConfig.getDefaultPrimaryKeyColumn();
         for (TableConfig tableConfig : tablesConfig.getTableConfig()) {
             if (tableConfig.getTableName().equals(tableName)) {
-                if (tableConfig.getPrimaryKeyName() != null) {
-                    primaryKeyName = tableConfig.getPrimaryKeyName();
+                if (tableConfig.getPrimaryKeyColumn() != null) {
+                    primaryKeyColumn = tableConfig.getPrimaryKeyColumn();
                 }
                 break;
             }
         }
-        return primaryKeyName.equals(fieldName);
+        return primaryKeyColumn.equals(fieldName);
     }
 
-    public String getEntityName(String tableName) {
-        for (TableConfig tableConfig : tablesConfig.getTableConfig()) {
-            if (tableConfig.getTableName().equals(tableName)) {
-                return tableConfig.getEntityName();
-            }
-        }
-        return "";
-    }
+//    public String getEntityName(String tableName) {
+//        for (TableConfig tableConfig : tablesConfig.getTableConfig()) {
+//            if (tableConfig.getTableName().equals(tableName)) {
+//                return tableConfig.getEntityName();
+//            }
+//        }
+//        return "";
+//    }
 }

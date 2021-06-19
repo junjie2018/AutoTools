@@ -9,17 +9,17 @@ import java.util.List;
 public class Table {
 
     private String tableName;
-    private String tableDesc;
+    private String tableComment;
 
-    private List<Column> columnList;
+    private List<Column> columns;
 
-    public Table(String tableName, String tableDesc) {
+    public Table(String tableName, String tableComment) {
         this.tableName = tableName;
-        this.tableDesc = tableDesc == null ? "" : tableDesc;
-        this.columnList = new ArrayList<>();
+        this.tableComment = tableComment == null ? "" : tableComment;
+        this.columns = new ArrayList<>();
     }
 
     public void addColumn(Column column) {
-        this.columnList.add(column);
+        this.columns.add(column);
     }
 }

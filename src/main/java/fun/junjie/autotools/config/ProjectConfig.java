@@ -19,11 +19,6 @@ public class ProjectConfig {
     private String tempDir;
 
     /**
-     * 默认的主键字段名
-     */
-    private String defaultPrimaryKeyName;
-
-    /**
      * 储存表信息Yaml文件的文件夹
      */
     private String tableInfoDir;

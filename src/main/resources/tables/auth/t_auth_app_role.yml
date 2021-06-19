@@ -1,43 +1,56 @@
 tbl_name: t_auth_app_role
 tbl_desc: 应用角色定义表
 columns:
+
 - col_name: id
   col_desc: 主键
   java_type: String
+
 - col_name: app_id
   col_desc: 应用外键
   java_type: String
+
 - col_name: name
   col_desc: 角色名
   java_type: String
+
 - col_name: description
   col_desc: 角色描述
   java_type: String
+
 - col_name: opera_list
   col_desc: BJSON类型
   java_type: Object
   objects:
+
   - obj_name: Opera_list
     obj_desc: BJSON类型
     fields: []
+
 - col_name: org_id
   col_desc: 企业id
   java_type: String
+
 - col_name: gmt_create_time
   col_desc: 创建时间
   java_type: Date
+
 - col_name: gmt_modify_time
   col_desc: 修改时间
   java_type: Date
+
 - col_name: is_show
   col_desc: 0：显示1：不显示
   java_type: Number
+
 - col_name: is_admin
   col_desc: 0：不是 1：是
   java_type: Number
+
 - col_name: is_delete
   col_desc: 0：未删除1：删除
   java_type: Number
+
 - col_name: is_forbid
   col_desc: 是否禁用
   java_type: NumberEnum
@@ -51,6 +64,7 @@ columns:
     - item_name: forbid
       item_value: '1'
       item_desc: 是
+
 - col_name: fun_list
   col_desc: 功能权限
   java_type: Object
