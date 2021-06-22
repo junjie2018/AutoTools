@@ -12,34 +12,23 @@ spring:
     url: jdbc:p6spy:postgresql://192.168.19.12:5432/dev?currentSchema=auth&stringtype=unspecified
 
 tools-config:
-  project-name: auth
-  default-primary-key-name: id
+  project-name: pdm
   tables-config:
+    default-primary-key-column: id
     table-prefix: t_
     table-config:
       - table-name: t_auth_organize
-        primary-key-name: id
         template-to-generate:
           - entity.ftl
           - tmp.ftl
 
-      - table-name: t_user_ext
-        primary-key-name: id
-
-      - table-name: t_user
-        primary-key-name: id
-
-      - table-name: t_auth_app_role
-        primary-key-name: id
-
-      - table-name: t_auth_fun
-        primary-key-name: id
-
   templates-config:
     - template-filename: 'entity.ftl'
-      package-name: xxx
-      output-path: 'D:\Project\auth-center\authcenter-common\src\main\java\com\sdstc\authcenter\pojo'
-      generate-strategy: 'only_first'
+      file-package: 'com.sdstc.authcenter.pojo'
+      packages-to-import:
+        - 'com.sdstc.authcenter.enums.*'
+      output-path: 'C:\Users\wujj\Desktop\新建文件夹 (2)'
+      output-filename: "%s.java"
 
 #    - template-filename: 'enum.ftl'
 #      output-path: 'D:\Project\auth-center\authcenter-common\src\main\java\com\sdstc\authcenter\enums'

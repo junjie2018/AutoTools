@@ -1,35 +1,23 @@
-package com.sdstc.authcenter.pojo;
+package ${templateConfig.filePackage};
 
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import java.time.LocalDateTime;
 import lombok.*;
 
-import com.sdstc.authcenter.enums.*;
+<#list templateConfig.packagesToImport as package>
+import ${package};
+</#list>
 
 import java.io.Serializable;
 
 @Data
 @Builder
-@TableName("${tableInfo.tableNameWithPrefix}")
-public class ${tableInfo.tableJavaNameCapitalized} implements Serializable {
+@NoArgsConstructor
+@AllArgsConstructor
+@TableName("${tableInfo.tableName}")
+public class ${tableInfo.entityClassName} implements Serializable {
 
-<#list tableInfo.entityFields as field>
-    <#if field.isEnumType>
-    /**
-     * ${field.fieldDesc}
-     *
-     * @see com.sdstc.authcenter.enums.${field.fieldType}#value
-     */
-    // @TableField(typeHandler = ${field.fieldType}TypeHandler.class)
-    // private ${field.fieldType} ${field.fieldNameUncapitalized};
-     private ${field.enumValueType} ${field.fieldNameUncapitalized};
-    <#else>
-    /**
-     * ${field.fieldDesc}
-     */
-    private ${field.fieldType} ${field.fieldNameUncapitalized};
-    </#if>
+<#include "../../fragments/pojo_entity.ftl">
 
-</#list>
 }

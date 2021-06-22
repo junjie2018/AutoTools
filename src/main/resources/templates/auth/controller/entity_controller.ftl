@@ -28,18 +28,7 @@ public class ${tableInfo.tableJavaNameCapitalized}Controller {
 
     private final ${tableInfo.tableJavaNameCapitalized}Service ${tableInfo.tableJavaNameUncapitalized}Service;
 
-    /**
-     * 创建${tableInfo.entityName}
-     *
-     * @return 创建的${tableInfo.entityName}的Id
-     */
-    @PostMapping("/create${tableInfo.tableJavaNameCapitalized}")
-    public ResponseVo<String> create${tableInfo.tableJavaNameCapitalized}(
-            @RequestAttribute(APICons.REQUEST_USER_ID) String userId,
-            @RequestAttribute(APICons.REQUEST_COMPANY_ID) String orgId,
-            @RequestBody @Valid Create${tableInfo.tableJavaNameCapitalized}Request request) {
-        return ResponseVo.createSuccessByData(${tableInfo.tableJavaNameUncapitalized}Service.create${tableInfo.tableJavaNameCapitalized}(userId, orgId, request));
-    }
+
 
     /**
      * 更新${tableInfo.entityName}

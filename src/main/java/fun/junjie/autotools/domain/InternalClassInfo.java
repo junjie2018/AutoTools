@@ -25,4 +25,6 @@ public class InternalClassInfo {
      * 静态内部类的字段信息
      */
     private List<FieldItemInfo> fieldItems;
+
+
 }

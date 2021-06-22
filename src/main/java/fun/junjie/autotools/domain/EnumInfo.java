@@ -25,6 +25,11 @@ public class EnumInfo {
      */
     private String enumComment;
 
+    /**
+     * 枚举值类型
+     */
+    private String enumValueType;
+
 
     private List<EnumItemInfo> enumItems;
 }

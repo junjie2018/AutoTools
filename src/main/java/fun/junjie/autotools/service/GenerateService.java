@@ -74,7 +74,7 @@ public class GenerateService {
                 columnInfo.setColumnAlias(column.getColumnComment());
                 columnInfo.setFieldClassName(JStringUtils.underlineToCamelCapitalized(column.getColumnName()));
                 columnInfo.setFieldObjectName(JStringUtils.underlineToCamelUncapitalized(column.getColumnName()));
-
+                columnInfo.setIsPrimaryKey(toolsConfig.isPrimaryKey(table.getTableName(), column.getColumnName()));
 
                 // 如果注释符合预定义规则，则该字段应该为枚举类型
                 if (StringUtils.isNotBlank(column.getColumnComment())
@@ -83,6 +83,7 @@ public class GenerateService {
                             disposeEnumColumnComment(column.getColumnName(), column.getColumnComment());
                     tableInfo.getEnumInfos().add(enumInfo);
                     columnInfo.setFieldType(enumInfo.getEnumClassName());
+                    columnInfo.setEnumInfo(enumInfo);
                 }
                 // 如果类类型为JSONB，这需要生成内部类信息
                 else if (column.getColumnType().equals(ColumnType.JSONB)) {
@@ -90,6 +91,7 @@ public class GenerateService {
                             disposeJsonbColumnType(column.getColumnName(), column.getColumnComment());
                     tableInfo.getInternalClassInfos().add(internalClassInfo);
                     columnInfo.setFieldType(internalClassInfo.getInternalClassName());
+                    columnInfo.setInternalClassInfo(internalClassInfo);
                 }
                 // 如果注释不符合预定义规则，则该字段不为枚举类型
                 else {
@@ -169,6 +171,8 @@ public class GenerateService {
 
             enumInfo.getEnumItems().add(enumItemInfo);
         }
+
+        enumInfo.setEnumValueType(numberEnumFlag ? "Integer" : "String");
 
         return enumInfo;
     }

@@ -37,8 +37,16 @@ public class ColumnInfo {
     private String fieldObjectName;
 
     /**
+     * 当前字段是否为主键
+     */
+    private Boolean isPrimaryKey;
+
+    /**
      * 字段类型（数据库中的字段映射到Java中的类型）
      */
     private String fieldType;
 
+    private EnumInfo enumInfo;
+
+    private InternalClassInfo internalClassInfo;
 }

@@ -32,7 +32,6 @@ public class TableInfo {
      */
     private String entityObjectName;
 
-
     /**
      * 表中所拥有的列信息
      */
