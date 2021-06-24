@@ -2,6 +2,7 @@ package fun.junjie.autotools.service;
 
 import fun.junjie.autotools.config.ProjectConfig;
 import fun.junjie.autotools.config.tools.TableConfig;
+import fun.junjie.autotools.config.tools.TemplateConfig;
 import fun.junjie.autotools.config.tools.ToolsConfig;
 import fun.junjie.autotools.domain.*;
 import fun.junjie.autotools.domain.postgre.Column;
@@ -47,7 +48,11 @@ public class GenerateService {
 
         List<TableInfo> tableInfos = new ArrayList<>();
 
+
         for (Table table : tables) {
+
+
+            TableConfig tableConfig = getTableConfig(table.getTableName());
 
             // 填充tableInfo
 
@@ -55,7 +60,10 @@ public class GenerateService {
 
             tableInfo.setTableName(table.getTableName());
             tableInfo.setTableComment(table.getTableComment());
-            tableInfo.setTableAlias(table.getTableComment());
+
+            tableInfo.setTableAlias(StringUtils.isBlank(tableConfig.getTableAlias()) ?
+                    tableInfo.getTableComment() : tableConfig.getTableAlias());
+
             tableInfo.setEntityClassName(
                     underlineToCamelCapitalized(removeTableNamePrefix(table.getTableName())));
             tableInfo.setEntityObjectName(
@@ -160,6 +168,8 @@ public class GenerateService {
             String[] enumItems = enumItem.split("：");
 
             EnumItemInfo enumItemInfo = new EnumItemInfo();
+
+            enumItemInfo.setEnumItemValue(enumItems[0]);
 
             if (numberEnumFlag) {
                 enumItemInfo.setEnumItemName("TMP_" + enumItems[0]);

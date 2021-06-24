@@ -4,6 +4,7 @@ import fun.junjie.autotools.config.ProjectConfig;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -15,7 +16,7 @@ import java.util.List;
 public class ToolsConfig {
     private String projectName;
     private TablesConfig tablesConfig;
-    private List<TemplatesConfig> templatesConfig;
+    private List<TemplateConfig> templatesConfig;
 
     private final ProjectConfig projectConfig;
 

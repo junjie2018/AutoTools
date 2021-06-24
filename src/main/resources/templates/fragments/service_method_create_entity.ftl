@@ -1,15 +1,16 @@
     /**
-     * 创建${tableInfo.entityAlias}
-     *
-     * @return 创建的${tableInfo.entityAlias}的Id
+     * 创建${tableInfo.tableAlias}
      */
-    @PostMapping("/create${tableInfo.entityClassName}")
-    public ResponseVo<String> create${tableInfo.entityClassName}(
-            @RequestAttribute(APICons.REQUEST_USER_ID) String userId,
-            @RequestAttribute(APICons.REQUEST_COMPANY_ID) String orgId,
-            @RequestBody @Valid Create${tableInfo.entityClassName}Request request) {
+    public String create${tableInfo.entityClassName}(String userId, String tenantId, Create${tableInfo.entityClassName}Request request) {
 
-        String ${tableInfo.entityObjectName}Id = ${tableInfo.entityClassName}Service.create${tableInfo.entityClassName}(userId, orgId, request)
+        ${tableInfo.entityClassName} ${tableInfo.entityObjectName}Insert = ${tableInfo.entityClassName}.builder()
+<#list tableInfo.columnInfos as columnInfo>
+                .${columnInfo.fieldObjectName}(request.get${columnInfo.fieldClassName}())
+</#list>
+                .build();
 
-        return ResponseVo.createSuccessByData();
+        ${tableInfo.entityObjectName}Mapper.insert(${tableInfo.entityObjectName}Insert);
+
+
+        return ${tableInfo.entityObjectName}Insert.getId();
     }

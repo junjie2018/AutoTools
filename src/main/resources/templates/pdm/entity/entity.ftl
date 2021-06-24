@@ -1,5 +1,6 @@
 package ${templateConfig.filePackage};
 
+import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import java.time.LocalDateTime;
@@ -11,6 +12,9 @@ import ${package};
 
 import java.io.Serializable;
 
+/**
+ * @author wujj
+ */
 @Data
 @Builder
 @NoArgsConstructor

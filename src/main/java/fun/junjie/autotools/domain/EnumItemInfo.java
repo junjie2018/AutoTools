@@ -11,6 +11,11 @@ public class EnumItemInfo {
     private String enumItemName;
 
     /**
+     * 枚举项的值
+     */
+    private String enumItemValue;
+
+    /**
      * 枚举项的描述
      */
     private String enumItemComment;

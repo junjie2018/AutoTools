@@ -8,6 +8,7 @@ import com.alibaba.fastjson.serializer.SerializeConfig;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import fun.junjie.autotools.config.ProjectConfig;
 import fun.junjie.autotools.config.tools.ToolsConfig;
+import fun.junjie.autotools.domain.TableInfo;
 import fun.junjie.autotools.domain.yaml.TableRoot;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -42,7 +43,7 @@ public class YamlUtils {
     /**
      * 将对象序列化成Yaml文件，序列化时保持字段顺序与声明一致
      */
-    public static void dumpObject(TableRoot sourceObj, Path dirPath, String fileName) {
+    public static void dumpObject(List<TableInfo> sourceObj, Path dirPath, String fileName) {
 
         try {
 
@@ -59,7 +60,9 @@ public class YamlUtils {
             // 将jsonWithFieldOrder转换成Map，并输出到yaml文件
             FileWriter fileWriter = new FileWriter(Paths.get(dirPath.toString(), fileName).toString());
             Yaml yaml = new Yaml();
-            fileWriter.write(yaml.dumpAsMap(JSON.parseObject(jsonWithFieldOrder, LinkedHashMap.class, Feature.OrderedField)));
+//            fileWriter.write(yaml.dumpAsMap(JSON.parseObject(jsonWithFieldOrder, LinkedHashMap.class, Feature.OrderedField)));
+//            fileWriter.write(yaml.dumpAsMap(JSON.parseArray(jsonWithFieldOrder, LinkedHashMap.class)));
+            fileWriter.write(yaml.dumpAll(sourceObj.iterator()));
             fileWriter.close();
         } catch (IOException e) {
             throw new RuntimeException("Dump Wrong...");
@@ -69,7 +72,7 @@ public class YamlUtils {
     /**
      * 将多个Yaml文件反序列化成对象列表
      */
-    public static List<TableRoot> loadObject() {
+    public static List<TableInfo> loadObject() {
 
         Path tableInfoDir = Paths.get(projectConfigStatic.getTableInfoDir(), toolsConfigStatic.getProjectName());
         if (!Files.exists(tableInfoDir) || !Files.isDirectory(tableInfoDir)) {
@@ -79,16 +82,12 @@ public class YamlUtils {
         try {
             List<Path> yamlFiles = Files.list(tableInfoDir).collect(Collectors.toList());
 
-            List<TableRoot> result = new ArrayList<>();
-
             for (Path yamlFile : yamlFiles) {
                 String jsonMiddle = JSON.toJSONString(new Yaml().load(new FileReader(yamlFile.toFile())));
-                TableRoot tableRoot = JSONObject.parseObject(jsonMiddle, TableRoot.class);
-                result.add(tableRoot);
+                return JSONObject.parseArray(jsonMiddle, TableInfo.class);
             }
 
-            return result;
-
+            return null;
         } catch (IOException e) {
             e.printStackTrace();
             throw new RuntimeException("Load Wrong...");

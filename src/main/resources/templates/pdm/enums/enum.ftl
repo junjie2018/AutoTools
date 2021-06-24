@@ -1,4 +1,4 @@
-package com.sdstc.authcenter.enums;
+package ${templateConfig.filePackage};
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -6,13 +6,15 @@ import lombok.Getter;
 
 /**
  * ${enumInfo.enumComment}
+ *
+ * @author wujj
  */
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 public enum ${enumInfo.enumClassName} {
 
 <#list enumInfo.enumItems as enumItem>
     /**
-     * ${enumItem.enumItemName}
+     * ${enumItem.enumItemComment}
      */
     <#if enumInfo.enumValueType=="String">
     ${enumItem.enumItemName}("${enumItem.enumItemValue}"),
@@ -23,7 +25,7 @@ public enum ${enumInfo.enumClassName} {
     ;
 
     @Getter
-    private ${enumInfo.enumItemValue} value;
+    private ${enumInfo.enumValueType} value;
 
     <#if enumInfo.enumValueType=="String">
     public static ${enumInfo.enumClassName} convert(String inputValue) {

@@ -9,7 +9,7 @@ spring:
     driver-class-name: com.p6spy.engine.spy.P6SpyDriver
     username: postgres
     password: dev.DB
-    url: jdbc:p6spy:postgresql://192.168.19.12:5432/dev?currentSchema=auth&stringtype=unspecified
+    url: jdbc:p6spy:postgresql://192.168.19.12:5432/pdm?stringtype=unspecified
 
 tools-config:
   project-name: pdm
@@ -17,22 +17,103 @@ tools-config:
     default-primary-key-column: id
     table-prefix: t_
     table-config:
-      - table-name: t_auth_organize
+      - table-name: t_pdm_proj_member_group
+        table-alias: 项目
         template-to-generate:
           - entity.ftl
-          - tmp.ftl
+          - enum.ftl
+          - create_entity_request.ftl
+          - entity_ids_request.ftl
+          - page_entity_request.ftl
+          - update_entity_request.ftl
 
   templates-config:
     - template-filename: 'entity.ftl'
-      file-package: 'com.sdstc.authcenter.pojo'
-      packages-to-import:
-        - 'com.sdstc.authcenter.enums.*'
-      output-path: 'C:\Users\wujj\Desktop\新建文件夹 (2)'
+      file-package: 'com.sdstc.pdm.server.entity'
+      output-path: 'D:\Project\pdm\pdm-server\src\main\java\com\sdstc\pdm\server\entity'
       output-filename: "%s.java"
 
-#    - template-filename: 'enum.ftl'
-#      output-path: 'D:\Project\auth-center\authcenter-common\src\main\java\com\sdstc\authcenter\enums'
-#      generate-strategy: 'only_first'
+    - template-filename: 'enum.ftl'
+      file-package: 'com.sdstc.pdm.common.enums'
+      output-path: 'D:\Project\pdm\pdm-common\src\main\java\com\sdstc\pdm\common\enums'
+      output-filename: '%s.java'
+
+    - template-filename: 'create_entity_request.ftl'
+      file-package: 'com.sdstc.pdm.common.request'
+      output-path: 'D:\Project\pdm\pdm-common\src\main\java\com\sdstc\pdm\common\request'
+      output-filename: 'Create%sRequest.java'
+      packages-to-import:
+        - 'com.sdstc.pdm.common.enums.*'
+      ignore-fields:
+        - gmt_create_time
+        - gmt_modify_time
+        - modifier
+        - creator
+        - is_delete
+        - id
+      other-configs:
+        enums-package: 'com.sdstc.pdm.common.enums'
+
+    - template-filename: 'entity_ids_request.ftl'
+      file-package: 'com.sdstc.pdm.common.request'
+      output-path: 'D:\Project\pdm\pdm-common\src\main\java\com\sdstc\pdm\common\request'
+      output-filename: '%sIdsRequest.java'
+
+    - template-filename: 'page_entity_request.ftl'
+      file-package: 'com.sdstc.pdm.common.request'
+      output-path: 'D:\Project\pdm\pdm-common\src\main\java\com\sdstc\pdm\common\request'
+      output-filename: 'Page%sRequest.java'
+
+    - template-filename: 'entity_controller.ftl'
+      output-path: 'D:\Project\pdm\pdm-server\src\main\java\com\sdstc\pdm\server\controller'
+      file-package: 'com.sdstc.pdm.server.controller'
+      output-filename: '%sController.java'
+      other-configs:
+        service-package: 'com.sdstc.pdm.server.service'
+        mapper-package: 'com.sdstc.pdm.server.mapper'
+        request-package: 'com.sdstc.pdm.common.request'
+        response-package: 'com.sdstc.pdm.common.response'
+
+    - template-filename: 'entity_service.ftl'
+      output-path: 'D:\Project\pdm\pdm-server\src\main\java\com\sdstc\pdm\server\service'
+      file-package: 'com.sdstc.pdm.server.service'
+      output-filename: '%sService.java'
+      other-configs:
+        service-package: 'com.sdstc.pdm.server.service'
+        mapper-package: 'com.sdstc.pdm.server.mapper'
+        entity-package: 'com.sdstc.pdm.server.entity'
+        request-package: 'com.sdstc.pdm.common.request'
+        response-package: 'com.sdstc.pdm.common.response'
+
+    - template-filename: 'entity_data.ftl'
+      file-package: 'com.sdstc.pdm.common.response'
+      output-path: 'D:\Project\pdm\pdm-common\src\main\java\com\sdstc\pdm\common\response'
+      output-filename: '%sData.java'
+      other-configs:
+        enums-package: 'com.sdstc.pdm.common.enums'
+
+    - template-filename: 'entity_mapper.ftl'
+      output-path: 'D:\Project\pdm\pdm-server\src\main\java\com\sdstc\pdm\server\mapper'
+      file-package: 'com.sdstc.pdm.server.mapper'
+      output-filename: '%sMapper.java'
+      other-configs:
+        service-package: 'com.sdstc.pdm.server.service'
+        mapper-package: 'com.sdstc.pdm.server.mapper'
+        entity-package: 'com.sdstc.pdm.server.entity'
+
+    - template-filename: 'update_entity_request.ftl'
+      file-package: 'com.sdstc.pdm.common.request'
+      output-path: 'D:\Project\pdm\pdm-common\src\main\java\com\sdstc\pdm\common\request'
+      output-filename: 'Update%sRequest.java'
+      ignore-fields:
+        - gmt_create_time
+        - gmt_modify_time
+        - modifier
+        - creator
+        - is_delete
+      other-configs:
+        enums-package: 'com.sdstc.pdm.common.enums'
+
 #
 #    - template-filename: 'enum_type_handler.ftl'
 #      output-path: 'D:\Project\auth-center\authcenter-common\src\main\java\com\sdstc\authcenter\type\enums'
@@ -57,32 +138,9 @@ tools-config:
 #      generate-strategy: 'only_first'
 #      output-path: 'D:\Project\auth-center\authcenter-server\src\main\java\com\sdstc\authcenter\controller\request'
 #
-#    - template-filename: 'update_entity_request.ftl'
-#      output-path: 'D:\Project\auth-center\authcenter-server\src\main\java\com\sdstc\authcenter\controller\request'
-#      generate-strategy: 'only_first'
-#      ignore-fields:
-#        - gmt_create_time
-#        - gmt_modify_time
-#        - modifier
-#        - creator
-#        - is_delete
+
 #
 #    - template-filename: 'entity_data.ftl'
 #      output-path: 'D:\Project\auth-center\authcenter-server\src\main\java\com\sdstc\authcenter\controller\response'
 #      generate-strategy: 'only_first'
 #
-#    - template-filename: 'entity_service.ftl'
-#      output-path: 'D:\Project\auth-center\authcenter-server\src\main\java\com\sdstc\authcenter\service'
-#      generate-strategy: 'only_first'
-#
-#    - template-filename: 'entity_service_impl.ftl'
-#      output-path: 'D:\Project\auth-center\authcenter-server\src\main\java\com\sdstc\authcenter\service\impl'
-#      generate-strategy: 'only_first'
-#
-#    - template-filename: 'entity_mapper.ftl'
-#      output-path: 'D:\Project\auth-center\authcenter-server\src\main\java\com\sdstc\authcenter\mapper'
-#      generate-strategy: 'only_first'
-#
-#    - template-filename: 'entity_controller.ftl'
-#      output-path: 'D:\Project\auth-center\authcenter-server\src\main\java\com\sdstc\authcenter\controller'
-#      generate-strategy: 'only_first'

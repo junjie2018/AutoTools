@@ -5,9 +5,10 @@ import freemarker.template.DefaultObjectWrapperBuilder;
 import freemarker.template.Template;
 import fun.junjie.autotools.config.ProjectConfig;
 import fun.junjie.autotools.config.tools.GenerateStrategy;
-import fun.junjie.autotools.config.tools.TemplatesConfig;
+import fun.junjie.autotools.config.tools.TemplateConfig;
 import fun.junjie.autotools.config.tools.ToolsConfig;
 import fun.junjie.autotools.domain.ColumnInfo;
+import fun.junjie.autotools.domain.EnumInfo;
 import fun.junjie.autotools.domain.TableInfo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,12 +16,9 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import java.io.FileWriter;
-import java.io.IOException;
 import java.io.StringWriter;
 import java.nio.file.*;
 import java.util.*;
-
-import java.util.function.Consumer;
 
 @Slf4j
 @Component
@@ -33,7 +31,7 @@ public class TemplateUtils {
 
     private static Path curTemplateDir;
     private static Map<String, String> tplFileNameToRelativeNameMap;
-    private static Map<String, TemplatesConfig> tplFileNameToTemplatesConfig;
+    private static Map<String, TemplateConfig> tplFileNameToTemplatesConfig;
 
     @PostConstruct
     public void init() {
@@ -74,31 +72,31 @@ public class TemplateUtils {
 
 
         // 填充tplFileNameToTemplatesConfig
-        for (TemplatesConfig templatesConfig : toolsConfig.getTemplatesConfig()) {
-            if (tplFileNameToTemplatesConfig.containsKey(templatesConfig.getTemplateFilename().trim())) {
+        for (TemplateConfig templateConfig : toolsConfig.getTemplatesConfig()) {
+            if (tplFileNameToTemplatesConfig.containsKey(templateConfig.getTemplateFilename().trim())) {
                 throw new RuntimeException("Wrong When Init tplFileNameToTemplatesConfig");
             }
-            tplFileNameToTemplatesConfig.put(templatesConfig.getTemplateFilename().trim(), templatesConfig);
+            tplFileNameToTemplatesConfig.put(templateConfig.getTemplateFilename().trim(), templateConfig);
         }
     }
 
     public static void renderTpl(String tplFileName, TableInfo tableInfo) {
-        TemplatesConfig templatesConfig = tplFileNameToTemplatesConfig.get(tplFileName);
+        TemplateConfig templateConfig = tplFileNameToTemplatesConfig.get(tplFileName);
         renderTpl(tplFileName,
-                String.format(templatesConfig.getOutputFilename(), tableInfo.getEntityClassName()),
+                String.format(templateConfig.getOutputFilename(), tableInfo.getEntityClassName()),
                 tableInfo);
     }
 
     public static void renderTpl(String tplFileName, String outputFileName, TableInfo tableInfo) {
-        TemplatesConfig templatesConfig = tplFileNameToTemplatesConfig.get(tplFileName);
-        if (templatesConfig == null) {
+        TemplateConfig templateConfig = tplFileNameToTemplatesConfig.get(tplFileName);
+        if (templateConfig == null) {
             throw new RuntimeException("No Config For " + tplFileName);
         }
 
         // 如果是只在初次运行时生成的话，需要判断目标文件是否存在，如果存在则不生成
-        if (templatesConfig.getGenerateStrategy() != null
-                && templatesConfig.getGenerateStrategy() == GenerateStrategy.ONLY_FIRST) {
-            if (Files.exists(Paths.get(templatesConfig.getOutputPath(), outputFileName))) {
+        if (templateConfig.getGenerateStrategy() != null
+                && templateConfig.getGenerateStrategy() == GenerateStrategy.ONLY_FIRST) {
+            if (Files.exists(Paths.get(templateConfig.getOutputPath(), outputFileName))) {
                 return;
             }
         }
@@ -106,12 +104,12 @@ public class TemplateUtils {
         TableInfo tableInfoToRender = ObjectUtils.deepCopy(tableInfo, TableInfo.class);
 
         // 如果用户设置了忽略的字段，该处用于剔除需要剔除的功能
-        if (templatesConfig.getIgnoreFields() != null
-                && templatesConfig.getIgnoreFields().size() > 0) {
+        if (templateConfig.getIgnoreFields() != null
+                && templateConfig.getIgnoreFields().size() > 0) {
             List<ColumnInfo> columnInfosNew = new ArrayList<>();
 
             for (ColumnInfo columnInfo : tableInfoToRender.getColumnInfos()) {
-                if (templatesConfig.getIgnoreFields().contains(columnInfo.getColumnName())) {
+                if (!templateConfig.getIgnoreFields().contains(columnInfo.getColumnName())) {
                     columnInfosNew.add(columnInfo);
                 }
             }
@@ -119,20 +117,31 @@ public class TemplateUtils {
             tableInfoToRender.setColumnInfos(columnInfosNew);
         }
 
-        renderTpl(tplFileName, outputFileName, templatesConfig, Collections.singletonMap("tableInfo", tableInfoToRender));
+        renderTpl(tplFileName, outputFileName, templateConfig, Collections.singletonMap("tableInfo", tableInfoToRender));
     }
 
-//    public static void renderTpl(String tplFileName, String outputFileName, TableInfo.EnumClass enumClass) {
-//        TemplatesConfig templatesConfig = tplFileNameToTemplatesConfig.get(tplFileName);
-//        if (templatesConfig == null) {
-//            throw new RuntimeException("No Config For " + tplFileName);
-//        }
-//
-//        renderTpl(tplFileName, outputFileName, templatesConfig, Collections.singletonMap("enumClass", enumClass));
-//    }
+    public static void renderTpl(String tplFileName, EnumInfo enumInfo) {
+        TemplateConfig templateConfig = tplFileNameToTemplatesConfig.get(tplFileName);
+        if (templateConfig == null) {
+            throw new RuntimeException("No Config For " + tplFileName);
+        }
+
+        renderTpl(tplFileName,
+                String.format(templateConfig.getOutputFilename(), enumInfo.getEnumClassName()),
+                enumInfo);
+    }
+
+    public static void renderTpl(String tplFileName, String outputFileName, EnumInfo enumInfo) {
+        TemplateConfig templateConfig = tplFileNameToTemplatesConfig.get(tplFileName);
+        if (templateConfig == null) {
+            throw new RuntimeException("No Config For " + tplFileName);
+        }
+
+        renderTpl(tplFileName, outputFileName, templateConfig, Collections.singletonMap("enumInfo", enumInfo));
+    }
 
     private static void renderTpl(String templateFileName, String outputFileName,
-                                  TemplatesConfig templatesConfig,
+                                  TemplateConfig templateConfig,
                                   Map<String, Object> renderData) {
 
         try {
@@ -142,11 +151,11 @@ public class TemplateUtils {
             configuration.setObjectWrapper(new DefaultObjectWrapperBuilder(Configuration.VERSION_2_3_31).build());
 
             // 如果目录不存在，则创建该目录
-            if (!Files.exists(Paths.get(templatesConfig.getOutputPath()))) {
-                Files.createDirectories(Paths.get(templatesConfig.getOutputPath()));
+            if (!Files.exists(Paths.get(templateConfig.getOutputPath()))) {
+                Files.createDirectories(Paths.get(templateConfig.getOutputPath()));
             }
 
-            Path outputPath = Paths.get(templatesConfig.getOutputPath(), outputFileName);
+            Path outputPath = Paths.get(templateConfig.getOutputPath(), outputFileName);
             FileWriter fileWriter = new FileWriter(outputPath.toString());
 
             Template template = configuration.getTemplate(tplFileNameToRelativeNameMap.get(templateFileName));
@@ -166,18 +175,18 @@ public class TemplateUtils {
     }
 
     public static void renderTplString(String tplFileName, TableInfo tableInfo) {
-        TemplatesConfig templatesConfig = tplFileNameToTemplatesConfig.get(tplFileName);
+        TemplateConfig templateConfig = tplFileNameToTemplatesConfig.get(tplFileName);
 
         TableInfo tableInfoToRender = ObjectUtils.deepCopy(tableInfo, TableInfo.class);
 
         // 如果用户设置了忽略的字段，该处用于剔除需要剔除的功能
-        if (templatesConfig != null
-                && templatesConfig.getIgnoreFields() != null
-                && templatesConfig.getIgnoreFields().size() > 0) {
+        if (templateConfig != null
+                && templateConfig.getIgnoreFields() != null
+                && templateConfig.getIgnoreFields().size() > 0) {
             List<ColumnInfo> columnInfosNew = new ArrayList<>();
 
             for (ColumnInfo columnInfo : tableInfoToRender.getColumnInfos()) {
-                if (templatesConfig.getIgnoreFields().contains(columnInfo.getColumnName())) {
+                if (templateConfig.getIgnoreFields().contains(columnInfo.getColumnName())) {
                     columnInfosNew.add(columnInfo);
                 }
             }
@@ -185,11 +194,11 @@ public class TemplateUtils {
             tableInfoToRender.setColumnInfos(columnInfosNew);
         }
 
-        renderTplString(tplFileName, templatesConfig, Collections.singletonMap("tableInfo", tableInfoToRender));
+        renderTplString(tplFileName, templateConfig, Collections.singletonMap("tableInfo", tableInfoToRender));
     }
 
     private static void renderTplString(String templateFileName,
-                                        TemplatesConfig templatesConfig,
+                                        TemplateConfig templateConfig,
                                         Map<String, Object> renderData) {
 
         try {
