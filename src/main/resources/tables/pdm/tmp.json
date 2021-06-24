@@ -1,10 +1,10 @@
 [
 	{
-		"table_name":"t_pdm_proj_member_group",
-		"table_comment":"pdm项目成员分组",
-		"table_alias":"项目",
-		"entity_class_name":"PdmProjMemberGroup",
-		"entity_object_name":"pdmProjMemberGroup",
+		"table_name":"t_pdm_project_member",
+		"table_comment":"项目成员",
+		"table_alias":"团队成员",
+		"entity_class_name":"PdmProjectMember",
+		"entity_object_name":"pdmProjectMember",
 		"column_infos":[
 			{
 				"column_name":"id",
@@ -69,30 +69,12 @@
 			{
 				"column_name":"is_delete",
 				"column_type":"INT",
-				"column_comment":"删除状态（0：未删除，1：删除）",
-				"column_alias":"删除状态（0：未删除，1：删除）",
+				"column_comment":"0-未删除；1-删除；",
+				"column_alias":"0-未删除；1-删除；",
 				"field_class_name":"IsDelete",
 				"field_object_name":"isDelete",
 				"is_primary_key":false,
-				"field_type":"IsDelete",
-				"enum_info":{
-					"enum_class_name":"IsDelete",
-					"enum_object_name":"isDelete",
-					"enum_comment":"删除状态",
-					"enum_value_type":"Integer",
-					"enum_items":[
-						{
-							"enum_item_name":"TMP_0",
-							"enum_item_value":"0",
-							"enum_item_comment":"未删除"
-						},
-						{
-							"enum_item_name":"TMP_1",
-							"enum_item_value":"1",
-							"enum_item_comment":"删除"
-						}
-					]
-				}
+				"field_type":"Integer"
 			},
 			{
 				"column_name":"project_id",
@@ -105,27 +87,27 @@
 				"field_type":"String"
 			},
 			{
-				"column_name":"name",
-				"column_type":"JSONB",
-				"column_comment":"分组名称",
-				"column_alias":"分组名称",
-				"field_class_name":"Name",
-				"field_object_name":"name",
+				"column_name":"group_id",
+				"column_type":"VARCHAR",
+				"column_comment":"分组id",
+				"column_alias":"分组id",
+				"field_class_name":"GroupId",
+				"field_object_name":"groupId",
 				"is_primary_key":false,
-				"field_type":"Name",
-				"internal_class_info":{
-					"internal_class_name":"Name",
-					"internal_object_name":"name",
-					"internal_class_comment":"分组名称",
-					"field_items":[]
-				}
+				"field_type":"String"
+			},
+			{
+				"column_name":"user_id",
+				"column_type":"VARCHAR",
+				"column_comment":"用户id",
+				"column_alias":"用户id",
+				"field_class_name":"UserId",
+				"field_object_name":"userId",
+				"is_primary_key":false,
+				"field_type":"String"
 			}
 		],
-		"enum_infos":[
-			{"$ref":"$[0].column\\_infos[6].enum\\_info"}
-		],
-		"internal_class_infos":[
-			{"$ref":"$[0].column\\_infos[8].internal\\_class\\_info"}
-		]
+		"enum_infos":[],
+		"internal_class_infos":[]
 	}
 ]

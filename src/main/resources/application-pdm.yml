@@ -17,8 +17,8 @@ tools-config:
     default-primary-key-column: id
     table-prefix: t_
     table-config:
-      - table-name: t_pdm_proj_member_group
-        table-alias: 项目
+      - table-name: t_pdm_project_member
+        table-alias: 团队成员
         template-to-generate:
           - entity.ftl
           - enum.ftl
@@ -28,6 +28,27 @@ tools-config:
           - update_entity_request.ftl
 
   templates-config:
+#    - template-filename: 'service.ftl'
+#      output-path: 'D:\Project\pdm\pdm-server\src\main\java\com\sdstc\pdm\server\service'
+#      file-package: 'com.sdstc.pdm.server.service'
+#      output-filename: '%sTestService.java'
+#      other-configs:
+#        service-package: 'com.sdstc.pdm.server.service'
+#        mapper-package: 'com.sdstc.pdm.server.mapper'
+#        entity-package: 'com.sdstc.pdm.server.entity'
+#        request-package: 'com.sdstc.pdm.common.request'
+#        response-package: 'com.sdstc.pdm.common.response'
+#
+#    - template-filename: 'controller.ftl'
+#      output-path: 'D:\Project\pdm\pdm-server\src\main\java\com\sdstc\pdm\server\controller'
+#      file-package: 'com.sdstc.pdm.server.controller'
+#      output-filename: '%sTestController.java'
+#      other-configs:
+#        service-package: 'com.sdstc.pdm.server.service'
+#        mapper-package: 'com.sdstc.pdm.server.mapper'
+#        request-package: 'com.sdstc.pdm.common.request'
+#        response-package: 'com.sdstc.pdm.common.response'
+
     - template-filename: 'entity.ftl'
       file-package: 'com.sdstc.pdm.server.entity'
       output-path: 'D:\Project\pdm\pdm-server\src\main\java\com\sdstc\pdm\server\entity'
@@ -113,6 +134,21 @@ tools-config:
         - is_delete
       other-configs:
         enums-package: 'com.sdstc.pdm.common.enums'
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 #
 #    - template-filename: 'enum_type_handler.ftl'

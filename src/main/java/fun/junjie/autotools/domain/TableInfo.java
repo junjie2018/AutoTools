@@ -1,7 +1,9 @@
 package fun.junjie.autotools.domain;
 
 import lombok.Data;
+import org.apache.commons.lang3.StringUtils;
 
+import java.lang.reflect.Field;
 import java.util.List;
 
 @Data
@@ -46,4 +48,10 @@ public class TableInfo {
      * 表中所拥有的内部类信息
      */
     private List<InternalClassInfo> internalClassInfos;
+
+    public static void main(String[] args) {
+        for (Field declaredField : TableInfo.class.getDeclaredFields()) {
+            System.out.println(String.format("tableInfoMap.put(\"%s\",tableInfo.get%s());", declaredField.getName(), StringUtils.capitalize(declaredField.getName())));
+        }
+    }
 }

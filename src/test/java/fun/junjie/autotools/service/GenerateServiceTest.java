@@ -68,9 +68,21 @@ class GenerateServiceTest {
         List<TableInfo> tableInfos = JsonUtils.loadObject(Paths.get("C:\\Users\\wujj\\Desktop\\AutoTools\\src\\main\\resources\\tables\\pdm"), "core.json");
 
         for (TableInfo tableInfo : tableInfos) {
-            TemplateUtils.renderTpl("entity_controller.ftl", tableInfo);
-            TemplateUtils.renderTpl("entity_service.ftl", tableInfo);
+//            TemplateUtils.renderTpl("entity_controller.ftl", tableInfo);
+//            TemplateUtils.renderTpl("entity_service.ftl", tableInfo);
             TemplateUtils.renderTpl("entity_mapper.ftl", tableInfo);
+            TemplateUtils.renderTpl("entity.ftl", tableInfo);
         }
+    }
+
+    @Test
+    void testIncludeAndFragment() {
+        List<TableInfo> tableInfos = JsonUtils.loadObject(Paths.get("C:\\Users\\wujj\\Desktop\\AutoTools\\src\\main\\resources\\tables\\pdm"), "core.json");
+
+        for (TableInfo tableInfo : tableInfos) {
+            TemplateUtils.renderTpl("service.ftl", tableInfo);
+            TemplateUtils.renderTpl("controller.ftl", tableInfo);
+        }
+
     }
 }

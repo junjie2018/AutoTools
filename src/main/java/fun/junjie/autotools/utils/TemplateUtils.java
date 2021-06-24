@@ -7,6 +7,8 @@ import fun.junjie.autotools.config.ProjectConfig;
 import fun.junjie.autotools.config.tools.GenerateStrategy;
 import fun.junjie.autotools.config.tools.TemplateConfig;
 import fun.junjie.autotools.config.tools.ToolsConfig;
+import fun.junjie.autotools.directives.FragmentDirective;
+import fun.junjie.autotools.directives.IncludeDirective;
 import fun.junjie.autotools.domain.ColumnInfo;
 import fun.junjie.autotools.domain.EnumInfo;
 import fun.junjie.autotools.domain.TableInfo;
@@ -149,6 +151,8 @@ public class TemplateUtils {
             Configuration configuration = new Configuration(Configuration.VERSION_2_3_31);
             configuration.setDirectoryForTemplateLoading(curTemplateDir.toFile());
             configuration.setObjectWrapper(new DefaultObjectWrapperBuilder(Configuration.VERSION_2_3_31).build());
+            configuration.setSharedVariable("fragment", new FragmentDirective());
+            configuration.setSharedVariable("include", new IncludeDirective());
 
             // 如果目录不存在，则创建该目录
             if (!Files.exists(Paths.get(templateConfig.getOutputPath()))) {
@@ -225,6 +229,5 @@ public class TemplateUtils {
             e.printStackTrace();
             throw new RuntimeException("Render Template Wrong.");
         }
-
     }
 }
