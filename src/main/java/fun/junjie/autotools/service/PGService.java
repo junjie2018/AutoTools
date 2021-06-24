@@ -1,7 +1,7 @@
 //package fun.junjie.autotools.service;
 //
 //import fun.junjie.autotools.config.ProjectConfig;
-//import fun.junjie.autotools.config.tools.ToolsConfig;
+//import fun.junjie.autotools.config.ToolsConfig;
 //import fun.junjie.autotools.domain.java.TableInfo;
 //import fun.junjie.autotools.domain.postgre.Table;
 //import fun.junjie.autotools.domain.yaml.*;

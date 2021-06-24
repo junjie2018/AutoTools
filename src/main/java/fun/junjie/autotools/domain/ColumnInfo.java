@@ -21,32 +21,35 @@ public class ColumnInfo {
     private String columnComment;
 
     /**
-     * 列别名
-     */
-    private String columnAlias;
-
-    /**
-     * 字段名称（已去除表前缀，并转下划线为驼峰，首字母大写）
+     * 当前列如果作为Bean的，则Bean类名称
      * （如果字段是一个对象或枚举，则该名称有意义）
+     * （已转下划线为驼峰，首字母大写）
      */
-    private String fieldClassName;
+    private String beanClass;
 
     /**
-     * 字段名称（已去除表前缀，并转下划线为驼峰，首字母小写）
+     * 当前列如果作为Bean的，则Bean对象名称
+     * （已转下划线为驼峰，首字母小写）
      */
-    private String fieldObjectName;
+    private String beanObject;
 
     /**
      * 当前字段是否为主键
      */
-    private Boolean isPrimaryKey;
+    private Boolean isPrimary;
 
     /**
      * 字段类型（数据库中的字段映射到Java中的类型）
      */
     private String fieldType;
 
+    /**
+     * 当前列包含的枚举信息
+     */
     private EnumInfo enumInfo;
 
+    /**
+     * 当前列包含的内部类信息
+     */
     private InternalClassInfo internalClassInfo;
 }

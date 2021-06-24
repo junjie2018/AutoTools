@@ -20,19 +20,21 @@ public class TableInfo {
     private String tableComment;
 
     /**
-     * 类别名（由用户指定的别名，如果未指定，其值为tableComment）
+     * 业务中该实体的名称，默认情况下与tableComment相同
      */
-    private String tableAlias;
+    private String entityName;
 
     /**
-     * 实体名称（已去除表前缀，并转下划线为驼峰）
+     * 如果当前表作为Bean，则Bean类名称
+     * （已去除表前缀，并转下划线为驼峰，且首字母大写）
      */
-    private String entityClassName;
+    private String beanClass;
 
     /**
-     * 实体名称（已去除表前缀，并转下划线为驼峰，且首字母小写）
+     * 如果当前表作为Bean，则Bean类名称
+     * （已去除表前缀，并转下划线为驼峰，且首字母小写）
      */
-    private String entityObjectName;
+    private String beanObject;
 
     /**
      * 表中所拥有的列信息
@@ -48,10 +50,4 @@ public class TableInfo {
      * 表中所拥有的内部类信息
      */
     private List<InternalClassInfo> internalClassInfos;
-
-    public static void main(String[] args) {
-        for (Field declaredField : TableInfo.class.getDeclaredFields()) {
-            System.out.println(String.format("tableInfoMap.put(\"%s\",tableInfo.get%s());", declaredField.getName(), StringUtils.capitalize(declaredField.getName())));
-        }
-    }
 }

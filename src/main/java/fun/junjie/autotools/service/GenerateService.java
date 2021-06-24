@@ -1,9 +1,8 @@
 package fun.junjie.autotools.service;
 
 import fun.junjie.autotools.config.ProjectConfig;
-import fun.junjie.autotools.config.tools.TableConfig;
-import fun.junjie.autotools.config.tools.TemplateConfig;
-import fun.junjie.autotools.config.tools.ToolsConfig;
+import fun.junjie.autotools.config.TableConfig;
+import fun.junjie.autotools.config.ToolsConfig;
 import fun.junjie.autotools.domain.*;
 import fun.junjie.autotools.domain.postgre.Column;
 import fun.junjie.autotools.domain.postgre.ColumnType;
@@ -48,11 +47,7 @@ public class GenerateService {
 
         List<TableInfo> tableInfos = new ArrayList<>();
 
-
         for (Table table : tables) {
-
-
-            TableConfig tableConfig = getTableConfig(table.getTableName());
 
             // 填充tableInfo
 
@@ -61,12 +56,9 @@ public class GenerateService {
             tableInfo.setTableName(table.getTableName());
             tableInfo.setTableComment(table.getTableComment());
 
-            tableInfo.setTableAlias(StringUtils.isBlank(tableConfig.getTableAlias()) ?
-                    tableInfo.getTableComment() : tableConfig.getTableAlias());
-
-            tableInfo.setEntityClassName(
+            tableInfo.setBeanClass(
                     underlineToCamelCapitalized(removeTableNamePrefix(table.getTableName())));
-            tableInfo.setEntityObjectName(
+            tableInfo.setBeanObject(
                     underlineToCamelUncapitalized(removeTableNamePrefix(table.getTableName())));
             tableInfo.setEnumInfos(new ArrayList<>());
             tableInfo.setColumnInfos(new ArrayList<>());
@@ -79,10 +71,6 @@ public class GenerateService {
                 columnInfo.setColumnName(column.getColumnName());
                 columnInfo.setColumnType(column.getColumnType());
                 columnInfo.setColumnComment(column.getColumnComment());
-                columnInfo.setColumnAlias(column.getColumnComment());
-                columnInfo.setFieldClassName(JStringUtils.underlineToCamelCapitalized(column.getColumnName()));
-                columnInfo.setFieldObjectName(JStringUtils.underlineToCamelUncapitalized(column.getColumnName()));
-                columnInfo.setIsPrimaryKey(toolsConfig.isPrimaryKey(table.getTableName(), column.getColumnName()));
 
                 // 如果注释符合预定义规则，则该字段应该为枚举类型
                 if (StringUtils.isNotBlank(column.getColumnComment())
@@ -90,7 +78,6 @@ public class GenerateService {
                     EnumInfo enumInfo =
                             disposeEnumColumnComment(column.getColumnName(), column.getColumnComment());
                     tableInfo.getEnumInfos().add(enumInfo);
-                    columnInfo.setFieldType(enumInfo.getEnumClassName());
                     columnInfo.setEnumInfo(enumInfo);
                 }
                 // 如果类类型为JSONB，这需要生成内部类信息
@@ -128,7 +115,7 @@ public class GenerateService {
     }
 
     private TableConfig getTableConfig(String tableName) {
-        for (TableConfig tableConfig : toolsConfig.getTablesConfig().getTableConfig()) {
+        for (TableConfig tableConfig : toolsConfig.getTableConfigs()) {
             if (tableConfig.getTableName().equals(tableName)) {
                 return tableConfig;
             }
@@ -147,8 +134,8 @@ public class GenerateService {
 
         EnumInfo enumInfo = new EnumInfo();
 
-        enumInfo.setEnumClassName(JStringUtils.underlineToCamelCapitalized(columnName));
-        enumInfo.setEnumObjectName(JStringUtils.underlineToCamelUncapitalized(columnName));
+//        enumInfo.setEnumClassName(JStringUtils.underlineToCamelCapitalized(columnName));
+//        enumInfo.setEnumObjectName(JStringUtils.underlineToCamelUncapitalized(columnName));
         enumInfo.setEnumComment(enumColumnMatcher.group(1));
         enumInfo.setEnumItems(new ArrayList<>());
 

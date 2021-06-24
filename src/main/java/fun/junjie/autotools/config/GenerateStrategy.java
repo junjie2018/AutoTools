@@ -1,4 +1,4 @@
-package fun.junjie.autotools.config.tools;
+package fun.junjie.autotools.config;
 
 public enum GenerateStrategy {
     /**

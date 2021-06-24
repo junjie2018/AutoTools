@@ -3,8 +3,7 @@ spring:
     active: pdm
 
 project-config:
-  template-dir: 'C:\Users\wujj\Desktop\AutoTools\src\main\resources\templates'
-  temp-dir: 'C:\Users\wujj\Desktop\Temp'
-  table-info-dir: 'D:\Download\spring-demo-master\spring-demo-master\cn\AutoTools\src\main\resources\tables'
+  template-dir: 'classpath:templates'
+  tables-data-dir: 'classpath:tables'
   enum-comment-pattern: '^([A-Za-z\u4e00-\u9fa5 ]{1,})（(([A-Za-z0-9-]+：[\u4e00-\u9fa5A-Za-z0-9-]{1,}，?)+)）$'
   number-pattern: '^[0-9]*$'

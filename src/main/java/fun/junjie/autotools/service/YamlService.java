@@ -1,19 +1,15 @@
 package fun.junjie.autotools.service;
 
 import fun.junjie.autotools.config.ProjectConfig;
-import fun.junjie.autotools.config.tools.ToolsConfig;
-import fun.junjie.autotools.domain.postgre.Column;
+import fun.junjie.autotools.config.ToolsConfig;
 import fun.junjie.autotools.domain.postgre.Table;
-import fun.junjie.autotools.domain.yaml.JavaType;
 import fun.junjie.autotools.domain.yaml.TableRoot;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @Slf4j

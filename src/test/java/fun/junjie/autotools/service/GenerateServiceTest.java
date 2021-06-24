@@ -1,22 +1,18 @@
 package fun.junjie.autotools.service;
 
-import fun.junjie.autotools.config.tools.ToolsConfig;
+import fun.junjie.autotools.config.ToolsConfig;
 import fun.junjie.autotools.domain.EnumInfo;
 import fun.junjie.autotools.domain.TableInfo;
 import fun.junjie.autotools.domain.postgre.Table;
 import fun.junjie.autotools.utils.JsonUtils;
 import fun.junjie.autotools.utils.ProcessUtils;
 import fun.junjie.autotools.utils.TemplateUtils;
-import fun.junjie.autotools.utils.YamlUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 class GenerateServiceTest {

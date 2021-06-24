@@ -13,12 +13,12 @@ public class EnumInfo {
     /**
      * 枚举类名称
      */
-    private String enumClassName;
+    private String enumClass;
 
     /**
      * 枚举对象名称
      */
-    private String enumObjectName;
+    private String enumObject;
 
     /**
      * 枚举描述

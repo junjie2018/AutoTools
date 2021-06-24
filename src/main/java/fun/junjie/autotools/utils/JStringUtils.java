@@ -1,7 +1,7 @@
 package fun.junjie.autotools.utils;
 
 import fun.junjie.autotools.config.ProjectConfig;
-import fun.junjie.autotools.config.tools.ToolsConfig;
+import fun.junjie.autotools.config.ToolsConfig;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
@@ -64,13 +64,20 @@ public class JStringUtils {
     }
 
     /**
-     * 移除表明的前缀
+     * 移除表明前缀
      */
     public static String removeTableNamePrefix(String tableName) {
-        if (tableName.startsWith(toolsConfigStatic.getTablesConfig().getTablePrefix())) {
-            return tableName.substring(toolsConfigStatic.getTablesConfig().getTablePrefix().length());
+        if (tableName.startsWith(toolsConfigStatic.getTablePrefix())) {
+            return removePrefix(tableName, toolsConfigStatic.getTablePrefix());
         } else {
             return tableName;
         }
+    }
+
+    /**
+     * 移除字符串前缀
+     */
+    private static String removePrefix(String inputStr, String prefix) {
+        return inputStr.substring(prefix.length());
     }
 }

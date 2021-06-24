@@ -1,27 +1,21 @@
 package fun.junjie.autotools.service;
 
 import fun.junjie.autotools.config.ProjectConfig;
-import fun.junjie.autotools.config.tools.TableConfig;
-import fun.junjie.autotools.config.tools.ToolsConfig;
+import fun.junjie.autotools.config.TableConfig;
+import fun.junjie.autotools.config.ToolsConfig;
 import fun.junjie.autotools.domain.postgre.Column;
 import fun.junjie.autotools.domain.postgre.Table;
-import fun.junjie.autotools.domain.yaml.JavaType;
-import fun.junjie.autotools.domain.yaml.TableRoot;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.PostConstruct;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 @Slf4j
 @Service
@@ -47,7 +41,7 @@ public class TableService2 {
 
             DatabaseMetaData dbMetaData = this.jdbcTemplate.getDataSource().getConnection().getMetaData();
 
-            for (TableConfig tableConfig : toolsConfig.getTablesConfig().getTableConfig()) {
+            for (TableConfig tableConfig : toolsConfig.getTableConfigs()) {
 
                 // 处理表信息
                 ResultSet tables = dbMetaData.getTables(

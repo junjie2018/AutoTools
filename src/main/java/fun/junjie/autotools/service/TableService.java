@@ -1,8 +1,7 @@
 package fun.junjie.autotools.service;
 
-import com.alibaba.fastjson.JSON;
-import fun.junjie.autotools.config.tools.TableConfig;
-import fun.junjie.autotools.config.tools.ToolsConfig;
+import fun.junjie.autotools.config.TableConfig;
+import fun.junjie.autotools.config.ToolsConfig;
 import fun.junjie.autotools.constant.JdbcLabel;
 import fun.junjie.autotools.constant.TableType;
 import fun.junjie.autotools.domain.postgre.Column;
@@ -48,7 +47,7 @@ public class TableService {
 
             DatabaseMetaData dbMetaData = this.jdbcTemplate.getDataSource().getConnection().getMetaData();
 
-            for (TableConfig tableConfig : toolsConfig.getTablesConfig().getTableConfig()) {
+            for (TableConfig tableConfig : toolsConfig.getTableConfigs()) {
 
                 // 处理表信息
                 ResultSet tables = dbMetaData.getTables(
