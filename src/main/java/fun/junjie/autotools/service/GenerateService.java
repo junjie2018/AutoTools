@@ -55,7 +55,7 @@ public class GenerateService {
 
             tableInfo.setTableName(table.getTableName());
             tableInfo.setTableComment(table.getTableComment());
-
+            tableInfo.setEntityName(table.getTableComment());
             tableInfo.setBeanClass(
                     underlineToCamelCapitalized(removeTableNamePrefix(table.getTableName())));
             tableInfo.setBeanObject(
@@ -71,6 +71,8 @@ public class GenerateService {
                 columnInfo.setColumnName(column.getColumnName());
                 columnInfo.setColumnType(column.getColumnType());
                 columnInfo.setColumnComment(column.getColumnComment());
+                columnInfo.setBeanClass(JStringUtils.underlineToCamelCapitalized(column.getColumnName()));
+                columnInfo.setBeanObject(JStringUtils.underlineToCamelUncapitalized(column.getColumnName()));
 
                 // 如果注释符合预定义规则，则该字段应该为枚举类型
                 if (StringUtils.isNotBlank(column.getColumnComment())
@@ -184,5 +186,4 @@ public class GenerateService {
 
         return internalClassInfo;
     }
-
 }

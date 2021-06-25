@@ -1,6 +1,5 @@
 package ${templateConfig.filePackage};
 
-
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import ${templateConfig.otherConfigs["service-package"]}.${tableInfo.entityClassName}Service;
 import ${templateConfig.otherConfigs["request-package"]}.*;
@@ -15,14 +14,14 @@ import javax.validation.Valid;
 import java.util.List;
 
 /**
- * ${tableInfo.tableAlias}管理
+ * ${entityName}管理
  */
 @RestController
 @RequiredArgsConstructor
-public class ${tableInfo.entityClassName}TestController {
+public class ${beanClass}Controller {
 
-    private final ${tableInfo.entityClassName}Service ${tableInfo.entityObjectName}Service;
+    private final ${beanClass}Service ${beanObject}Service;
 
-    <@include tpl="fragments/create_entity.ftl" fragment="controller"/>
+    <@include tpl="CreateEntity.ftl" fragment="ControllerMethod"/>
 
 }

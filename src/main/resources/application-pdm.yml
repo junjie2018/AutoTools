@@ -16,7 +16,8 @@ tools-config:
   table-prefix: t_
   default-primary-key: id
   properties:
-    pdm-server: 'D:\Project\pdm\pdm-server\src\main\java\com\sdstc\pdm\server'
+    service-directory: 'D:\Project\pdm\pdm-server\src\main\java\com\sdstc\pdm\server'
+    common-directory: 'D:\Project\pdm\pdm-server\src\main\java\com\sdstc\pdm\common'
     service-package: 'com.sdstc.pdm.server.service'
     mapper-package: 'com.sdstc.pdm.server.mapper'
     entity-package: 'com.sdstc.pdm.server.entity'
@@ -33,9 +34,15 @@ tools-config:
         - page_entity_request.ftl
         - update_entity_request.ftl
   template-configs:
-    - template-filename: 'service.ftl'
-      output-directory: 'service'
+    - template-filename: 'Service.ftl'
+      output-directory: '${tools-config.properties.server-directory}\service'
+      output-filename: "Create${beanClass}Request"
+      properties:
+        package: ${tools-config.properties.serivce-package}
+
+    - template-filename: 'CreateEntityRequest.ftl'
+      output-directory: '${tools-config.properties.common-directory}\request'
       output-filename: '%sTestService.java'
       properties:
-        package: 'com.sdstc.pdm.server.service'
-#
+        package: ${tools-config.properties.request-package}
+

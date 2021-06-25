@@ -56,22 +56,7 @@ public class TemplateUtils {
         }
     }
 
-    private Map<String, Object> initMap(TableInfo tableInfo, TemplateConfig templateConfig) {
-        Map<String, Object> renderDataMap = new HashMap<>();
 
-        // tableInfo
-        renderDataMap.put("tableName", tableInfo.getTableName());
-        renderDataMap.put("tableComment", tableInfo.getTableComment());
-        renderDataMap.put("entityName", tableInfo.getEntityName());
-        renderDataMap.put("beanClass", tableInfo.getBeanClass());
-        renderDataMap.put("beanObject", tableInfo.getBeanObject());
-
-        // templateConfig
-        renderDataMap.put("", templateConfig.getTemplateFilename());
-        renderDataMap.put("", templateConfig.getTemplateFilename());
-
-        return renderDataMap;
-    }
 
     public static void renderTpl(String tplFileName, TableInfo tableInfo) {
 //        TemplateConfig templateConfig = tplFileNameToTemplatesConfig.get(tplFileName);

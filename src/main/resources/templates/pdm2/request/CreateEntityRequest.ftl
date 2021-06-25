@@ -1,0 +1,1 @@
+<@include tpl="CreateEntity.ftl" name="CreateEntityRequest"/>

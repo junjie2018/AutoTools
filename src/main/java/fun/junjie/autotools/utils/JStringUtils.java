@@ -63,6 +63,23 @@ public class JStringUtils {
         return StringUtils.join(segments);
     }
 
+    public static String strikethroughToCamelUncapitalized(String inputStr) {
+        if (StringUtils.isBlank(inputStr)) {
+            return "";
+        }
+
+        inputStr = StringUtils.trim(inputStr);
+
+        String[] segments = inputStr.split("-");
+        if (segments.length > 0) {
+            for (int i = 1; i < segments.length; i++) {
+                segments[i] = StringUtils.capitalize(segments[i]);
+            }
+        }
+
+        return StringUtils.join(segments);
+    }
+
     /**
      * 移除表明前缀
      */
