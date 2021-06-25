@@ -1,9 +1,7 @@
-package ${templateConfig.filePackage};
+package ${properties.package};
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import ${templateConfig.otherConfigs["service-package"]}.${tableInfo.entityClassName}Service;
-import ${templateConfig.otherConfigs["request-package"]}.*;
-import ${templateConfig.otherConfigs["response-package"]}.*;
+
 import com.sdstc.core.constants.APICons;
 import com.sdstc.core.vo.ResponseVo;
 import lombok.RequiredArgsConstructor;
@@ -12,6 +10,12 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
+
+<#if packagesToImport??>
+<#list packagesToImport as packageToImport>
+import ${packageToImport};
+</#list>
+</#if>
 
 /**
  * ${entityName}管理
