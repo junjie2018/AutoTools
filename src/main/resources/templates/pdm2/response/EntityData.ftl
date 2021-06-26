@@ -1,27 +1,43 @@
-package ${templateConfig.filePackage};
+package ${properties.package};
 
-import ${templateConfig.otherConfigs["enums-package"]}.*;
+import com.alibaba.fastjson.JSONObject;
 import lombok.Data;
 import java.time.LocalDateTime;
 
 @Data
-public class ${tableInfo.entityClassName}Data {
+public class ${beanClass}Data {
 
-<#list tableInfo.columnInfos as columnInfo>
+    <#list columnInfos as columnInfo>
+
+    <@noSpaceLine>
+
     <#if columnInfo.enumInfo??>
+
     /**
      * ${columnInfo.columnComment}
      *
-     * @see ${templateConfig.otherConfigs["enums-package"]}.${columnInfo.enumInfo.enumClassName}#value
+     * @see ${properties.enumsPackage}.${columnInfo.enumInfo.enumClass}#value
      */
-    private ${columnInfo.enumInfo.enumValueType} ${columnInfo.fieldObjectName};
-    <#else>
+    private ${columnInfo.enumInfo.enumValueType} ${columnInfo.beanObject};
+
+    <#elseif columnInfo.internalClassInfo??>
+
     /**
      * ${columnInfo.columnComment}
      */
-    private ${columnInfo.fieldType} ${columnInfo.fieldObjectName};
+    private JSONObject ${columnInfo.beanObject};
+
+    <#else>
+
+    /**
+     * ${columnInfo.columnComment}
+     */
+    private ${columnInfo.fieldType} ${columnInfo.beanObject};
+
     </#if>
 
-</#list>
+    </@noSpaceLine>
+
+    </#list>
 
 }

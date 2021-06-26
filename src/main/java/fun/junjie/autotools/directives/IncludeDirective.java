@@ -59,6 +59,10 @@ public class IncludeDirective implements TemplateDirectiveModel {
         String fragmentTemplate = params.get(TPL) == null ? "" : params.get(TPL).toString();
         String fragmentName = params.get(FRAGMENT) == null ? "" : params.get(FRAGMENT).toString();
 
+        if (StringUtils.isBlank(fragmentTemplate) || StringUtils.isBlank(fragmentName)) {
+            throw new RuntimeException("no tpl param or fragment param");
+        }
+
         String fragmentTplName = TemplateUtilsMax.getFragmentTplName(fragmentTemplate, fragmentName);
 
         Template template = env.getConfiguration().getTemplate(fragmentTplName);
@@ -70,9 +74,7 @@ public class IncludeDirective implements TemplateDirectiveModel {
         env.include(template);
 
 //
-//        if (StringUtils.isBlank(fragmentTemplate) || StringUtils.isBlank(fragmentName)) {
-//            throw new RuntimeException("no tpl param or fragment param");
-//        }
+
 //
 //        Object fragmentTemplateSource = env
 //                .getConfiguration()

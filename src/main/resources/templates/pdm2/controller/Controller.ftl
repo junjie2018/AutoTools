@@ -28,4 +28,12 @@ public class ${beanClass}Controller {
 
     <@include tpl="CreateEntity.ftl" fragment="ControllerMethod"/>
 
+    <@include tpl="UpdateEntity.ftl" fragment="ControllerMethod"/>
+
+    <@include tpl="QueryEntity.ftl" fragment="ControllerMethod"/>
+
+    <@include tpl="PageEntity.ftl" fragment="ControllerMethod"/>
+
+    <@include tpl="DeleteEntity.ftl" fragment="ControllerMethod"/>
+
 }

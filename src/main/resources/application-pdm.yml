@@ -16,33 +16,203 @@ tools-config:
   table-prefix: t_
   default-primary-key: id
   properties:
-    service-directory: 'D:\Project\pdm\pdm-server\src\main\java\com\sdstc\pdm\server'
-    common-directory: 'D:\Project\pdm\pdm-server\src\main\java\com\sdstc\pdm\common'
-    service-package: 'com.sdstc.pdm.server.service'
-    mapper-package: 'com.sdstc.pdm.server.mapper'
-    entity-package: 'com.sdstc.pdm.server.entity'
-    request-package: 'com.sdstc.pdm.common.request'
-    response-package: 'com.sdstc.pdm.common.response'
-    enums-package: 'com.sdstc.pdm.common.enums'
-  table-configs:
-    - table-name: t_pdm_project_member
-      template-to-generate:
-        - entity.ftl
-        - enum.ftl
-        - create_entity_request.ftl
-        - entity_ids_request.ftl
-        - page_entity_request.ftl
-        - update_entity_request.ftl
-  template-configs:
-    - template-filename: 'Service.ftl'
-      output-directory: '${tools-config.properties.server-directory}\service'
-      output-filename: "Create${beanClass}Request"
-      properties:
-        package: ${tools-config.properties.serivce-package}
+    server-directory: D:\Project\pdm\pdm-server\src\main\java\com\sdstc\pdm\server
+    common-directory: D:\Project\pdm\pdm-common\src\main\java\com\sdstc\pdm\common
+    service-package: com.sdstc.pdm.server.service
+    mapper-package: com.sdstc.pdm.server.mapper
+    entity-package: com.sdstc.pdm.server.entity
+    request-package: com.sdstc.pdm.common.request
+    response-package: com.sdstc.pdm.common.response
+    enums-package: com.sdstc.pdm.common.enums
+    controller-package: com.sdstc.pdm.server.controller
 
-    - template-filename: 'CreateEntityRequest.ftl'
-      output-directory: '${tools-config.properties.common-directory}\request'
-      output-filename: '%sTestService.java'
+  table-configs:
+#    - table-name: t_pdm_project
+#      template-to-generate:
+#        -
+#        - Service.ftl
+#        - CreateEntityRequest.ftl
+#        - Controller.ftl
+
+#    - table-name: t_pdm_project_member
+#      template-to-generate:
+#        - Service.ftl
+#        - CreateEntityRequest.ftl
+#        - Controller.ftl
+#
+#    - table-name: t_pdm_proj_member_group
+#      template-to-generate:
+#        - Service.ftl
+#        - CreateEntityRequest.ftl
+#        - Controller.ftl
+
+    - table-name: t_pdm_proj_style_material_plan
+      entity-name: 材料方案
+      template-to-generate:
+        - Controller.ftl
+#        - Service.ftl
+#        - CreateEntityRequest.ftl
+#        - EntityIdsRequest.ftl
+#        - PageEntityRequest.ftl
+#        - UpdateEntityRequest.ftl
+#        - EntityData.ftl
+#        - Entity.ftl
+#        - Mapper.ftl
+
+    - table-name: t_pdm_proj_dashboard
+      entity-name: 项目板墙
+      template-to-generate:
+        - Controller.ftl
+#        - Service.ftl
+#        - CreateEntityRequest.ftl
+#        - EntityIdsRequest.ftl
+#        - PageEntityRequest.ftl
+#        - UpdateEntityRequest.ftl
+#        - EntityData.ftl
+#        - CreateEntityRequest.ftl
+#        - Controller.ftl
+#        - Entity.ftl
+#        - Mapper.ftl
+
+    - table-name: t_pdm_attachment
+      entity-name: 附件
+      template-to-generate:
+        - Controller.ftl
+#        - Service.ftl
+#        - CreateEntityRequest.ftl
+#        - EntityIdsRequest.ftl
+#        - PageEntityRequest.ftl
+#        - UpdateEntityRequest.ftl
+#        - EntityData.ftl
+#        - CreateEntityRequest.ftl
+#        - Controller.ftl
+#        - Entity.ftl
+#        - Mapper.ftl
+
+    - table-name: t_pdm_project_task
+      entity-name: 任务流程
+      template-to-generate:
+        - Controller.ftl
+#        - Service.ftl
+#        - CreateEntityRequest.ftl
+#        - EntityIdsRequest.ftl
+#        - PageEntityRequest.ftl
+#        - UpdateEntityRequest.ftl
+#        - EntityData.ftl
+#        - CreateEntityRequest.ftl
+#        - Controller.ftl
+#        - Entity.ftl
+#        - Mapper.ftl
+
+    - table-name: t_pdm_flow_template
+      entity-name: 任务流程模板
+      template-to-generate:
+        - Controller.ftl
+#        - Service.ftl
+#        - CreateEntityRequest.ftl
+#        - EntityIdsRequest.ftl
+#        - PageEntityRequest.ftl
+#        - UpdateEntityRequest.ftl
+#        - EntityData.ftl
+#        - CreateEntityRequest.ftl
+#        - Controller.ftl
+#        - Entity.ftl
+#        - Mapper.ftl
+
+    - table-name: t_pdm_project_field
+      entity-name: 项目属性
+      template-to-generate:
+        - Controller.ftl
+#        - Service.ftl
+#        - CreateEntityRequest.ftl
+#        - EntityIdsRequest.ftl
+#        - PageEntityRequest.ftl
+#        - UpdateEntityRequest.ftl
+#        - EntityData.ftl
+#        - CreateEntityRequest.ftl
+#        - Controller.ftl
+#        - Entity.ftl
+#        - Mapper.ftl
+
+    - table-name: t_pdm_project_style
+      entity-name: 项目款式
+      template-to-generate:
+        - Controller.ftl
+#        - Service.ftl
+#        - CreateEntityRequest.ftl
+#        - EntityIdsRequest.ftl
+#        - PageEntityRequest.ftl
+#        - UpdateEntityRequest.ftl
+#        - EntityData.ftl
+#        - CreateEntityRequest.ftl
+#        - Controller.ftl
+#        - Entity.ftl
+#        - Mapper.ftl
+
+  template-configs:
+    - template-filename: Service.ftl
+      output-directory: ${tools-config.properties.server-directory}\service
+      output-filename: ${beanClass}Service.java
+      properties:
+        package: ${tools-config.properties.service-package}
+      packages-to-import:
+        - ${tools-config.properties.mapper-package}.*
+        - ${tools-config.properties.entity-package}.*
+        - ${tools-config.properties.request-package}.*
+        - ${tools-config.properties.response-package}.*
+        - com.sdstc.pdm.server.utils.PageUtils
+
+    - template-filename: Controller.ftl
+      output-directory: ${tools-config.properties.server-directory}\controller
+      output-filename: ${beanClass}Controller.java
+      properties:
+        package: ${tools-config.properties.controller-package}
+      packages-to-import:
+        - ${tools-config.properties.service-package}.*
+        - ${tools-config.properties.request-package}.*
+        - ${tools-config.properties.response-package}.*
+
+    - template-filename: CreateEntityRequest.ftl
+      output-directory: ${tools-config.properties.common-directory}\request
+      output-filename: Create${beanClass}Request.java
       properties:
         package: ${tools-config.properties.request-package}
+
+    - template-filename: EntityIdsRequest.ftl
+      output-directory: ${tools-config.properties.common-directory}\request
+      output-filename: ${beanClass}IdsRequest.java
+      properties:
+        package: ${tools-config.properties.request-package}
+
+    - template-filename: PageEntityRequest.ftl
+      output-directory: ${tools-config.properties.common-directory}\request
+      output-filename:  Page${beanClass}Request.java
+      properties:
+        package: ${tools-config.properties.request-package}
+
+    - template-filename: EntityData.ftl
+      output-directory: ${tools-config.properties.common-directory}\response
+      output-filename:  ${beanClass}Data.java
+      properties:
+        package: ${tools-config.properties.response-package}
+
+    - template-filename: UpdateEntityRequest.ftl
+      output-directory: ${tools-config.properties.common-directory}\request
+      output-filename: Update${beanClass}Request.java
+      properties:
+        package: ${tools-config.properties.request-package}
+
+    - template-filename: Entity.ftl
+      output-directory: ${tools-config.properties.server-directory}\entity
+      output-filename: ${beanClass}.java
+      properties:
+        package: ${tools-config.properties.entity-package}
+
+    - template-filename: Mapper.ftl
+      output-directory: ${tools-config.properties.server-directory}\mapper
+      output-filename: ${beanClass}Mapper.java
+      properties:
+        package: ${tools-config.properties.mapper-package}
+      packages-to-import:
+        - ${tools-config.properties.entity-package}.*
 

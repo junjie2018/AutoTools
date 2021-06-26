@@ -1,32 +1,66 @@
-package ${templateConfig.filePackage};
+package ${properties.package};
 
+import java.time.LocalDateTime;
+import com.alibaba.fastjson.JSONObject;
 import lombok.Data;
-import ${templateConfig.otherConfigs["enums-package"]}.*;
 import javax.validation.constraints.NotBlank;
 
-@Data
-public class Update${tableInfo.entityClassName}Request {
+<#if packagesToImport??>
+<#list packagesToImport as packageToImport>
+import ${packageToImport};
+</#list>
+</#if>
 
-<#list tableInfo.columnInfos as columnInfo>
+@Data
+public class Update${beanClass}Request {
+
+<#list columnInfos as columnInfo>
+    <@noSpaceLine>
+
+    <#-- 忽略审计字段 -->
+    <#if columnInfo.columnName == "org_id"
+        || columnInfo.columnName == "creator"
+        || columnInfo.columnName == "modifier"
+        || columnInfo.columnName == "gmt_create_time"
+        || columnInfo.columnName == "gmt_modify_time">
+        <#continue>
+    </#if>
+
     <#if columnInfo.enumInfo??>
+
     /**
      * ${columnInfo.columnComment}
      *
-     * @see ${templateConfig.otherConfigs["enums-package"]}.${columnInfo.enumInfo.enumClassName}#value
+     * @see ${properties.enumsPackage}.${columnInfo.enumInfo.enumClass}#value
      */
-    <#if columnInfo.isPrimaryKey>
+
+    <#if columnInfo.columnName == "id">
     @NotBlank
     </#if>
-    private ${columnInfo.enumInfo.enumValueType} ${columnInfo.fieldObjectName};
-    <#else>
+
+    private ${columnInfo.enumInfo.enumValueType} ${columnInfo.beanObject};
+
+    <#elseif columnInfo.internalClassInfo??>
+
     /**
      * ${columnInfo.columnComment}
      */
-    <#if columnInfo.isPrimaryKey>
+    private JSONObject ${columnInfo.beanObject};
+
+    <#else>
+
+    /**
+     * ${columnInfo.columnComment}
+     */
+    <#if columnInfo.columnName == "id">
     @NotBlank
     </#if>
-    private ${columnInfo.fieldType} ${columnInfo.fieldObjectName};
+
+    private ${columnInfo.fieldType} ${columnInfo.beanObject};
+
     </#if>
+
+    </@noSpaceLine>
 
 </#list>
 }

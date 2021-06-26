@@ -24,4 +24,16 @@ public class ${beanClass}Service {
 
     <@include tpl="CreateEntity.ftl" fragment="ServiceMethod"/>
 
+    <@include tpl="UpdateEntity.ftl" fragment="ServiceMethod"/>
+
+    <@include tpl="QueryEntity.ftl" fragment="ServiceMethod"/>
+
+    <@include tpl="PageEntity.ftl" fragment="ServiceMethod"/>
+
+    <@include tpl="DeleteEntity.ftl" fragment="ServiceMethod"/>
+
+    <@include tpl="PrivateMethods.ftl" fragment="judgeEntityExistByIdAndTenantId"/>
+
+    <@include tpl="PrivateMethods.ftl" fragment="judgeEntityExistByIdsAndTenantId"/>
+
 }

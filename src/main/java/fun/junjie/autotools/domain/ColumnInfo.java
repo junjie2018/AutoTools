@@ -34,11 +34,6 @@ public class ColumnInfo {
     private String beanObject;
 
     /**
-     * 当前字段是否为主键
-     */
-    private Boolean isPrimary;
-
-    /**
      * 字段类型（数据库中的字段映射到Java中的类型）
      */
     private String fieldType;

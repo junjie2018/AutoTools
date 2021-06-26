@@ -27,16 +27,12 @@ public class ToolsConfig {
         throw new RuntimeException("Wrong When Find TemplateConfig");
     }
 
-//    public boolean isPrimaryKey(String tableName, String fieldName) {
-//        String primaryKeyColumn = defaultPrimaryKey;
-//        for (TableConfig tableConfig : tableConfigs) {
-//            if (tableConfig.getTableName().equals(tableName)) {
-//                if (tableConfig.getPrimaryKey() != null) {
-//                    primaryKeyColumn = tableConfig.getPrimaryKey();
-//                }
-//                break;
-//            }
-//        }
-//        return primaryKeyColumn.equals(fieldName);
-//    }
+    public String getEntityName(String tableName) {
+        for (TableConfig tableConfig : tableConfigs) {
+            if (tableName.equals(tableConfig.getTableName())) {
+                return tableConfig.getEntityName();
+            }
+        }
+        throw new RuntimeException("Wrong When Find TemplateConfig");
+    }
 }

@@ -14,8 +14,7 @@ public class TemplateConfig {
     private String templateFilename;
     private String outputDirectory;
     private String outputFilename;
-    private String currentPackage;
-    private List<String> packageToImport;
+    private List<String> packagesToImport;
     private List<String> ignoreFields;
     private GenerateStrategy generateStrategy;
     private Map<String, String> properties;

@@ -1,10 +1,15 @@
-package ${templateConfig.filePackage};
+package ${properties.package};
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import ${templateConfig.otherConfigs["entity-package"]}.${tableInfo.entityClassName};
 import org.apache.ibatis.annotations.Mapper;
 
+<#if packagesToImport??>
+<#list packagesToImport as packageToImport>
+import ${packageToImport};
+</#list>
+</#if>
+
 @Mapper
-public interface ${tableInfo.entityClassName}Mapper extends BaseMapper<${tableInfo.entityClassName}> {
+public interface ${beanClass}Mapper extends BaseMapper<${beanClass}> {
 
 }

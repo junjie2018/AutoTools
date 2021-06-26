@@ -55,7 +55,10 @@ public class GenerateService {
 
             tableInfo.setTableName(table.getTableName());
             tableInfo.setTableComment(table.getTableComment());
-            tableInfo.setEntityName(table.getTableComment());
+
+            tableInfo.setEntityName(toolsConfig.getEntityName(table.getTableName()) == null ?
+                    table.getTableComment() :
+                    toolsConfig.getEntityName(table.getTableName()));
             tableInfo.setBeanClass(
                     underlineToCamelCapitalized(removeTableNamePrefix(table.getTableName())));
             tableInfo.setBeanObject(
@@ -136,8 +139,8 @@ public class GenerateService {
 
         EnumInfo enumInfo = new EnumInfo();
 
-//        enumInfo.setEnumClassName(JStringUtils.underlineToCamelCapitalized(columnName));
-//        enumInfo.setEnumObjectName(JStringUtils.underlineToCamelUncapitalized(columnName));
+        enumInfo.setEnumClass(JStringUtils.underlineToCamelCapitalized(columnName));
+        enumInfo.setEnumObject(JStringUtils.underlineToCamelUncapitalized(columnName));
         enumInfo.setEnumComment(enumColumnMatcher.group(1));
         enumInfo.setEnumItems(new ArrayList<>());
 

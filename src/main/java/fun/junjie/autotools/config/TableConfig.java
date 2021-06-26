@@ -7,6 +7,6 @@ import java.util.List;
 @Data
 public class TableConfig {
     private String tableName;
-    private String primaryKey;
+    private String entityName;
     private List<String> templateToGenerate;
 }

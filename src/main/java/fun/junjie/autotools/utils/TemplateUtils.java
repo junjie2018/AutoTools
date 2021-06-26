@@ -61,7 +61,7 @@ public class TemplateUtils {
     public static void renderTpl(String tplFileName, TableInfo tableInfo) {
 //        TemplateConfig templateConfig = tplFileNameToTemplatesConfig.get(tplFileName);
 //        renderTpl(tplFileName,
-//                String.format(templateConfig.getOutputFilename(), tableInfo.getEntityClassName()),
+//                String.format(templateConfig.getOutputFilename(), tableInfo.getbeanClass()),
 //                tableInfo);
     }
 

@@ -33,8 +33,10 @@ class TableServiceTest {
         List<Table> tables = tableService.getTables();
         List<TableInfo> tableInfos = generateService.getTableInfoFromTable(tables);
 
+        TemplateUtilsMax.render(tableInfos);
+
         for (TableInfo tableInfo : tableInfos) {
-            TemplateUtilsMax.renderTpl("CreateEntityRequest.ftl", tableInfo);
+//            TemplateUtilsMax.renderTpl("CreateEntityRequest.ftl", tableInfo);
         }
 
     }
