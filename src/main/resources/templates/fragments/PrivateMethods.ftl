@@ -1,6 +1,5 @@
 <@fragment name="judgeEntityExistByIdAndTenantId">
 
-    /** 奇怪，为什么对不齐 */
     private ${beanClass} judge${beanClass}ExistByIdAndTenantId(String id, String tenantId) {
         LambdaQueryWrapper<${beanClass}> queryWrapper = new LambdaQueryWrapper<${beanClass}>()
                 .eq(${beanClass}::getId, id)
@@ -20,7 +19,6 @@
 
 <@fragment name="judgeEntityExistByIdsAndTenantId">
 
-    /** 奇怪，为什么对不齐 */
     private List<${beanClass}> judge${beanClass}ExistByIdsAndTenantId(List<String> ids, String tenantId) {
         LambdaQueryWrapper<${beanClass}> queryWrapper = new LambdaQueryWrapper<${beanClass}>()
                 .eq(${beanClass}::getOrgId, tenantId)

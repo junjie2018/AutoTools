@@ -31,20 +31,17 @@
         ${beanClass} ${beanObject}Insert = ${beanClass}.builder()
                 <#list columnInfos as columnInfo>
 
-                <#if columnInfo.columnName == "id">
-                    <#continue>
-                </#if>
-
                 <#if columnInfo.columnName == "org_id">
                 .${columnInfo.beanObject}(tenantId)<#continue>
                 </#if>
 
-                <#if columnInfo.columnName == "modifier" || columnInfo.columnName == "creator">
-                .${columnInfo.beanObject}(userId)<#continue>
-                </#if>
-
-                <#if columnInfo.columnName == "gmt_create_time" || columnInfo.columnName == "gmt_modify_time">
-                .${columnInfo.beanObject}(LocalDateTime.now())<#continue>
+                <#if columnInfo.columnName == "id"
+                        || columnInfo.columnName == "creator"
+                        || columnInfo.columnName == "modifier"
+                        || columnInfo.columnName == "is_delete"
+                        || columnInfo.columnName == "gmt_create_time"
+                        || columnInfo.columnName == "gmt_modify_time">
+                    <#continue>
                 </#if>
 
                 .${columnInfo.beanObject}(request.get${columnInfo.beanClass}())

@@ -3,6 +3,7 @@ package ${properties.package};
 import com.alibaba.fastjson.JSONObject;
 import lombok.Data;
 import java.time.LocalDateTime;
+import com.alibaba.fastjson.annotation.JSONField;
 
 @Data
 public class ${beanClass}Data {

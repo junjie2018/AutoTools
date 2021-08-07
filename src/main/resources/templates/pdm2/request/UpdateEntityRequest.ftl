@@ -21,6 +21,7 @@ public class Update${beanClass}Request {
     <#if columnInfo.columnName == "org_id"
         || columnInfo.columnName == "creator"
         || columnInfo.columnName == "modifier"
+        || columnInfo.columnName == "is_delete"
         || columnInfo.columnName == "gmt_create_time"
         || columnInfo.columnName == "gmt_modify_time">
         <#continue>

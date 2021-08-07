@@ -1,6 +1,6 @@
 spring:
   profiles:
-    active: pdm
+    active: csc
 
 project-config:
   template-dir: 'classpath:templates'

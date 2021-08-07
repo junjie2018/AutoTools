@@ -2,6 +2,7 @@ package fun.junjie.autotools.service;
 
 import fun.junjie.autotools.config.ProjectConfig;
 import fun.junjie.autotools.config.ToolsConfig;
+import fun.junjie.autotools.domain.EnumInfo;
 import fun.junjie.autotools.domain.TableInfo;
 import fun.junjie.autotools.domain.postgre.Table;
 import fun.junjie.autotools.utils.JsonUtils;
@@ -33,10 +34,12 @@ class TableServiceTest {
         List<Table> tables = tableService.getTables();
         List<TableInfo> tableInfos = generateService.getTableInfoFromTable(tables);
 
-        TemplateUtilsMax.render(tableInfos);
+        // TemplateUtilsMax.render(tableInfos);
 
         for (TableInfo tableInfo : tableInfos) {
-//            TemplateUtilsMax.renderTpl("CreateEntityRequest.ftl", tableInfo);
+            for (EnumInfo enumInfo : tableInfo.getEnumInfos()) {
+                TemplateUtilsMax.renderTpl("Enum.ftl", enumInfo);
+            }
         }
 
     }

@@ -1,10 +1,3 @@
-
-
-
-
-
-
-
 <#--controller方法-->
 <@fragment name="ControllerMethod">
 

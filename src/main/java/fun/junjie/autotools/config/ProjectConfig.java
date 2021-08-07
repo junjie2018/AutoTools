@@ -56,8 +56,6 @@ public class ProjectConfig {
 
     private String classpathLabelToAbsolute(String path) {
         try {
-            ClassPathResource templates = new ClassPathResource("templates");
-
             return ResourceUtils.getFile(templateDir).getAbsolutePath();
         } catch (IOException e) {
             throw new RuntimeException("TemplateDir Config Wrong");

@@ -24,11 +24,21 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 @TableName("${tableName}")
-public class ${beanClass} implements Serializable {
+public class ${beanClass} extends BaseModel {
 
      <#list columnInfos as columnInfo>
 
      <@noSpaceLine>
+
+     <#if columnInfo.columnName == "id"
+        || columnInfo.columnName == "creator"
+        || columnInfo.columnName == "modifier"
+        || columnInfo.columnName == "is_delete"
+        || columnInfo.columnName == "gmt_create_time"
+        || columnInfo.columnName == "gmt_modify_time">
+        <#continue>
+    </#if>
+
      /**
       * ${columnInfo.columnComment}
       */

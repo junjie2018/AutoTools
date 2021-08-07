@@ -1,0 +1,151 @@
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+
+spring:
+  datasource:
+    driver-class-name: com.p6spy.engine.spy.P6SpyDriver
+    username: postgres
+    password: dev.DB
+    url: jdbc:p6spy:postgresql://192.168.19.12:5432/csc?stringtype=unspecified
+
+tools-config:
+  project-name: csc
+  table-prefix: t_
+  default-primary-key: id
+  properties:
+    server-directory: D:\Project\customer-service-center\csc-server\src\main\java\com\sdstc\csc\server
+    common-directory: D:\Project\customer-service-center\csc-common\src\main\java\com\sdstc\csc\common
+    service-package: com.sdstc.csc.server.service
+    mapper-package: com.sdstc.csc.server.mapper
+    entity-package: com.sdstc.csc.server.entity
+    request-package: com.sdstc.csc.common.request
+    response-package: com.sdstc.csc.common.response
+    enums-package: com.sdstc.csc.common.enums
+    controller-package: com.sdstc.csc.server.controller
+
+  table-configs:
+      - table-name: t_order
+        entity-name: 订单
+        template-to-generate:
+          - Controller.ftl
+          - Service.ftl
+          - CreateEntityRequest.ftl
+          - EntityIdsRequest.ftl
+          - PageEntityRequest.ftl
+          - UpdateEntityRequest.ftl
+          - EntityData.ftl
+          - CreateEntityRequest.ftl
+          - Controller.ftl
+          - Entity.ftl
+          - Mapper.ftl
+
+      - table-name: t_task
+        entity-name: 任务
+        template-to-generate:
+          - Controller.ftl
+          - Service.ftl
+          - CreateEntityRequest.ftl
+          - EntityIdsRequest.ftl
+          - PageEntityRequest.ftl
+          - UpdateEntityRequest.ftl
+          - EntityData.ftl
+          - CreateEntityRequest.ftl
+          - Controller.ftl
+          - Entity.ftl
+          - Mapper.ftl
+
+      - table-name: t_color_atla
+        entity-name: 色卡
+        template-to-generate:
+          - Controller.ftl
+          - Service.ftl
+          - CreateEntityRequest.ftl
+          - EntityIdsRequest.ftl
+          - PageEntityRequest.ftl
+          - UpdateEntityRequest.ftl
+          - EntityData.ftl
+          - CreateEntityRequest.ftl
+          - Controller.ftl
+          - Entity.ftl
+          - Mapper.ftl
+
+  template-configs:
+    - template-filename: Service.ftl
+      output-directory: ${tools-config.properties.server-directory}\service
+      output-filename: ${beanClass}Service.java
+      properties:
+        package: ${tools-config.properties.service-package}
+      packages-to-import:
+        - ${tools-config.properties.mapper-package}.*
+        - ${tools-config.properties.entity-package}.*
+        - ${tools-config.properties.request-package}.*
+        - ${tools-config.properties.response-package}.*
+        - com.sdstc.core.utils.PageUtils
+
+    - template-filename: Controller.ftl
+      output-directory: ${tools-config.properties.server-directory}\controller
+      output-filename: ${beanClass}Controller.java
+      properties:
+        package: ${tools-config.properties.controller-package}
+      packages-to-import:
+        - ${tools-config.properties.service-package}.*
+        - ${tools-config.properties.request-package}.*
+        - ${tools-config.properties.response-package}.*
+
+    - template-filename: CreateEntityRequest.ftl
+      output-directory: ${tools-config.properties.common-directory}\request
+      output-filename: Create${beanClass}Request.java
+      properties:
+        package: ${tools-config.properties.request-package}
+
+    - template-filename: EntityIdsRequest.ftl
+      output-directory: ${tools-config.properties.common-directory}\request
+      output-filename: ${beanClass}IdsRequest.java
+      properties:
+        package: ${tools-config.properties.request-package}
+
+    - template-filename: PageEntityRequest.ftl
+      output-directory: ${tools-config.properties.common-directory}\request
+      output-filename:  Page${beanClass}Request.java
+      properties:
+        package: ${tools-config.properties.request-package}
+
+    - template-filename: EntityData.ftl
+      output-directory: ${tools-config.properties.common-directory}\response
+      output-filename:  ${beanClass}Data.java
+      properties:
+        package: ${tools-config.properties.response-package}
+
+    - template-filename: UpdateEntityRequest.ftl
+      output-directory: ${tools-config.properties.common-directory}\request
+      output-filename: Update${beanClass}Request.java
+      properties:
+        package: ${tools-config.properties.request-package}
+
+    - template-filename: Entity.ftl
+      output-directory: ${tools-config.properties.server-directory}\entity
+      output-filename: ${beanClass}.java
+      properties:
+        package: ${tools-config.properties.entity-package}
+      packages-to-import:
+        - com.sdstc.core.base.model.BaseModel
+
+    - template-filename: Mapper.ftl
+      output-directory: ${tools-config.properties.server-directory}\mapper
+      output-filename: ${beanClass}Mapper.java
+      properties:
+        package: ${tools-config.properties.mapper-package}
+      packages-to-import:
+        - ${tools-config.properties.entity-package}.*
+
+    - template-filename: Enum.ftl
+      output-directory: ${tools-config.properties.common-directory}\enums
+      output-filename: ${enumClass}.java
+      properties:
+        package: ${tools-config.properties.enums-package}
+#      packages-to-import:
+#        - ${tools-config.properties.entity-package}.*
+

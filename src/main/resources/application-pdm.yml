@@ -46,10 +46,10 @@ tools-config:
 #        - CreateEntityRequest.ftl
 #        - Controller.ftl
 
-    - table-name: t_pdm_proj_style_material_plan
-      entity-name: 材料方案
-      template-to-generate:
-        - Controller.ftl
+#    - table-name: t_pdm_proj_style_material_plan
+#      entity-name: 材料方案
+#      template-to-generate:
+#        - Controller.ftl
 #        - Service.ftl
 #        - CreateEntityRequest.ftl
 #        - EntityIdsRequest.ftl
@@ -59,10 +59,10 @@ tools-config:
 #        - Entity.ftl
 #        - Mapper.ftl
 
-    - table-name: t_pdm_proj_dashboard
-      entity-name: 项目板墙
-      template-to-generate:
-        - Controller.ftl
+#    - table-name: t_pdm_proj_dashboard
+#      entity-name: 项目板墙
+#      template-to-generate:
+#        - Controller.ftl
 #        - Service.ftl
 #        - CreateEntityRequest.ftl
 #        - EntityIdsRequest.ftl
@@ -74,10 +74,10 @@ tools-config:
 #        - Entity.ftl
 #        - Mapper.ftl
 
-    - table-name: t_pdm_attachment
-      entity-name: 附件
-      template-to-generate:
-        - Controller.ftl
+#    - table-name: t_pdm_attachment
+#      entity-name: 附件
+#      template-to-generate:
+#        - Controller.ftl
 #        - Service.ftl
 #        - CreateEntityRequest.ftl
 #        - EntityIdsRequest.ftl
@@ -89,10 +89,10 @@ tools-config:
 #        - Entity.ftl
 #        - Mapper.ftl
 
-    - table-name: t_pdm_project_task
-      entity-name: 任务流程
-      template-to-generate:
-        - Controller.ftl
+#    - table-name: t_pdm_project_task
+#      entity-name: 任务流程
+#      template-to-generate:
+#        - Controller.ftl
 #        - Service.ftl
 #        - CreateEntityRequest.ftl
 #        - EntityIdsRequest.ftl
@@ -104,10 +104,10 @@ tools-config:
 #        - Entity.ftl
 #        - Mapper.ftl
 
-    - table-name: t_pdm_flow_template
-      entity-name: 任务流程模板
-      template-to-generate:
-        - Controller.ftl
+#    - table-name: t_pdm_flow_template
+#      entity-name: 任务流程模板
+#      template-to-generate:
+#        - Controller.ftl
 #        - Service.ftl
 #        - CreateEntityRequest.ftl
 #        - EntityIdsRequest.ftl
@@ -119,10 +119,10 @@ tools-config:
 #        - Entity.ftl
 #        - Mapper.ftl
 
-    - table-name: t_pdm_project_field
-      entity-name: 项目属性
-      template-to-generate:
-        - Controller.ftl
+#    - table-name: t_pdm_project_field
+#      entity-name: 项目属性
+#      template-to-generate:
+#        - Controller.ftl
 #        - Service.ftl
 #        - CreateEntityRequest.ftl
 #        - EntityIdsRequest.ftl
@@ -134,10 +134,10 @@ tools-config:
 #        - Entity.ftl
 #        - Mapper.ftl
 
-    - table-name: t_pdm_project_style
-      entity-name: 项目款式
-      template-to-generate:
-        - Controller.ftl
+#    - table-name: t_pdm_project_style
+#      entity-name: 项目款式
+#      template-to-generate:
+#        - Controller.ftl
 #        - Service.ftl
 #        - CreateEntityRequest.ftl
 #        - EntityIdsRequest.ftl
@@ -148,6 +148,160 @@ tools-config:
 #        - Controller.ftl
 #        - Entity.ftl
 #        - Mapper.ftl
+
+#    - table-name: t_pdm_proj_style_proposal
+#      entity-name: 材料方案
+#      template-to-generate:
+#        - Controller.ftl
+#        - Service.ftl
+#        - CreateEntityRequest.ftl
+#        - EntityIdsRequest.ftl
+#        - PageEntityRequest.ftl
+#        - UpdateEntityRequest.ftl
+#        - EntityData.ftl
+#        - CreateEntityRequest.ftl
+#        - Controller.ftl
+#        - Entity.ftl
+#        - Mapper.ftl
+
+#    - table-name: t_pdm_proj_style_proposal_color
+#      entity-name: 材料方案
+#      template-to-generate:
+#        - Controller.ftl
+#        - Service.ftl
+#        - CreateEntityRequest.ftl
+#        - EntityIdsRequest.ftl
+#        - PageEntityRequest.ftl
+#        - UpdateEntityRequest.ftl
+#        - EntityData.ftl
+#        - CreateEntityRequest.ftl
+#        - Controller.ftl
+#        - Entity.ftl
+#        - Mapper.ftl
+
+#    - table-name: t_pdm_proj_style_2d
+#      entity-name: 2D设计
+#      template-to-generate:
+#        - Controller.ftl
+#        - Service.ftl
+#        - CreateEntityRequest.ftl
+#        - EntityIdsRequest.ftl
+#        - PageEntityRequest.ftl
+#        - UpdateEntityRequest.ftl
+#        - EntityData.ftl
+#        - CreateEntityRequest.ftl
+#        - Controller.ftl
+#        - Entity.ftl
+#        - Mapper.ftl
+
+#    - table-name: t_pdm_field
+#      entity-name: 基础字段
+#      template-to-generate:
+#        - Controller.ftl
+#        - Service.ftl
+#        - CreateEntityRequest.ftl
+#        - EntityIdsRequest.ftl
+#        - PageEntityRequest.ftl
+#        - UpdateEntityRequest.ftl
+#        - EntityData.ftl
+#        - CreateEntityRequest.ftl
+#        - Controller.ftl
+#        - Entity.ftl
+#        - Mapper.ftl
+
+#    - table-name: t_pdm_style_3d
+#      entity-name: 3D设计
+#      template-to-generate:
+#        - Controller.ftl
+#        - Service.ftl
+#        - CreateEntityRequest.ftl
+#        - EntityIdsRequest.ftl
+#        - PageEntityRequest.ftl
+#        - UpdateEntityRequest.ftl
+#        - EntityData.ftl
+#        - CreateEntityRequest.ftl
+#        - Controller.ftl
+#        - Entity.ftl
+#        - Mapper.ftl
+
+
+#    - table-name: t_pdm_style_relate_rendering_color_plan
+#      entity-name: 鞋款关联渲染配色方案
+#      template-to-generate:
+#        - Controller.ftl
+#        - Service.ftl
+#        - CreateEntityRequest.ftl
+#        - EntityIdsRequest.ftl
+#        - PageEntityRequest.ftl
+#        - UpdateEntityRequest.ftl
+#        - EntityData.ftl
+#        - CreateEntityRequest.ftl
+#        - Controller.ftl
+#        - Entity.ftl
+#        - Mapper.ftl
+
+
+
+
+#    - table-name: t_pdm_member
+#      entity-name: 成员信息
+#      template-to-generate:
+#        - Controller.ftl
+#        - Service.ftl
+#        - CreateEntityRequest.ftl
+#        - EntityIdsRequest.ftl
+#        - PageEntityRequest.ftl
+#        - UpdateEntityRequest.ftl
+#        - EntityData.ftl
+#        - CreateEntityRequest.ftl
+#        - Controller.ftl
+#        - Entity.ftl
+#        - Mapper.ftl
+
+#    - table-name: t_pdm_member_group
+#      entity-name: 团队信息
+#      template-to-generate:
+#        - Controller.ftl
+#        - Service.ftl
+#        - CreateEntityRequest.ftl
+#        - EntityIdsRequest.ftl
+#        - PageEntityRequest.ftl
+#        - UpdateEntityRequest.ftl
+#        - EntityData.ftl
+#        - CreateEntityRequest.ftl
+#        - Controller.ftl
+#        - Entity.ftl
+#        - Mapper.ftl
+
+#    - table-name: t_pdm_proj_step_schedule
+#      entity-name: 项目步骤日程
+#      template-to-generate:
+#        - Controller.ftl
+#        - Service.ftl
+#        - CreateEntityRequest.ftl
+#        - EntityIdsRequest.ftl
+#        - PageEntityRequest.ftl
+#        - UpdateEntityRequest.ftl
+#        - EntityData.ftl
+#        - CreateEntityRequest.ftl
+#        - Controller.ftl
+#        - Entity.ftl
+#        - Mapper.ftl
+
+      - table-name: t_company_package_manage
+        entity-name: 公司套餐审核状态
+        template-to-generate:
+          - Controller.ftl
+          - Service.ftl
+          - CreateEntityRequest.ftl
+          - EntityIdsRequest.ftl
+          - PageEntityRequest.ftl
+          - UpdateEntityRequest.ftl
+          - EntityData.ftl
+          - CreateEntityRequest.ftl
+          - Controller.ftl
+          - Entity.ftl
+          - Mapper.ftl
 
   template-configs:
     - template-filename: Service.ftl
@@ -207,6 +361,8 @@ tools-config:
       output-filename: ${beanClass}.java
       properties:
         package: ${tools-config.properties.entity-package}
+      packages-to-import:
+        - com.sdstc.core.base.model.BaseModel
 
     - template-filename: Mapper.ftl
       output-directory: ${tools-config.properties.server-directory}\mapper

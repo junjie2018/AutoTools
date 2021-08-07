@@ -12,6 +12,7 @@ import fun.junjie.autotools.config.ToolsConfig;
 import fun.junjie.autotools.directives.FragmentDirective;
 import fun.junjie.autotools.directives.IncludeDirective;
 import fun.junjie.autotools.directives.NoSpaceLineDiretive;
+import fun.junjie.autotools.domain.EnumInfo;
 import fun.junjie.autotools.domain.TableInfo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -79,6 +80,20 @@ public class TemplateUtilsMax {
         }
     }
 
+    public static void renderTpl(String tplName, EnumInfo enumInfo) {
+        if (!tplContentsMap.containsKey(tplName)) {
+            throw new RuntimeException("No This Fragment Tpl");
+        }
+
+        try {
+            Template template = configuration.getTemplate(tplName);
+            TemplateConfig templateConfig = toolsConfig.getTemplateConfig(tplName);
+            processTemplate(template, enumInfo, templateConfig);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public static void renderTplStr(String tplName, TableInfo tableInfo) {
         if (!tplContentsMap.containsKey(tplName)) {
             throw new RuntimeException("No This Fragment Tpl");
@@ -116,6 +131,24 @@ public class TemplateUtilsMax {
         }
     }
 
+    private static void processTemplate(Template template,
+                                        EnumInfo enumInfo,
+                                        TemplateConfig templateConfig) {
+        try {
+            Map<String, Object> renderData = initMap(enumInfo, templateConfig);
+
+            String outputFileName = getOutputFileName(templateConfig.getOutputFilename(), renderData);
+            Path outputFilePath = Paths.get(templateConfig.getOutputDirectory(), outputFileName);
+
+            FileWriter fileWriter = new FileWriter(outputFilePath.toString());
+
+            processTemplate(template, new CustomFileWriter(fileWriter), renderData);
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 
     private static void processTemplateStr(Template template,
                                            TableInfo tableInfo,
@@ -136,6 +169,38 @@ public class TemplateUtilsMax {
         } catch (TemplateException | IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private static Map<String, Object> initMap(EnumInfo enumInfo, TemplateConfig templateConfig) {
+        Map<String, Object> renderDataMap = new HashMap<>();
+
+        // enumInfo
+        renderDataMap.put("enumItems", enumInfo.getEnumItems());
+        renderDataMap.put("enumClass", enumInfo.getEnumClass());
+        renderDataMap.put("enumComment", enumInfo.getEnumComment());
+        renderDataMap.put("enumObject", enumInfo.getEnumObject());
+        renderDataMap.put("enumValueType", enumInfo.getEnumValueType());
+
+        // templateConfig中的Properties优先级更高（在构建properties的时候，将配置文件中的下滑线转换为驼峰）
+        Map<String, String> properties = new HashMap<>();
+        if (toolsConfig.getProperties() != null) {
+            for (Map.Entry<String, String> entry : toolsConfig.getProperties().entrySet()) {
+                properties.put(JStringUtils.strikethroughToCamelUncapitalized(entry.getKey()),
+                        entry.getValue());
+            }
+        }
+
+        if (templateConfig.getProperties() != null) {
+            for (Map.Entry<String, String> entry : templateConfig.getProperties().entrySet()) {
+                properties.put(JStringUtils.strikethroughToCamelUncapitalized(entry.getKey()),
+                        entry.getValue());
+            }
+        }
+
+        renderDataMap.put("packagesToImport", templateConfig.getPackagesToImport());
+        renderDataMap.put("properties", properties);
+
+        return renderDataMap;
     }
 
     private static Map<String, Object> initMap(TableInfo tableInfo, TemplateConfig templateConfig) {
@@ -177,6 +242,8 @@ public class TemplateUtilsMax {
         // 临时方案，以后会换成正则
         if (outputFilePattern.contains("${beanClass}")) {
             return outputFilePattern.replace("${beanClass}", (String) renderData.get("beanClass"));
+        } else if (outputFilePattern.contains("${enumClass}")) {
+            return outputFilePattern.replace("${enumClass}", (String) renderData.get("enumClass"));
         }
         return outputFilePattern;
     }
