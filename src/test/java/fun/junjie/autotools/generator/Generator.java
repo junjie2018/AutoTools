@@ -1,9 +1,10 @@
-package fun.junjie.autotools.utils;
+package fun.junjie.autotools.generator;
 
 import fun.junjie.autotools.domain.TableInfo;
 import fun.junjie.autotools.domain.postgre.Table;
-import fun.junjie.autotools.service.GenerateService;
-import fun.junjie.autotools.service.TableService;
+import fun.junjie.autotools.test.GenerateService;
+import fun.junjie.autotools.test.TableService;
+import fun.junjie.autotools.utils.TemplateUtilsMax;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -11,25 +12,20 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.util.List;
 
 @SpringBootTest
-class TemplateUtilsTest {
+class Generator {
 
-
-    @Autowired
-    private GenerateService generateService;
     @Autowired
     private TableService tableService;
 
+    @Autowired
+    private GenerateService generateService;
+
     @Test
-    void tmp() {
+    void test() {
 
         List<Table> tables = tableService.getTables();
-
         List<TableInfo> tableInfos = generateService.getTableInfoFromTable(tables);
 
-        for (TableInfo tableInfo : tableInfos) {
-            //
-            TemplateUtils.renderTplString("controller_method_create_entity.ftl", tableInfo);
-        }
+        TemplateUtilsMax.render(tableInfos);
     }
-
 }

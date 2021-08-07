@@ -1,4 +1,4 @@
-package fun.junjie.autotools.service;
+package fun.junjie.autotools.test;
 
 import fun.junjie.autotools.config.ToolsConfig;
 import fun.junjie.autotools.domain.EnumInfo;
@@ -15,7 +15,7 @@ import java.nio.file.Paths;
 import java.util.List;
 
 @SpringBootTest
-class GenerateServiceTest {
+class TemplateConfigTest {
 
     @Autowired
     private GenerateService generateService;

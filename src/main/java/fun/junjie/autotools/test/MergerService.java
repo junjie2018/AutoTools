@@ -1,4 +1,4 @@
-package fun.junjie.autotools.service;
+package fun.junjie.autotools.test;
 
 import fun.junjie.autotools.domain.yaml.JavaType;
 import fun.junjie.autotools.domain.yaml.TableRoot;

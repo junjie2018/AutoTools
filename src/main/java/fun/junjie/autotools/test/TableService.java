@@ -1,4 +1,4 @@
-package fun.junjie.autotools.service;
+package fun.junjie.autotools.test;
 
 import fun.junjie.autotools.config.TableConfig;
 import fun.junjie.autotools.config.ToolsConfig;

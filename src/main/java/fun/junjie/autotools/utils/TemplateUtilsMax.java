@@ -63,6 +63,12 @@ public class TemplateUtilsMax {
                 }
                 throw new RuntimeException("No Table Info");
             }
+
+            for (TableInfo tableInfo : tableInfos) {
+                for (EnumInfo enumInfo : tableInfo.getEnumInfos()) {
+                    TemplateUtilsMax.renderTpl("Enum.ftl", enumInfo);
+                }
+            }
         }
     }
 

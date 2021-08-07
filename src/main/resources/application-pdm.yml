@@ -1,15 +1,11 @@
-management:
-  endpoints:
-    web:
-      exposure:
-        include: '*'
-
 spring:
   datasource:
     driver-class-name: com.p6spy.engine.spy.P6SpyDriver
     username: postgres
     password: dev.DB
     url: jdbc:p6spy:postgresql://192.168.19.12:5432/pdm?stringtype=unspecified
+
+
 
 tools-config:
   project-name: pdm
