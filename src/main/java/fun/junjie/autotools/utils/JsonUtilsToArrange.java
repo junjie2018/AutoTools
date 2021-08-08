@@ -11,7 +11,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
-public class JsonUtils {
+public class JsonUtilsToArrange {
 
     public static void dumpObject(Object object, Path dirPath, String fileName) {
         try (FileWriter fileWriter = new FileWriter(Paths.get(dirPath.toString(), fileName).toString())) {

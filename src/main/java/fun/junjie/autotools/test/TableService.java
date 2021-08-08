@@ -29,9 +29,6 @@ public class TableService {
     private final JdbcTemplate jdbcTemplate;
     private final ToolsConfig toolsConfig;
 
-    private static Pattern ENUM_COMMENT_PATTERN = Pattern.compile("^([\\u4e00-\\u9fa5]{1,})（(([A-Za-z0-9-]+：[\\u4e00-\\u9fa5]{1,}，?)+)）$");
-    private static Pattern NUMBER_PATTERN = Pattern.compile("^[0-9]*$");
-
     /**
      * 从数据库中获取表、列信息
      */
