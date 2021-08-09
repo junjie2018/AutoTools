@@ -8,9 +8,13 @@ import fun.junjie.autotools.domain.postgre.Column;
 import fun.junjie.autotools.domain.postgre.Table;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeansException;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.util.ArrayList;
@@ -22,22 +26,26 @@ import java.util.regex.Pattern;
 
 @Slf4j
 @Service
-@RequiredArgsConstructor
-@SuppressWarnings("Duplicates")
-public class TableService {
+public class TableService implements ApplicationContextAware {
 
-    private final JdbcTemplate jdbcTemplate;
-    private final ToolsConfig toolsConfig;
+    private static JdbcTemplate jdbcTemplate;
+    private static ToolsConfig toolsConfig;
 
-    private static Pattern ENUM_COMMENT_PATTERN = Pattern.compile("^([\\u4e00-\\u9fa5]{1,})（(([A-Za-z0-9-]+：[\\u4e00-\\u9fa5]{1,}，?)+)）$");
-    private static Pattern NUMBER_PATTERN = Pattern.compile("^[0-9]*$");
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        jdbcTemplate = applicationContext.getBean(JdbcTemplate.class);
+        toolsConfig = applicationContext.getBean(toolsConfig.getClass());
+    }
 
     /**
      * 从数据库中获取表、列信息
      */
-    public List<Table> getTables() {
+    public static List<Table> getTables() {
+
+        if()
+
         try {
-            if (this.jdbcTemplate.getDataSource() == null) {
+            if (jdbcTemplate.getDataSource() == null) {
                 throw new RuntimeException("Datasource Config Wrong");
             }
 
@@ -90,4 +98,6 @@ public class TableService {
             throw new RuntimeException("Datasource Config Wrong");
         }
     }
+
+
 }

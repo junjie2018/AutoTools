@@ -1,21 +1,39 @@
-<#--controller方法-->
-<@fragment name="ControllerMethod">
+<#--&lt;#&ndash;controller方法&ndash;&gt;-->
+<#--<@fragment name="ControllerMethod">-->
 
-    /**
-     * 创建${entityName}
-     *
-     * @return 创建的${entityName}的Id
-     */
-    @PostMapping("/create${beanClass}")
-    @Transactional
-    public ResponseVo<String> create${beanClass}(
-            @RequestHeader(APICons.HEADER_TENANT_ID) String tenantId,
-            @RequestAttribute(APICons.REQUEST_USER_ID) String userId,
-            @RequestBody @Valid Create${beanClass}Request request) {
+<#--    /**-->
+<#--     * 创建${entityName}-->
+<#--     *-->
+<#--     * @return 创建的${entityName}的Id-->
+<#--     */-->
+<#--    @PostMapping("/create${beanClass}")-->
+<#--    @Transactional-->
+<#--    public ResponseVo<String> create${beanClass}(-->
+<#--            @RequestHeader(APICons.HEADER_TENANT_ID) String tenantId,-->
+<#--            @RequestAttribute(APICons.REQUEST_USER_ID) String userId,-->
+<#--            @RequestBody @Valid Create${beanClass}Request request) {-->
 
-        return ResponseVo.createSuccessByData(${beanObject}Service.create${beanClass}(userId, tenantId, request));
+<#--        return ResponseVo.createSuccessByData(${beanObject}Service.create${beanClass}(userId, tenantId, request));-->
 
-    }
+<#--    }-->
+
+<#--</@fragment>-->
+
+
+
+<@clazz name="xxx">
+
+    <@dependency method=""/>
+    <@dependency method="xxx"/>
+    <@dependency method="xxx"/>
+
+</@clazz>
+
+<@fragment name="">
+
+</@fragment>
+
+<@fragment name="">
 
 </@fragment>
 
