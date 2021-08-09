@@ -32,12 +32,15 @@ public class TableUtils implements ApplicationContextAware {
     private static JdbcTemplate jdbcTemplate;
     private static GeneratorConfig generatorConfig;
 
+<<<<<<< HEAD:src/main/java/fun/junjie/autotools/test/TableUtils.java
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         jdbcTemplate = applicationContext.getBean(JdbcTemplate.class);
         generatorConfig = applicationContext.getBean(generatorConfig.getClass());
     }
 
+=======
+>>>>>>> 92485bde88f093ec797579be2dc6099aef0698b2:src/main/java/fun/junjie/autotools/test/TableService.java
     /**
      * 从数据库中获取表、列信息
      */

@@ -4,7 +4,7 @@ import fun.junjie.autotools.config.GeneratorConfig;
 import fun.junjie.autotools.domain.EnumInfo;
 import fun.junjie.autotools.domain.TableInfo;
 import fun.junjie.autotools.domain.postgre.Table;
-import fun.junjie.autotools.utils.JsonUtils;
+import fun.junjie.autotools.utils.JsonUtilsToArrange;
 import fun.junjie.autotools.utils.ProcessUtils;
 import fun.junjie.autotools.utils.TemplateUtils;
 import org.junit.jupiter.api.Test;
@@ -29,7 +29,7 @@ class TemplateConfigTest {
         List<Table> tables = tableUtils.getTables();
         List<TableInfo> tableInfos = generateService.getTableInfoFromTable(tables);
 
-        JsonUtils.dumpObject(tableInfos, Paths.get("C:\\Users\\wujj\\Desktop\\AutoTools\\src\\main\\resources\\tables\\pdm"), "tmp.json");
+        JsonUtilsToArrange.dumpObject(tableInfos, Paths.get("C:\\Users\\wujj\\Desktop\\AutoTools\\src\\main\\resources\\tables\\pdm"), "tmp.json");
 
         ProcessUtils.compareTwoDirs(
                 Paths.get("C:\\Users\\wujj\\Desktop\\AutoTools\\src\\main\\resources\\tables\\pdm\\tmp.json"),
@@ -39,7 +39,7 @@ class TemplateConfigTest {
 
     @Test
     void testCreateRequestAndResponse() {
-        List<TableInfo> tableInfos = JsonUtils.loadObject(Paths.get("C:\\Users\\wujj\\Desktop\\AutoTools\\src\\main\\resources\\tables\\pdm"), "core.json");
+        List<TableInfo> tableInfos = JsonUtilsToArrange.loadObject(Paths.get("C:\\Users\\wujj\\Desktop\\AutoTools\\src\\main\\resources\\tables\\pdm"), "core.json");
 
         for (TableInfo tableInfo : tableInfos) {
             TemplateUtils.renderTpl("entity.ftl", tableInfo);
@@ -61,7 +61,7 @@ class TemplateConfigTest {
 
     @Test
     void testEntityController() {
-        List<TableInfo> tableInfos = JsonUtils.loadObject(Paths.get("C:\\Users\\wujj\\Desktop\\AutoTools\\src\\main\\resources\\tables\\pdm"), "core.json");
+        List<TableInfo> tableInfos = JsonUtilsToArrange.loadObject(Paths.get("C:\\Users\\wujj\\Desktop\\AutoTools\\src\\main\\resources\\tables\\pdm"), "core.json");
 
         for (TableInfo tableInfo : tableInfos) {
 //            TemplateUtils.renderTpl("entity_controller.ftl", tableInfo);
@@ -73,7 +73,7 @@ class TemplateConfigTest {
 
     @Test
     void testIncludeAndFragment() {
-        List<TableInfo> tableInfos = JsonUtils.loadObject(Paths.get("C:\\Users\\wujj\\Desktop\\AutoTools\\src\\main\\resources\\tables\\pdm"), "core.json");
+        List<TableInfo> tableInfos = JsonUtilsToArrange.loadObject(Paths.get("C:\\Users\\wujj\\Desktop\\AutoTools\\src\\main\\resources\\tables\\pdm"), "core.json");
 
         for (TableInfo tableInfo : tableInfos) {
             TemplateUtils.renderTpl("service.ftl", tableInfo);

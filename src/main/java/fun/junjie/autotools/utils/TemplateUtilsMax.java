@@ -42,8 +42,6 @@ public class TemplateUtilsMax {
     private static GeneratorConfig generatorConfig;
     private static ProjectConfig projectConfig;
 
-    private static final String TPL = "tpl";
-    private static final String FRAGMENT = "fragment";
 
     private static Pattern FRAGMENT_PATTERN = Pattern.compile(
             "<@fragment name=\"([A-Za-z0-9-_]+)\">(.*?)</@fragment>",
