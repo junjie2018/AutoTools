@@ -1,12 +1,12 @@
 package fun.junjie.autotools.test;
 
 import fun.junjie.autotools.config.TableConfig;
-import fun.junjie.autotools.config.ToolsConfig;
+import fun.junjie.autotools.config.GeneratorConfig;
 import fun.junjie.autotools.constant.JdbcLabel;
 import fun.junjie.autotools.constant.TableType;
 import fun.junjie.autotools.domain.postgre.Column;
 import fun.junjie.autotools.domain.postgre.Table;
-import lombok.RequiredArgsConstructor;
+
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
@@ -14,27 +14,28 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.PostConstruct;
+import javax.sql.DataSource;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Pattern;
 
+import static fun.junjie.autotools.utils.AssertUtils.*;
 
 @Slf4j
 @Service
-public class TableService implements ApplicationContextAware {
+public class TableUtils implements ApplicationContextAware {
 
     private static JdbcTemplate jdbcTemplate;
-    private static ToolsConfig toolsConfig;
+    private static GeneratorConfig generatorConfig;
 
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         jdbcTemplate = applicationContext.getBean(JdbcTemplate.class);
-        toolsConfig = applicationContext.getBean(toolsConfig.getClass());
+        generatorConfig = applicationContext.getBean(generatorConfig.getClass());
     }
 
     /**
@@ -42,23 +43,21 @@ public class TableService implements ApplicationContextAware {
      */
     public static List<Table> getTables() {
 
-        if()
+        assertNotNull(jdbcTemplate, "获取dbcTemplate失败");
+        assertNotNull(generatorConfig, "获取toolsConfig失败");
+        assertNotNull(jdbcTemplate.getDataSource(), "获取数据源失败");
+
+        DataSource dataSource = jdbcTemplate.getDataSource();
 
         try {
-            if (jdbcTemplate.getDataSource() == null) {
-                throw new RuntimeException("Datasource Config Wrong");
-            }
-
-            // 收集表信息
-
             Map<String, Table> tableName2TableMap = new HashMap<>(20);
+            DatabaseMetaData databaseMetaData = dataSource.getConnection().getMetaData();
 
-            DatabaseMetaData dbMetaData = this.jdbcTemplate.getDataSource().getConnection().getMetaData();
-
-            for (TableConfig tableConfig : toolsConfig.getTableConfigs()) {
+            // 真多每个配置
+            for (TableConfig tableConfig : generatorConfig.getTableConfigs()) {
 
                 // 处理表信息
-                ResultSet tables = dbMetaData.getTables(
+                ResultSet tables = databaseMetaData.getTables(
                         null, null,
                         tableConfig.getTableName(), new String[]{TableType.TABLE});
 
@@ -71,7 +70,7 @@ public class TableService implements ApplicationContextAware {
                 }
 
                 // 处理列信息
-                ResultSet columns = dbMetaData.getColumns(
+                ResultSet columns = databaseMetaData.getColumns(
                         null, null,
                         tableConfig.getTableName(), null);
 
@@ -92,10 +91,17 @@ public class TableService implements ApplicationContextAware {
 
             }
 
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+
+        try {
+
+
             return new ArrayList<>(tableName2TableMap.values());
         } catch (Exception e) {
             e.printStackTrace();
-            throw new RuntimeException("Datasource Config Wrong");
         }
     }
 

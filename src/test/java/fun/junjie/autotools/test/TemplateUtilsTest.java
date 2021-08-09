@@ -16,17 +16,18 @@ class TemplateUtilsTest {
     @Autowired
     private GenerateService generateService;
     @Autowired
-    private TableService tableService;
+    private TableUtils tableUtils;
+
+    private static final String TEMPLATE_NAME = "controller_method_create_entity.ftl";
 
     @Test
-    void tmp() {
+    void test() {
 
-        List<Table> tables = tableService.getTables();
-
+        List<Table> tables = tableUtils.getTables();
         List<TableInfo> tableInfos = generateService.getTableInfoFromTable(tables);
 
         for (TableInfo tableInfo : tableInfos) {
-            TemplateUtils.renderTplString("controller_method_create_entity.ftl", tableInfo);
+            TemplateUtils.renderTplString(TEMPLATE_NAME, tableInfo);
         }
     }
 

@@ -1,7 +1,7 @@
 package fun.junjie.autotools.utils;
 
 import fun.junjie.autotools.config.ProjectConfig;
-import fun.junjie.autotools.config.ToolsConfig;
+import fun.junjie.autotools.config.GeneratorConfig;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
@@ -12,14 +12,14 @@ import javax.annotation.PostConstruct;
 @RequiredArgsConstructor
 public class JStringUtils {
 
-    private final ToolsConfig toolsConfig;
+    private final GeneratorConfig generatorConfig;
     private final ProjectConfig projectConfig;
-    private static ToolsConfig toolsConfigStatic;
+    private static GeneratorConfig generatorConfigStatic;
     private static ProjectConfig projectConfigStatic;
 
     @PostConstruct
     public void init() {
-        toolsConfigStatic = toolsConfig;
+        generatorConfigStatic = generatorConfig;
         projectConfigStatic = projectConfig;
     }
 
@@ -84,8 +84,8 @@ public class JStringUtils {
      * 移除表明前缀
      */
     public static String removeTableNamePrefix(String tableName) {
-        if (tableName.startsWith(toolsConfigStatic.getTablePrefix())) {
-            return removePrefix(tableName, toolsConfigStatic.getTablePrefix());
+        if (tableName.startsWith(generatorConfigStatic.getTablePrefix())) {
+            return removePrefix(tableName, generatorConfigStatic.getTablePrefix());
         } else {
             return tableName;
         }

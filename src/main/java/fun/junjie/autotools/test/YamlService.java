@@ -1,7 +1,7 @@
 package fun.junjie.autotools.test;
 
 import fun.junjie.autotools.config.ProjectConfig;
-import fun.junjie.autotools.config.ToolsConfig;
+import fun.junjie.autotools.config.GeneratorConfig;
 import fun.junjie.autotools.domain.postgre.Table;
 import fun.junjie.autotools.domain.yaml.TableRoot;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +18,7 @@ import java.util.regex.Pattern;
 @SuppressWarnings("Duplicates")
 public class YamlService {
 
-    private final ToolsConfig toolsConfig;
+    private final GeneratorConfig generatorConfig;
     private final ProjectConfig projectConfig;
 
     private static Pattern ENUM_COMMENT_PATTERN = Pattern.compile("^([\\u4e00-\\u9fa5]{1,})（(([A-Za-z0-9-]+：[\\u4e00-\\u9fa5]{1,}，?)+)）$");

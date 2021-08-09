@@ -8,7 +8,7 @@ import freemarker.template.TemplateException;
 import fun.junjie.autotools.config.ProjectConfig;
 import fun.junjie.autotools.config.TableConfig;
 import fun.junjie.autotools.config.TemplateConfig;
-import fun.junjie.autotools.config.ToolsConfig;
+import fun.junjie.autotools.config.GeneratorConfig;
 import fun.junjie.autotools.directives.FragmentDirective;
 import fun.junjie.autotools.directives.IncludeDirective;
 import fun.junjie.autotools.directives.NoSpaceLineDiretive;
@@ -39,7 +39,7 @@ public class TemplateUtilsMax {
     private final ApplicationContext applicationContext;
 
     private static Configuration configuration;
-    private static ToolsConfig toolsConfig;
+    private static GeneratorConfig generatorConfig;
     private static ProjectConfig projectConfig;
 
     private static final String TPL = "tpl";
@@ -52,7 +52,7 @@ public class TemplateUtilsMax {
     private static Map<String, String> tplContentsMap;
 
     public static void render(List<TableInfo> tableInfos) {
-        for (TableConfig tableConfig : toolsConfig.getTableConfigs()) {
+        for (TableConfig tableConfig : generatorConfig.getTableConfigs()) {
             outer:
             for (String templateToGenerate : tableConfig.getTemplateToGenerate()) {
                 for (TableInfo tableInfo : tableInfos) {
@@ -79,7 +79,7 @@ public class TemplateUtilsMax {
 
         try {
             Template template = configuration.getTemplate(tplName);
-            TemplateConfig templateConfig = toolsConfig.getTemplateConfig(tplName);
+            TemplateConfig templateConfig = generatorConfig.getTemplateConfig(tplName);
             processTemplate(template, tableInfo, templateConfig);
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -93,7 +93,7 @@ public class TemplateUtilsMax {
 
         try {
             Template template = configuration.getTemplate(tplName);
-            TemplateConfig templateConfig = toolsConfig.getTemplateConfig(tplName);
+            TemplateConfig templateConfig = generatorConfig.getTemplateConfig(tplName);
             processTemplate(template, enumInfo, templateConfig);
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -107,7 +107,7 @@ public class TemplateUtilsMax {
 
         try {
             Template template = configuration.getTemplate(tplName);
-            TemplateConfig templateConfig = toolsConfig.getTemplateConfig(tplName);
+            TemplateConfig templateConfig = generatorConfig.getTemplateConfig(tplName);
             processTemplateStr(template, tableInfo, templateConfig);
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -189,8 +189,8 @@ public class TemplateUtilsMax {
 
         // templateConfig中的Properties优先级更高（在构建properties的时候，将配置文件中的下滑线转换为驼峰）
         Map<String, String> properties = new HashMap<>();
-        if (toolsConfig.getProperties() != null) {
-            for (Map.Entry<String, String> entry : toolsConfig.getProperties().entrySet()) {
+        if (generatorConfig.getProperties() != null) {
+            for (Map.Entry<String, String> entry : generatorConfig.getProperties().entrySet()) {
                 properties.put(JStringUtils.strikethroughToCamelUncapitalized(entry.getKey()),
                         entry.getValue());
             }
@@ -225,8 +225,8 @@ public class TemplateUtilsMax {
 
         // templateConfig中的Properties优先级更高（在构建properties的时候，将配置文件中的下滑线转换为驼峰）
         Map<String, String> properties = new HashMap<>();
-        if (toolsConfig.getProperties() != null) {
-            for (Map.Entry<String, String> entry : toolsConfig.getProperties().entrySet()) {
+        if (generatorConfig.getProperties() != null) {
+            for (Map.Entry<String, String> entry : generatorConfig.getProperties().entrySet()) {
                 properties.put(JStringUtils.strikethroughToCamelUncapitalized(entry.getKey()),
                         entry.getValue());
             }
@@ -258,7 +258,7 @@ public class TemplateUtilsMax {
     private void init() {
 
         projectConfig = applicationContext.getBean(ProjectConfig.class);
-        toolsConfig = applicationContext.getBean(ToolsConfig.class);
+        generatorConfig = applicationContext.getBean(GeneratorConfig.class);
 
         tplContentsMap = new HashMap<>();
 

@@ -1,6 +1,6 @@
 package fun.junjie.autotools.test;
 
-import fun.junjie.autotools.config.ToolsConfig;
+import fun.junjie.autotools.config.GeneratorConfig;
 import fun.junjie.autotools.domain.EnumInfo;
 import fun.junjie.autotools.domain.TableInfo;
 import fun.junjie.autotools.domain.postgre.Table;
@@ -20,13 +20,13 @@ class TemplateConfigTest {
     @Autowired
     private GenerateService generateService;
     @Autowired
-    private TableService tableService;
+    private TableUtils tableUtils;
     @Autowired
-    private ToolsConfig toolsConfig;
+    private GeneratorConfig generatorConfig;
 
     @Test
     void testFileCompare() {
-        List<Table> tables = tableService.getTables();
+        List<Table> tables = tableUtils.getTables();
         List<TableInfo> tableInfos = generateService.getTableInfoFromTable(tables);
 
         JsonUtils.dumpObject(tableInfos, Paths.get("C:\\Users\\wujj\\Desktop\\AutoTools\\src\\main\\resources\\tables\\pdm"), "tmp.json");

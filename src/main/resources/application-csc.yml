@@ -5,7 +5,11 @@ spring:
     password: dev.DB
     url: jdbc:p6spy:postgresql://192.168.19.12:5432/csc?stringtype=unspecified
 
-tools-config:
+project-name: csc
+table-prefix: t_
+default-primary-key: id
+
+tools-config2:
   project-name: csc
   table-prefix: t_
   default-primary-key: id

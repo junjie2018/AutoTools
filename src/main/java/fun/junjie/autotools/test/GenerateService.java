@@ -2,7 +2,7 @@ package fun.junjie.autotools.test;
 
 import fun.junjie.autotools.config.ProjectConfig;
 import fun.junjie.autotools.config.TableConfig;
-import fun.junjie.autotools.config.ToolsConfig;
+import fun.junjie.autotools.config.GeneratorConfig;
 import fun.junjie.autotools.domain.*;
 import fun.junjie.autotools.domain.postgre.Column;
 import fun.junjie.autotools.domain.postgre.ColumnType;
@@ -27,7 +27,7 @@ import static fun.junjie.autotools.utils.JStringUtils.*;
 @SuppressWarnings("Duplicates")
 public class GenerateService {
 
-    private final ToolsConfig toolsConfig;
+    private final GeneratorConfig generatorConfig;
 
     private final ProjectConfig projectConfig;
 
@@ -56,9 +56,9 @@ public class GenerateService {
             tableInfo.setTableName(table.getTableName());
             tableInfo.setTableComment(table.getTableComment());
 
-            tableInfo.setEntityName(toolsConfig.getEntityName(table.getTableName()) == null ?
+            tableInfo.setEntityName(generatorConfig.getEntityName(table.getTableName()) == null ?
                     table.getTableComment() :
-                    toolsConfig.getEntityName(table.getTableName()));
+                    generatorConfig.getEntityName(table.getTableName()));
             tableInfo.setBeanClass(
                     underlineToCamelCapitalized(removeTableNamePrefix(table.getTableName())));
             tableInfo.setBeanObject(
@@ -120,7 +120,7 @@ public class GenerateService {
     }
 
     private TableConfig getTableConfig(String tableName) {
-        for (TableConfig tableConfig : toolsConfig.getTableConfigs()) {
+        for (TableConfig tableConfig : generatorConfig.getTableConfigs()) {
             if (tableConfig.getTableName().equals(tableName)) {
                 return tableConfig;
             }

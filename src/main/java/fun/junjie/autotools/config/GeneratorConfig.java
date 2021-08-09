@@ -10,7 +10,7 @@ import java.util.Map;
 @Data
 @Component
 @ConfigurationProperties(prefix = "tools-config")
-public class ToolsConfig {
+public class GeneratorConfig {
     private String projectName;
     private String tablePrefix;
     private String defaultPrimaryKey;

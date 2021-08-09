@@ -2,7 +2,7 @@ package fun.junjie.autotools.utils;
 
 import fun.junjie.autotools.config.ProjectConfig;
 import fun.junjie.autotools.config.TemplateConfig;
-import fun.junjie.autotools.config.ToolsConfig;
+import fun.junjie.autotools.config.GeneratorConfig;
 import fun.junjie.autotools.domain.EnumInfo;
 import fun.junjie.autotools.domain.TableInfo;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +20,7 @@ import java.util.*;
 public class TemplateUtils {
 
     private final ProjectConfig projectConfig;
-    private final ToolsConfig toolsConfig;
+    private final GeneratorConfig generatorConfig;
 
     private static Map<String, String> tplFileNameToRelativeNameMap;
     private static Map<String, TemplateConfig> tplFileNameToTemplatesConfig;
@@ -48,7 +48,7 @@ public class TemplateUtils {
         });
 
         // 填充tplFileNameToTemplatesConfig
-        for (TemplateConfig templateConfig : toolsConfig.getTemplateConfigs()) {
+        for (TemplateConfig templateConfig : generatorConfig.getTemplateConfigs()) {
             if (tplFileNameToTemplatesConfig.containsKey(templateConfig.getTemplateFilename().trim())) {
                 throw new RuntimeException("Wrong When Init tplFileNameToTemplatesConfig");
             }

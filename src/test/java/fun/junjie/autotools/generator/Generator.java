@@ -3,7 +3,7 @@ package fun.junjie.autotools.generator;
 import fun.junjie.autotools.domain.TableInfo;
 import fun.junjie.autotools.domain.postgre.Table;
 import fun.junjie.autotools.test.GenerateService;
-import fun.junjie.autotools.test.TableService;
+import fun.junjie.autotools.test.TableUtils;
 import fun.junjie.autotools.utils.TemplateUtilsMax;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,15 +15,15 @@ import java.util.List;
 class Generator {
 
     @Autowired
-    private TableService tableService;
+    private TableUtils tableUtils;
 
     @Autowired
     private GenerateService generateService;
 
     @Test
-    void test() {
+    void generateAll() {
 
-        List<Table> tables = tableService.getTables();
+        List<Table> tables = tableUtils.getTables();
         List<TableInfo> tableInfos = generateService.getTableInfoFromTable(tables);
 
         TemplateUtilsMax.render(tableInfos);

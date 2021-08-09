@@ -2,7 +2,7 @@ package fun.junjie.autotools.test;
 
 import fun.junjie.autotools.config.ProjectConfig;
 import fun.junjie.autotools.config.TableConfig;
-import fun.junjie.autotools.config.ToolsConfig;
+import fun.junjie.autotools.config.GeneratorConfig;
 import fun.junjie.autotools.domain.postgre.Column;
 import fun.junjie.autotools.domain.postgre.Table;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +23,7 @@ import java.util.Map;
 public class TableService2 {
 
     private final ProjectConfig projectConfig;
-    private final ToolsConfig toolsConfig;
+    private final GeneratorConfig generatorConfig;
     private final JdbcTemplate jdbcTemplate;
 
 
@@ -41,7 +41,7 @@ public class TableService2 {
 
             DatabaseMetaData dbMetaData = this.jdbcTemplate.getDataSource().getConnection().getMetaData();
 
-            for (TableConfig tableConfig : toolsConfig.getTableConfigs()) {
+            for (TableConfig tableConfig : generatorConfig.getTableConfigs()) {
 
                 // 处理表信息
                 ResultSet tables = dbMetaData.getTables(
