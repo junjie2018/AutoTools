@@ -383,8 +383,8 @@ public class TemplateUtilsMax {
 
     static class CustomStringWriter extends Writer {
 
-        private StringWriter stringWriter;
-        private StringBuffer stringBuffer;
+        private final StringWriter stringWriter;
+        private final StringBuffer stringBuffer;
 
         public CustomStringWriter(StringWriter stringWriter) {
             this.stringWriter = stringWriter;

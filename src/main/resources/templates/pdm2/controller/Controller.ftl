@@ -11,11 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.List;
 
-<#if packagesToImport??>
-<#list packagesToImport as packageToImport>
-import ${packageToImport};
-</#list>
-</#if>
+<@packets/>
 
 /**
  * ${entityName}管理
@@ -26,14 +22,6 @@ public class ${beanClass}Controller {
 
     private final ${beanClass}Service ${beanObject}Service;
 
-    <@include tpl="CreateEntity.ftl" fragment="ControllerMethod"/>
-
-    <@include tpl="UpdateEntity.ftl" fragment="ControllerMethod"/>
-
-    <@include tpl="QueryEntity.ftl" fragment="ControllerMethod"/>
-
-    <@include tpl="PageEntity.ftl" fragment="ControllerMethod"/>
-
-    <@include tpl="DeleteEntity.ftl" fragment="ControllerMethod"/>
+    <@fragments/>
 
 }

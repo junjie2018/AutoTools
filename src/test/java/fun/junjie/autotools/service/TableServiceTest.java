@@ -38,7 +38,16 @@ class TableServiceTest {
 
         for (TableInfo tableInfo : tableInfos) {
             for (EnumInfo enumInfo : tableInfo.getEnumInfos()) {
-                TemplateUtilsMax.renderTpl("Enum.ftl", enumInfo);
+                if (enumInfo.getEnumClass().equals("Status")) {
+                    if (tableInfo.getTableName().endsWith("order")) {
+                        enumInfo.setEnumClass("OrderStatus");
+                    } else if (tableInfo.getTableName().endsWith("task")) {
+                        enumInfo.setEnumClass("TaskStatus");
+                    } else {
+                        enumInfo.setEnumClass("ColorAtlaStatus");
+                    }
+                    TemplateUtilsMax.renderTpl("Enum.ftl", enumInfo);
+                }
             }
         }
 
