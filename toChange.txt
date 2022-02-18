@@ -1,0 +1,115 @@
+材质库	Texture Toolbox
+金属	Metallic
+属性	Properties
+有色金属	Non-ferrous metals
+黑金属	Ferrous metals
+其他	Other
+纹理	Texture
+抛光	Polished
+磨砂	Brushed
+拉丝	Brushed
+基础	Base
+其他	Other
+成分	Composition
+铝	aluminium
+铜	Copper
+铁	Iron
+合金	Alloys
+贵金属	Precious metals
+不锈钢	Stainless steel
+其他	Others
+咬花	Mold Texture
+属性	Properties
+喷砂	Sandblasted
+化学蚀刻	Chemical etching
+其他	Other
+纹理	Textures
+皮草纹	Fur pattern
+几何图样	Geometric patterns
+其他	Other
+成分	Composition
+PU	PU
+PA	PA
+POM	POM
+pps	pps
+PC	PC
+PMMA	PMMA
+OET	OET
+其他	Other
+塑料	Plastic
+属性	Properties
+透明	Transparent
+硬的	Hard
+橡胶	Rubber
+软的	Soft
+其他	Other
+纹理	Textured
+磨砂	Frosted
+光面	Glossy
+其他	Other
+成分	Composition
+PVC	PVC
+ABS	ABS
+PC	PC
+PE	PE
+PP	PP
+NR	NR
+其他	Other
+织带	Webbing
+属性	Properties
+梭织	Woven
+针织	Knitted
+其他	Other
+纹理	Texture
+平纹	Plain
+斜纹	Twill
+缎纹	Satin
+杂纹	Miscellaneous
+其他	Other
+成分	Composition
+涤纶	Polyester
+尼龙	nylon
+PP丙纶	PP polypropylene
+金葱	Gold Onion
+银葱	silver onion
+氨纶	Spandex
+人造丝	Rayon
+其他	Others
+车线	Stitching
+属性	Properties
+天然纤维	Natural fibres
+合成纤维	Synthetic fibres
+混合	Blends
+其他	Other
+纹理	Texture
+202	202
+203	203
+402	402
+403	403
+602	602
+603	603
+其他	Other
+鞋带	Shoelaces
+染纱鞋带	yarn dyed laces
+染色鞋带	Dyed laces
+印花鞋带	Printed laces
+腊带	Wax laces
+其他	Other
+纹理	Textured
+实心扁带	Solid flat laces
+空心扁带	Hollow flat laces
+圆带	Round tape
+椭圆带	Elliptical
+其他	Other
+成分	Composition
+涤纶	Polyester
+腈纶	acrylic
+涤棉	polyester-cotton
+全棉	Cotton
+其他	Others
+编号	Serial Number
+来源	Source
+已上架	Available
+已下架	Unavailable
+已删除	Deleted
+供应商	Supplier
